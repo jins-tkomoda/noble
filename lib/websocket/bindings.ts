@@ -1,7 +1,7 @@
 import * as events from 'events';
 
 import * as debugModule from 'debug';
-import * as WebSocket from 'ws';
+import * as WebSocket from 'isomorphic-ws';
 
 const debug = debugModule('bindings');
 
@@ -16,17 +16,11 @@ export default class NobleBindings extends events.EventEmitter {
 
     this.on('message', this._onMessage.bind(this));
 
-    if (!this._ws.on) {
-      this._ws.on = this._ws.addEventListener;
-    }
-
     this._ws.on('open', this._onOpen.bind(this));
     this._ws.on('close', this._onClose.bind(this));
     this._ws.on('error', this._onClose.bind(this));
 
-    this._ws.on('message', (event) => {
-      const data = (process.title === 'browser') ? event.data : event;
-
+    this._ws.on('message', (data: string) => {
       this.emit('message', JSON.parse(data));
     });
   }
