@@ -75,9 +75,7 @@ function sendEvent(event) {
 
   const clients = serverMode ? wss.clients : new Set([ws]);
 
-  for (const client of clients) {
-    client.send(message);
-  }
+  clients.forEach(client => client.send(message));
 }
 
 const onMessage = function(message) {

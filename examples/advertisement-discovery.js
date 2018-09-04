@@ -19,9 +19,9 @@ noble.on('discover', (peripheral) => {
   const serviceData = peripheral.advertisement.serviceData;
   if (serviceData && serviceData.length) {
     console.log('\there is my service data:');
-    for (const i in serviceData) {
-      console.log(`\t\t${JSON.stringify(serviceData[i].uuid)}: ${JSON.stringify(serviceData[i].data.toString('hex'))}`);
-    }
+    serviceData.forEach(serviceIndex => {
+      console.log(`\t\t${JSON.stringify(serviceIndex.uuid)}: ${JSON.stringify(serviceIndex.data.toString('hex'))}`);
+    })
   }
   if (peripheral.advertisement.manufacturerData) {
     console.log('\there is my manufacturer data:');
