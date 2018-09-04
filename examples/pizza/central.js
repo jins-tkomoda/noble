@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-const noble = require('../..');
+const noble = require('../../dist/index');
 const pizza = require('./pizza');
 
 const pizzaServiceUuid = '13333333333333333333333333333337';

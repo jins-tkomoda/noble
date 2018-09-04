@@ -1,6 +1,5 @@
-const events = require('events');
-
-const crypto = require('./crypto');
+import * as crypto from './crypto';
+import * as events from 'events';
 
 const SMP_CID = 0x0006;
 
@@ -12,7 +11,7 @@ const SMP_PAIRING_FAILED = 0x05;
 const SMP_ENCRYPT_INFO = 0x06;
 const SMP_MASTER_IDENT = 0x07;
 
-class Smp extends events.EventEmitter {
+export default class Smp extends events.EventEmitter {
   constructor(aclStream, localAddressType, localAddress, remoteAddressType, remoteAddress) {
     super();
     this._aclStream = aclStream;
@@ -136,5 +135,3 @@ class Smp extends events.EventEmitter {
     this._aclStream.write(SMP_CID, data);
   }
 }
-
-module.exports = Smp;

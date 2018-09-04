@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-const noble = require('./index');
+import * as noble from './index';
 
 console.log('noble');
 

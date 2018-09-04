@@ -1,8 +1,8 @@
-const events = require('events');
+import * as events from 'events';
 
-const Smp = require('./smp');
+import Smp from './smp';
 
-class AclStream extends events.EventEmitter {
+export default class AclStream extends events.EventEmitter {
   constructor(hci, handle, localAddressType, localAddress, remoteAddressType, remoteAddress) {
     super();
     this._hci = hci;
@@ -56,5 +56,3 @@ class AclStream extends events.EventEmitter {
     this._smp.removeListener('end', this.onSmpEndBinded);
   }
 }
-
-module.exports = AclStream;

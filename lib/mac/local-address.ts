@@ -1,7 +1,7 @@
-const child_process = require('child_process');
+import * as childProcess from 'child_process'
 
-function localAddress(callback) {
-  child_process.exec('system_profiler SPBluetoothDataType', {}, (error, stdout, stderr) => {
+export default function localAddress(callback) {
+  childProcess.exec('system_profiler SPBluetoothDataType', {}, (error, stdout, stderr) => {
     let address = null;
 
     if (!error) {
@@ -14,5 +14,3 @@ function localAddress(callback) {
     callback(address);
   });
 }
-
-module.exports = localAddress;

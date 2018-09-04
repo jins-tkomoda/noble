@@ -1,14 +1,16 @@
-const debug = require('debug')('signaling');
+import * as events from 'events';
+import * as os from 'os';
 
-const events = require('events');
-const os = require('os');
+import * as debugModule from 'debug';
+
+const debug = debugModule('signaling');
 
 const CONNECTION_PARAMETER_UPDATE_REQUEST  = 0x12;
 const CONNECTION_PARAMETER_UPDATE_RESPONSE = 0x13;
 
 const SIGNALING_CID = 0x0005;
 
-class Signaling extends events.EventEmitter {
+export default class Signaling extends events.EventEmitter {
   constructor(handle, aclStream, useHciUserChannel = false) {
     super();
     this._handle = handle;
@@ -73,5 +75,3 @@ class Signaling extends events.EventEmitter {
     }
   }
 }
-
-module.exports = Signaling;

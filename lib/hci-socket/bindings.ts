@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
-const events = require('events');
+import * as events from 'events';
 
-const AclStream = require('./acl-stream');
-const Gatt = require('./gatt');
-const Gap = require('./gap');
-const Hci = require('./hci');
-const Signaling = require('./signaling');
+import AclStream from './acl-stream';
+import Gatt from './gatt';
+import Gap from './gap';
+import Hci from './hci';
+import Signaling from './signaling';
 
 
-class NobleBindings extends events.EventEmitter {
+export default class NobleBindings extends events.EventEmitter {
   constructor(options = {}) {
     super();
 
@@ -522,5 +522,3 @@ class NobleBindings extends events.EventEmitter {
     this._hci.connUpdateLe(handle, minInterval, maxInterval, latency, supervisionTimeout);
   }
 }
-
-module.exports = NobleBindings;

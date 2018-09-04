@@ -1,9 +1,11 @@
-const events = require('events');
+import * as events from 'events';
 
-const debug = require('debug')('bindings');
-const WebSocket = require('ws');
+import * as debugModule from 'debug';
+import * as WebSocket from 'ws';
 
-class NobleBindings extends events.EventEmitter {
+const debug = debugModule('bindings');
+
+export default class NobleBindings extends events.EventEmitter {
   constructor() {
     super();
     const port = 0xB1e;
@@ -313,5 +315,3 @@ class NobleBindings extends events.EventEmitter {
     });
   }
 }
-
-module.exports = NobleBindings;

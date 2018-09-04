@@ -1,11 +1,12 @@
-const debug = require('debug')('gap');
+import * as events from 'events';
+import * as os from 'os';
 
-const events = require('events');
-const os = require('os');
+import * as debugModule from 'debug';
 
+const debug = debugModule('gap');
 const isChip = (os.platform() === 'linux') && (os.release().includes('-ntc'));
 
-class Gap extends events.EventEmitter {
+export default class Gap extends events.EventEmitter {
   constructor(hci, hciReportAllEvents = false) {
     super();
     this._hci = hci;
@@ -256,5 +257,3 @@ class Gap extends events.EventEmitter {
     }
   }
 }
-
-module.exports = Gap;

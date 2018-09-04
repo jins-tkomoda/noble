@@ -1,8 +1,8 @@
-const events = require('events');
+import * as events from 'events';
 
-const characteristics = require('./characteristics.json');
+import * as characteristics from './characteristics.json';
 
-class Characteristic extends events.EventEmitter {
+export default class Characteristic extends events.EventEmitter {
   constructor(noble, peripheralId, serviceUuid, uuid, properties) {
     super();
     this._noble = noble;
@@ -150,5 +150,3 @@ class Characteristic extends events.EventEmitter {
     return promise;
   }
 }
-
-module.exports = Characteristic;

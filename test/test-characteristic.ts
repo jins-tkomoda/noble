@@ -1,7 +1,7 @@
-require('should');
-const sinon = require('sinon');
+import 'should';
+import * as sinon from 'sinon';
 
-const Characteristic = require('../lib/characteristic');
+import Characteristic from '../lib/characteristic';
 
 describe('Characteristic', () => {
   let mockNoble = null;

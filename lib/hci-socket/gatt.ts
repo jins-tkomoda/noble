@@ -1,6 +1,7 @@
-const debug = require('debug')('att');
+import * as events from 'events';
 
-const events = require('events');
+import * as debugModule from 'debug';
+const debug = debugModule('att');
 
 const ATT_OP_ERROR                    = 0x01;
 const ATT_OP_MTU_REQ                  = 0x02;
@@ -62,7 +63,7 @@ const GATT_SERVER_CHARAC_CFG_UUID     = 0x2903;
 
 const ATT_CID = 0x0004;
 
-class Gatt extends events.EventEmitter {
+export default class Gatt extends events.EventEmitter {
   constructor(address, aclStream, isMultiRole = false) {
     super();
     this._address = address;
@@ -746,5 +747,3 @@ class Gatt extends events.EventEmitter {
     }
   }
 }
-
-module.exports = Gatt;

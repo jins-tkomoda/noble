@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 const async = require('async');
-const noble = require('../index');
+const noble = require('../dist/index');
 
 const peripheralIdOrAddress = process.argv[2].toLowerCase();
 

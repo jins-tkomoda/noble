@@ -1,8 +1,12 @@
-const debug = require('debug')('hci');
+import * as events from 'events';
 
-const events = require('events');
+import * as debugModule from 'debug';
 
-const BluetoothHciSocket = require('bluetooth-hci-socket');
+import * as BluetoothHciSocket from 'bluetooth-hci-socket';
+
+import * as STATUS_MAPPER from './hci-status.json';
+
+const debug = debugModule('hci');
 
 const HCI_COMMAND_PKT = 0x01;
 const HCI_ACLDATA_PKT = 0x02;
@@ -72,9 +76,7 @@ const LE_START_ENCRYPTION_CMD = OCF_LE_START_ENCRYPTION | OGF_LE_CTL << 10;
 
 const HCI_OE_USER_ENDED_CONNECTION = 0x13;
 
-const STATUS_MAPPER = require('./hci-status.json');
-
-class Hci extends events.EventEmitter {
+export default class Hci extends events.EventEmitter {
   constructor(deviceId = 0, useUserChannel = false) {
     super();
     this._socket = new BluetoothHciSocket();
@@ -87,6 +89,7 @@ class Hci extends events.EventEmitter {
     this._aclMtu = 23 + 4;
     this._aclMaxInProgress = 1;
 
+    this.STATUS_MAPPER = STATUS_MAPPER;
     this.resetBuffers();
 
     this.on('stateChange', this.onStateChange.bind(this));
@@ -840,7 +843,3 @@ class Hci extends events.EventEmitter {
     this._state = state;
   }
 }
-
-Hci.STATUS_MAPPER = STATUS_MAPPER;
-
-module.exports = Hci;

@@ -1,13 +1,15 @@
-const debug = require('debug')('noble');
+import * as events from 'events';
 
-const events = require('events');
+import * as debugModule from 'debug';
 
-const Peripheral = require('./peripheral');
-const Service = require('./service');
-const Characteristic = require('./characteristic');
-const Descriptor = require('./descriptor');
+import Characteristic from './characteristic';
+import Descriptor from './descriptor';
+import Peripheral from './peripheral';
+import Service from './service';
 
-class Noble extends events.EventEmitter {
+const debug = debugModule('noble');
+
+export default class Noble extends events.EventEmitter {
   constructor(bindings) {
     super();
     this.initialized = false;
@@ -461,5 +463,3 @@ class Noble extends events.EventEmitter {
     }
   }
 }
-
-module.exports = Noble;

@@ -1,7 +1,7 @@
-require('should');
-const sinon = require('sinon');
+import 'should';
+import * as sinon from 'sinon';
 
-const Peripheral = require('../lib/peripheral');
+import Peripheral from '../lib/peripheral';
 
 describe('Peripheral', () => {
   let mockNoble = null;
@@ -12,7 +12,7 @@ describe('Peripheral', () => {
   const mockAdvertisement = 'mock-advertisement';
   const mockRssi = 'mock-rssi';
   const mockHandle = 'mock-handle';
-  let mockData = 'mock-data';
+  let mockData = Buffer.from('mock-data');
 
   let peripheral = null;
 
@@ -319,7 +319,7 @@ describe('Peripheral', () => {
     });
 
     it('should only accept data as a buffer', () => {
-      mockData = {};
+      mockData = {} as Buffer;
 
       (function(){
         peripheral.writeHandle(mockHandle, mockData);

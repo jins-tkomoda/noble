@@ -1,6 +1,6 @@
-const bplist = require('bplist-parser');
+import * as bplist from 'bplist-parser'
 
-module.exports = (uuid, callback) => {
+export default (uuid, callback) => {
   bplist.parseFile('/Library/Preferences/com.apple.Bluetooth.plist', (err, obj) => {
     if (err) {
       return callback(err);

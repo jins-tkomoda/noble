@@ -1,11 +1,11 @@
-const events = require('events');
+import * as events from 'events';
 
-const WebSocketServer = require('ws').Server;
+import * as ws from 'ws';
 
-class NobleBindings extends events.EventEmitter {
+export default class NobleBindings extends events.EventEmitter {
   constructor() {
     super();
-    this._wss = new WebSocketServer({
+    this._wss = new ws.Server({
       port: 0xB1e,
       clientTracking: true,
     });
@@ -317,5 +317,3 @@ class NobleBindings extends events.EventEmitter {
     });
   }
 }
-
-module.exports = NobleBindings;

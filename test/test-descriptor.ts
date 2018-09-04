@@ -1,7 +1,7 @@
-require('should');
-const sinon = require('sinon');
+import 'should';
+import * as sinon from 'sinon';
 
-const Descriptor = require('../lib/descriptor');
+import Descriptor from '../lib/descriptor';
 
 describe('Descriptor', () => {
   let mockNoble = null;

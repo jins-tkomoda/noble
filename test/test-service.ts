@@ -1,7 +1,7 @@
-require('should');
-const sinon = require('sinon');
+import 'should';
+import * as sinon from 'sinon';
 
-const Service = require('../lib/service');
+import Service from '../lib/service';
 
 describe('service', () => {
   let mockNoble = null;

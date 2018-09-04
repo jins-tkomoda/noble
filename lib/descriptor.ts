@@ -1,8 +1,8 @@
-const events = require('events');
+import * as events from 'events';
 
-const descriptors = require('./descriptors.json');
+import * as descriptors from './descriptors.json';
 
-class Descriptor extends events.EventEmitter {
+export default class Descriptor extends events.EventEmitter {
   constructor(noble, peripheralId, serviceUuid, characteristicUuid, uuid) {
     super();
     this._noble = noble;
@@ -72,5 +72,3 @@ class Descriptor extends events.EventEmitter {
     return promise;
   }
 }
-
-module.exports = Descriptor;

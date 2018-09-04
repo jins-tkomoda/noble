@@ -1,8 +1,8 @@
-const events = require('events');
+import * as events from 'events';
 
-const services = require('./services.json');
+import * as services from './services.json';
 
-class Service extends events.EventEmitter {
+export default class Service extends events.EventEmitter {
   constructor(noble, peripheralId, uuid) {
     super();
     this._noble = noble;
@@ -66,5 +66,3 @@ class Service extends events.EventEmitter {
     return promise;
   }
 }
-
-module.exports = Service;

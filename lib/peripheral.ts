@@ -1,6 +1,6 @@
-const events = require('events');
+import * as events from 'events';
 
-class Peripheral extends events.EventEmitter {
+export default class Peripheral extends events.EventEmitter {
   constructor(noble, id, address, addressType, connectable, advertisement, rssi) {
     super();
     this._noble = noble;
@@ -175,5 +175,3 @@ class Peripheral extends events.EventEmitter {
     return promise;
   }
 }
-
-module.exports = Peripheral;

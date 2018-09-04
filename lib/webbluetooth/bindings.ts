@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
-const events = require('events');
+import * as events from 'events';
 
-const debug = require('debug')('webble-bindings');
+import * as debugModule from 'debug';
+
+const debug = debugModule('webble-bindings');
 
 function makeList(uuid){
   return {services:[ uuid ]};
@@ -25,7 +27,7 @@ function stripDashes(uuid){
 }
 
 
-class NobleBindings extends events.EventEmitter {
+export default class NobleBindings extends events.EventEmitter {
   constructor() {
     super();
     this._ble = null;
@@ -394,5 +396,3 @@ class NobleBindings extends events.EventEmitter {
     //this.emit('handleWrite', deviceUuid, handle);
   }
 }
-
-module.exports = NobleBindings;

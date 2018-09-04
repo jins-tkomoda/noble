@@ -1,16 +1,17 @@
-const events        = require('events');
+import * as events from 'events';
 
-const debug         = require('debug')('yosemite-bindings');
+import * as debugModule from 'debug'
+import * as XpcConnection from 'xpc-connection';
 
-const XpcConnection = require('xpc-connection');
+import localAddress  from './local-address';
+import uuidToAddress from './uuid-to-address';
 
-const localAddress  = require('./local-address');
-const uuidToAddress = require('./uuid-to-address');
+const debug = debugModule('yosemite-bindings');
 
 /**
  *  NobleBindings for mac
  */
-class NobleBindings extends events.EventEmitter {
+export default class NobleBindings extends events.EventEmitter {
   constructor() {
     super();
     this._peripherals = {};
@@ -787,5 +788,3 @@ class NobleBindings extends events.EventEmitter {
     });
   }
 }
-
-module.exports = NobleBindings;

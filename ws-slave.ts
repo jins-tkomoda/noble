@@ -1,7 +1,9 @@
-const debug = require('debug')('slave');
-const WebSocket = require('ws');
+import * as debugModule from 'debug';
+import * as WebSocket from 'ws';
 
-const noble = require('./index');
+import * as noble from './index';
+
+const debug = debugModule('slave');
 
 const serverMode = !process.argv[2];
 const port = 0xB1e;
@@ -10,6 +12,7 @@ const host = process.argv[2];
 
 let ws;
 let wss;
+
 
 if (serverMode) {
   debug('noble - ws slave - server mode');
@@ -37,7 +40,7 @@ if (serverMode) {
     });
 
     // Send poweredOn if already in this state.
-    if (noble.state === 'poweredOn') {
+    if (noble._state === 'poweredOn') {
       sendEvent({
         type: 'stateChange',
         state: 'poweredOn'

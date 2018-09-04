@@ -1,5 +1,5 @@
-const Noble = require('./lib/noble');
+import Noble from './lib/noble';
 
-module.exports = (bindings) => {
+export default function(bindings: any) {
   return new Noble(bindings);
 };

@@ -1,10 +1,10 @@
-const crypto = require('crypto');
+import * as crypto from 'crypto';
 
-function r() {
+export function r() {
   return crypto.randomBytes(16);
 }
 
-function c1(k, r, pres, preq, iat, ia, rat, ra) {
+export function c1(k, r, pres, preq, iat, ia, rat, ra) {
   const p1 = Buffer.concat([
     iat,
     rat,
@@ -26,14 +26,14 @@ function c1(k, r, pres, preq, iat, ia, rat, ra) {
   return res;
 }
 
-function s1(k, r1, r2) {
+export function s1(k, r1, r2) {
   return e(k, Buffer.concat([
     r2.slice(0, 8),
     r1.slice(0, 8)
   ]));
 }
 
-function e(key, data) {
+export function e(key, data) {
   key = swap(key);
   data = swap(data);
 
@@ -65,10 +65,3 @@ function swap(input) {
 
   return output;
 }
-
-module.exports = {
-  r: r,
-  c1: c1,
-  s1: s1,
-  e: e
-};
