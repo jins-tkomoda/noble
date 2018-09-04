@@ -91,7 +91,7 @@ function explore(peripheral) {
                 }
 
                 async.series([
-                  function(callback) {
+                  (callback) => {
                     characteristic.discoverDescriptors((error, descriptors) => {
                       async.detect(
                         descriptors,
@@ -117,7 +117,7 @@ function explore(peripheral) {
                       );
                     });
                   },
-                  function(callback) {
+                  (callback) => {
                     characteristicInfo += `\n    properties  ${characteristic.properties.join(', ')}`;
 
                     if (characteristic.properties.includes('read')) {
@@ -133,7 +133,7 @@ function explore(peripheral) {
                       callback();
                     }
                   },
-                  function() {
+                  () => {
                     console.log(characteristicInfo);
                     characteristicIndex++;
                     callback();

@@ -1,5 +1,5 @@
 const Noble = require('./lib/noble');
 
-module.exports = function(bindings) {
+module.exports = (bindings) => {
   return new Noble(bindings);
 };
