@@ -12,5 +12,6 @@ logs
 results
 
 build/
+dist/
 node_modules/
 npm-debug.log
