@@ -1,6 +1,17 @@
 import * as events from 'events';
 
 export default class Peripheral extends events.EventEmitter {
+  private _noble;
+  private id;
+  private uuid;
+  private address;
+  private addressType;
+  private connectable;
+  private advertisement;
+  private rssi;
+  private services;
+  private state;
+
   constructor(noble, id, address, addressType, connectable, advertisement, rssi) {
     super();
     this._noble = noble;

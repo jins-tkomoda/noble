@@ -12,6 +12,19 @@ const SMP_ENCRYPT_INFO = 0x06;
 const SMP_MASTER_IDENT = 0x07;
 
 export default class Smp extends events.EventEmitter {
+  private _aclStream;
+  private _iat;
+  private _ia;
+  private _r;
+  private _rat;
+  private _ra;
+  private _tk;
+  private _pcnf;
+  private _preq;
+  private _pres;
+  private onAclStreamDataBinded;
+  private onAclStreamEndBinded;
+
   constructor(aclStream, localAddressType, localAddress, remoteAddressType, remoteAddress) {
     super();
     this._aclStream = aclStream;

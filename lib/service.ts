@@ -3,6 +3,14 @@ import * as events from 'events';
 import * as services from './services.json';
 
 export default class Service extends events.EventEmitter {
+  private _noble;
+  private _peripheralId;
+  private uuid;
+  private name;
+  private type;
+  private includedServiceUuids;
+  private characteristics;
+
   constructor(noble, peripheralId, uuid) {
     super();
     this._noble = noble;

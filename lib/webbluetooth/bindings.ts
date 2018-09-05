@@ -28,6 +28,10 @@ function stripDashes(uuid){
 
 
 export default class NobleBindings extends events.EventEmitter {
+  private _ble;
+  private _startScanCommand;
+  private _peripherals;
+
   constructor() {
     super();
     this._ble = null;

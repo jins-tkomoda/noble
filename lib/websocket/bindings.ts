@@ -6,6 +6,10 @@ import * as WebSocket from 'isomorphic-ws';
 const debug = debugModule('bindings');
 
 export default class NobleBindings extends events.EventEmitter {
+  private _ws: WebSocket;
+  private _startScanCommand;
+  private _peripherals;
+
   constructor() {
     super();
     const port = 0xB1e;
@@ -112,7 +116,7 @@ export default class NobleBindings extends events.EventEmitter {
     }
   }
 
-  _sendCommand(command, errorCallback) {
+  _sendCommand(command, errorCallback?) {
     const message = JSON.stringify(command);
     this._ws.send(message, (error) => {
       if (error !== null) {

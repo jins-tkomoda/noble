@@ -12,6 +12,9 @@ const debug = debugModule('yosemite-bindings');
  *  NobleBindings for mac
  */
 export default class NobleBindings extends events.EventEmitter {
+  private _peripherals;
+  private _xpcConnection;
+
   constructor() {
     super();
     this._peripherals = {};
@@ -63,13 +66,9 @@ export default class NobleBindings extends events.EventEmitter {
    */
   startScanning(serviceUuids, allowDuplicates) {
     const args = {
-      kCBMsgArgOptions: {},
+      kCBMsgArgOptions: { kCBScanOptionAllowDuplicates: allowDuplicates ? 1 : 0 },
       kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex'))
     };
-
-    if (allowDuplicates) {
-      args.kCBMsgArgOptions.kCBScanOptionAllowDuplicates = 1;
-    }
 
     this.sendCBMsg(29, args);
     this.emit('scanStart');

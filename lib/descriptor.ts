@@ -3,6 +3,14 @@ import * as events from 'events';
 import * as descriptors from './descriptors.json';
 
 export default class Descriptor extends events.EventEmitter {
+  private _noble;
+  private _peripheralId;
+  private _serviceUuid;
+  private _characteristicUuid;
+  private uuid;
+  private name;
+  private type;
+
   constructor(noble, peripheralId, serviceUuid, characteristicUuid, uuid) {
     super();
     this._noble = noble;

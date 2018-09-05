@@ -64,6 +64,21 @@ const GATT_SERVER_CHARAC_CFG_UUID     = 0x2903;
 const ATT_CID = 0x0004;
 
 export default class Gatt extends events.EventEmitter {
+  private _address;
+  private _aclStream;
+  private _isMultiRole;
+  private _services;
+  private _characteristics;
+  private _descriptors;
+  private _currentCommand;
+  private _commandQueue;
+  private _mtu;
+  private _security
+  private onAclStreamDataBinded;
+  private onAclStreamEncryptBinded;
+  private onAclStreamEncryptFailBinded;
+  private onAclStreamEndBinded;
+
   constructor(address, aclStream, isMultiRole = false) {
     super();
     this._address = address;
@@ -194,7 +209,7 @@ export default class Gatt extends events.EventEmitter {
     return buf;
   }
 
-  _queueCommand(buffer, callback, writeCallback) {
+  _queueCommand(buffer, callback, writeCallback?) {
     this._commandQueue.push({
       buffer: buffer,
       callback: callback,
@@ -305,7 +320,7 @@ export default class Gatt extends events.EventEmitter {
     return buf;
   }
 
-  executeWriteRequest(handle, cancelPreparedWrites) {
+  executeWriteRequest(handle, cancelPreparedWrites = false) {
     const buf = Buffer.alloc(2);
 
     buf.writeUInt8(ATT_OP_EXECUTE_WRITE_REQ, 0);

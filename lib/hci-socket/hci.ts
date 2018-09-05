@@ -77,6 +77,20 @@ const LE_START_ENCRYPTION_CMD = OCF_LE_START_ENCRYPTION | OGF_LE_CTL << 10;
 const HCI_OE_USER_ENDED_CONNECTION = 0x13;
 
 export default class Hci extends events.EventEmitter {
+  private _socket;
+  private _isDevUp;
+  private _state;
+  private _deviceId;
+  private address;
+  private addressType;
+  private _useUserChannel
+  private _aclMtu;
+  private _aclMaxInProgress;
+  private _handleAclsInProgress;
+  private _aclOutQueue;
+  private _handleBuffers;
+  public STATUS_MAPPER;
+
   constructor(deviceId = 0, useUserChannel = false) {
     super();
     this._socket = new BluetoothHciSocket();

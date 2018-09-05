@@ -9,6 +9,22 @@ import Signaling from './signaling';
 
 
 export default class NobleBindings extends events.EventEmitter {
+  private options;
+  private _state;
+  private _addresses;
+  private _addresseTypes;
+  private _connectable;
+  private _pendingConnectionUuid;
+  private _connectionQueue;
+  private _handles;
+  private _gatts;
+  private _aclStreams;
+  private _signalings;
+  private _hci;
+  private _gap;
+  private _scanServiceUuids;
+  private onSigIntBinded;
+
   constructor(options = {}) {
     super();
 
@@ -230,7 +246,7 @@ export default class NobleBindings extends events.EventEmitter {
       this._gatts[handle].exchangeMtu(256);
     } else {
       uuid = this._pendingConnectionUuid;
-      let statusMessage = Hci.STATUS_MAPPER[status] || 'HCI Error: Unknown';
+      let statusMessage = this._hci.STATUS_MAPPER[status] || 'HCI Error: Unknown';
       const errorCode = ` (0x${status.toString(16)})`;
       statusMessage = statusMessage + errorCode;
       error = new Error(statusMessage);

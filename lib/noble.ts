@@ -10,6 +10,17 @@ import Service from './service';
 const debug = debugModule('noble');
 
 export default class Noble extends events.EventEmitter {
+  private initialized;
+  private address;
+  private _bindings;
+  private _peripherals;
+  private _services;
+  private _characteristics;
+  private _descriptors;
+  private _discoveredPeripheralUUids;
+  private _allowDuplicates;
+  public _state;
+
   constructor(bindings) {
     super();
     this.initialized = false;
@@ -93,7 +104,7 @@ export default class Noble extends events.EventEmitter {
     this.address = address;
   }
 
-  startScanning(serviceUuids, allowDuplicates, callback) {
+  startScanning(serviceUuids?, allowDuplicates?, callback?) {
     const promise = new Promise((resolve, reject) => {
       const scan = (state) => {
         if (state !== 'poweredOn') {
@@ -132,7 +143,7 @@ export default class Noble extends events.EventEmitter {
     this.emit('scanStart', filterDuplicates);
   }
 
-  stopScanning(callback) {
+  stopScanning(callback?) {
     const promise = new Promise((resolve, reject) => {
       this.once('scanStop', resolve);
 

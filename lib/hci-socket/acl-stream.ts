@@ -3,6 +3,13 @@ import * as events from 'events';
 import Smp from './smp';
 
 export default class AclStream extends events.EventEmitter {
+  private _hci;
+  private _handle;
+  private _smp;
+  private onSmpStkBinded;
+  private onSmpFailBinded;
+  private onSmpEndBinded;
+
   constructor(hci, handle, localAddressType, localAddress, remoteAddressType, remoteAddress) {
     super();
     this._hci = hci;
