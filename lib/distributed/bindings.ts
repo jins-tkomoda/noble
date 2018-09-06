@@ -2,7 +2,7 @@ import * as events from 'events';
 
 import * as ws from 'ws';
 
-export default class NobleBindings extends events.EventEmitter {
+export class NobleBindings extends events.EventEmitter {
   private _wss;
   private _startScanCommand;
   private _peripherals;

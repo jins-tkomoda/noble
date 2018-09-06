@@ -76,7 +76,7 @@ const LE_START_ENCRYPTION_CMD = OCF_LE_START_ENCRYPTION | OGF_LE_CTL << 10;
 
 const HCI_OE_USER_ENDED_CONNECTION = 0x13;
 
-export default class Hci extends events.EventEmitter {
+export class Hci extends events.EventEmitter {
   private _socket;
   private _isDevUp;
   private _state;

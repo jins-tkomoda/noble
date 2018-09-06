@@ -6,7 +6,7 @@ import * as debugModule from 'debug';
 const debug = debugModule('gap');
 const isChip = (os.platform() === 'linux') && (os.release().includes('-ntc'));
 
-export default class Gap extends events.EventEmitter {
+export class Gap extends events.EventEmitter {
   private _hci;
   private _hciReportAllEvents;
   private _scanState;

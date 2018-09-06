@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
 import * as events from 'events';
 
-import AclStream from './acl-stream';
-import Gatt from './gatt';
-import Gap from './gap';
-import Hci from './hci';
-import Signaling from './signaling';
+import { AclStream } from './acl-stream';
+import { Gap } from './gap';
+import { Gatt } from './gatt';
+import { Hci } from './hci';
+import { Signaling } from './signaling';
 
 
-export default class NobleBindings extends events.EventEmitter {
+export class NobleBindings extends events.EventEmitter {
   private options;
   private _state;
   private _addresses;

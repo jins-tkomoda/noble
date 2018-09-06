@@ -1,7 +1,7 @@
 import 'should';
 import * as sinon from 'sinon';
 
-import Peripheral from '../lib/peripheral';
+import { Peripheral } from '../lib/peripheral';
 
 describe('Peripheral', () => {
   let mockNoble = null;

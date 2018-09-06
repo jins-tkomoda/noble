@@ -63,7 +63,7 @@ const GATT_SERVER_CHARAC_CFG_UUID     = 0x2903;
 
 const ATT_CID = 0x0004;
 
-export default class Gatt extends events.EventEmitter {
+export class Gatt extends events.EventEmitter {
   private _address;
   private _aclStream;
   private _isMultiRole;

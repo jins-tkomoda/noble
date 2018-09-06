@@ -1,7 +1,7 @@
 import 'should';
 import * as sinon from 'sinon';
 
-import Service from '../lib/service';
+import { Service } from '../lib/service';
 
 describe('service', () => {
   let mockNoble = null;

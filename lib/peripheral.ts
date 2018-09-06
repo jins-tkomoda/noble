@@ -1,6 +1,6 @@
 import * as events from 'events';
 
-export default class Peripheral extends events.EventEmitter {
+export class Peripheral extends events.EventEmitter {
   private _noble;
   private id;
   private uuid;

@@ -1,8 +1,8 @@
 import * as events from 'events';
 
-import Smp from './smp';
+import { Smp } from './smp';
 
-export default class AclStream extends events.EventEmitter {
+export class AclStream extends events.EventEmitter {
   private _hci;
   private _handle;
   private _smp;

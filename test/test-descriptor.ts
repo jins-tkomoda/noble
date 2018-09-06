@@ -1,7 +1,7 @@
 import 'should';
 import * as sinon from 'sinon';
 
-import Descriptor from '../lib/descriptor';
+import { Descriptor } from '../lib/descriptor';
 
 describe('Descriptor', () => {
   let mockNoble = null;

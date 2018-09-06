@@ -2,7 +2,7 @@ import * as events from 'events';
 
 import * as characteristics from './characteristics.json';
 
-export default class Characteristic extends events.EventEmitter {
+export class Characteristic extends events.EventEmitter {
   private _noble;
   private _peripheralId;
   private _serviceUuid;

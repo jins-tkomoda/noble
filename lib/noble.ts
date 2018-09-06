@@ -2,14 +2,14 @@ import * as events from 'events';
 
 import * as debugModule from 'debug';
 
-import Characteristic from './characteristic';
-import Descriptor from './descriptor';
-import Peripheral from './peripheral';
-import Service from './service';
+import { Characteristic } from './characteristic';
+import { Descriptor } from './descriptor';
+import { Peripheral } from './peripheral';
+import { Service } from './service';
 
 const debug = debugModule('noble');
 
-export default class Noble extends events.EventEmitter {
+export class Noble extends events.EventEmitter {
   private initialized;
   private address;
   private _bindings;

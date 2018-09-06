@@ -1,5 +1,5 @@
-import * as crypto from './crypto';
 import * as events from 'events';
+import * as crypto from './crypto';
 
 const SMP_CID = 0x0006;
 
@@ -11,7 +11,7 @@ const SMP_PAIRING_FAILED = 0x05;
 const SMP_ENCRYPT_INFO = 0x06;
 const SMP_MASTER_IDENT = 0x07;
 
-export default class Smp extends events.EventEmitter {
+export class Smp extends events.EventEmitter {
   private _aclStream;
   private _iat;
   private _ia;

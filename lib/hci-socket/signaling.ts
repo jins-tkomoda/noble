@@ -10,7 +10,7 @@ const CONNECTION_PARAMETER_UPDATE_RESPONSE = 0x13;
 
 const SIGNALING_CID = 0x0005;
 
-export default class Signaling extends events.EventEmitter {
+export class Signaling extends events.EventEmitter {
   private _handle;
   private _aclStream;
   private _useHciUserChannel;

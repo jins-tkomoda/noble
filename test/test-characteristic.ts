@@ -1,7 +1,7 @@
 import 'should';
 import * as sinon from 'sinon';
 
-import Characteristic from '../lib/characteristic';
+import { Characteristic } from '../lib/characteristic';
 
 describe('Characteristic', () => {
   let mockNoble = null;

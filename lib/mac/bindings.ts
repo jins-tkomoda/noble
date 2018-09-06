@@ -10,4 +10,4 @@ if (osRelease < 14) {
   binding = require('./highsierra');
 }
 
-export default binding;
+export const NobleBinding = binding.NobleBinding;

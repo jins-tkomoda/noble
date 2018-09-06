@@ -1,6 +1,6 @@
 import * as childProcess from 'child_process'
 
-export default function localAddress(callback) {
+export const localAddress = (callback) => {
   childProcess.exec('system_profiler SPBluetoothDataType', {}, (error, stdout, stderr) => {
     let address = null;
 

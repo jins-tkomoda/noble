@@ -3,15 +3,15 @@ import * as events from 'events';
 import * as debugModule from 'debug'
 import * as XpcConnection from 'xpc-connection';
 
-import localAddress from './local-address';
-import uuidToAddress from './uuid-to-address';
+import { localAddress } from './local-address';
+import { uuidToAddress } from './uuid-to-address';
 
 const debug = debugModule('highsierra-bindings');
 
 /**
  *  NobleBindings for mac
  */
-export default class NobleBindings extends events.EventEmitter {
+export class NobleBindings extends events.EventEmitter {
   private _peripherals;
   private _xpcConnection;
 

@@ -2,7 +2,7 @@ import * as events from 'events';
 
 import * as descriptors from './descriptors.json';
 
-export default class Descriptor extends events.EventEmitter {
+export class Descriptor extends events.EventEmitter {
   private _noble;
   private _peripheralId;
   private _serviceUuid;
