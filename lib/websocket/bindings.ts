@@ -5,7 +5,10 @@ import * as WebSocket from 'isomorphic-ws';
 
 const debug = debugModule('bindings');
 
-export class NobleBindings extends events.EventEmitter {
+import { NobleBindingsInterface } from '../bindings';
+
+
+export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
   private _ws: WebSocket;
   private _startScanCommand;
   private _peripherals;

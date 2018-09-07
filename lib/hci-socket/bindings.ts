@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import * as events from 'events';
 
+import { NobleBindingsInterface } from '../bindings';
 import { AclStream } from './acl-stream';
 import { Gap } from './gap';
 import { Gatt } from './gatt';
@@ -8,7 +9,7 @@ import { Hci } from './hci';
 import { Signaling } from './signaling';
 
 
-export class NobleBindings extends events.EventEmitter {
+export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
   private options;
   private _state;
   private _addresses;

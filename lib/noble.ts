@@ -2,17 +2,17 @@ import * as events from 'events';
 
 import * as debugModule from 'debug';
 
+import { NobleBindingsInterface } from './bindings';
 import { Characteristic } from './characteristic';
 import { Descriptor } from './descriptor';
 import { Peripheral } from './peripheral';
 import { Service } from './service';
-
 const debug = debugModule('noble');
 
 export class Noble extends events.EventEmitter {
   private initialized;
   private address;
-  private _bindings;
+  private _bindings: NobleBindingsInterface;
   private _peripherals;
   private _services;
   private _characteristics;
@@ -21,7 +21,7 @@ export class Noble extends events.EventEmitter {
   private _allowDuplicates;
   public _state;
 
-  constructor(bindings) {
+  constructor(bindings: NobleBindingsInterface) {
     super();
     this.initialized = false;
 
@@ -380,13 +380,13 @@ export class Noble extends events.EventEmitter {
     this._bindings.discoverDescriptors(peripheralUuid, serviceUuid, characteristicUuid);
   }
 
-  onDescriptorsDiscover(peripheralUuid, serviceUuid, characteristicUuid, descriptors) {
+  onDescriptorsDiscover(peripheralUuid, serviceUuid, characteristicUuid, descriptorUuids) {
     const characteristic = this._characteristics[peripheralUuid][serviceUuid][characteristicUuid];
 
     if (characteristic) {
       const descriptors_ = [];
 
-      for (const descriptorUuid of descriptors) {
+      for (const descriptorUuid of descriptorUuids) {
         const descriptor = new Descriptor(
           this,
           peripheralUuid,

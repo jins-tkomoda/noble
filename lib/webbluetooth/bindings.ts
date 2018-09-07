@@ -3,6 +3,8 @@ import * as events from 'events';
 
 import * as debugModule from 'debug';
 
+import { NobleBindingsInterface } from '../bindings';
+
 const debug = debugModule('webble-bindings');
 
 function makeList(uuid){
@@ -27,26 +29,19 @@ function stripDashes(uuid){
 }
 
 
-export class NobleBindings extends events.EventEmitter {
+export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
   private _ble;
   private _startScanCommand;
   private _peripherals;
 
-  constructor() {
+  constructor(ble?) {
     super();
-    this._ble = null;
+    this._ble = ble || navigator.bluetooth;
     this._startScanCommand = null;
     this._peripherals = {};
   }
 
-  init(ble) {
-
-    if(ble) {
-      this._ble = ble;
-    }else {
-      this._ble = navigator.bluetooth;
-    }
-
+  init() {
     process.nextTick(() => {
       debug('initing');
       if(!this._ble){
@@ -67,19 +62,11 @@ export class NobleBindings extends events.EventEmitter {
     this.emit('stateChange', 'poweredOff');
   }
 
-  startScanning(options, allowDuplicates) {
-    if(Array.isArray(options)){
-      options = {services: options};
-    }
+  startScanning(serviceUuids, allowDuplicates) {
 
-    if(typeof options !== 'object'){
-      options = {services: options};
-    }
-
-    if(!Array.isArray(options.services)){
-      options.services = [options.services];
-    }
-
+    const options: BluetoothRequestDeviceFilter = {
+      services: serviceUuids
+    };
     options.services = options.services.map((service) => {
       //web bluetooth requires 4 char hex service names to be passed in as integers
       if(typeof service === 'string' && service.length === 4){

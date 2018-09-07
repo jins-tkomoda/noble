@@ -2,7 +2,9 @@ import * as events from 'events';
 
 import * as ws from 'ws';
 
-export class NobleBindings extends events.EventEmitter {
+import { NobleBindingsInterface } from '../bindings';
+
+export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
   private _wss;
   private _startScanCommand;
   private _peripherals;
