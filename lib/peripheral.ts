@@ -1,7 +1,9 @@
 import * as events from 'events';
 
+import { Noble } from './noble';
+
 export class Peripheral extends events.EventEmitter {
-  private _noble;
+  private _noble: Noble;
   private id;
   private uuid;
   private address;
@@ -12,7 +14,7 @@ export class Peripheral extends events.EventEmitter {
   private services;
   private state;
 
-  constructor(noble, id, address, addressType, connectable, advertisement, rssi) {
+  constructor(noble: Noble, id, address, addressType, connectable, advertisement, rssi) {
     super();
     this._noble = noble;
 
