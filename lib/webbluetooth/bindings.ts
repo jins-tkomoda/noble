@@ -7,7 +7,7 @@ import { NobleBindingsInterface } from '../bindings';
 
 const debug = debugModule('webble-bindings');
 
-function makeList(uuid){
+function makeList(uuid: string){
   return {services:[ uuid ]};
 }
 
@@ -44,11 +44,12 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   init() {
     process.nextTick(() => {
       debug('initing');
-      if(!this._ble){
-        return this.emit('error', new Error('This browser does not support WebBluetooth.'));
+      if (!this._ble) {
+        this.emit('error', new Error('This browser does not support WebBluetooth.'));
+      } else {
+        debug('emit powered on');
+        this.emit('stateChange', 'poweredOn');
       }
-      debug('emit powered on');
-      this.emit('stateChange', 'poweredOn');
     });
   }
 
@@ -64,10 +65,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
   startScanning(serviceUuids: string[] = [], allowDuplicates) {
 
-    const options: BluetoothRequestDeviceFilter = {
-      services: serviceUuids
-    };
-    options.services = options.services.map((service) => {
+    const uuids = serviceUuids.map((service: string | number) => {
       //web bluetooth requires 4 char hex service names to be passed in as integers
       if(typeof service === 'string' && service.length === 4){
         service = parseInt(`0x${service}`);
@@ -78,21 +76,23 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       return service;
     });
 
-    const dashedUuids = options.services.map(addDashes);
+    const dashedUuids = uuids.map(addDashes);
 
     const filterList = dashedUuids.map(makeList);
-    if(options.name){
+    /*if(options.name){
       filterList.push({name: options.name});
     }
     if(options.namePrefix){
       filterList.push({namePrefix: options.namePrefix});
-    }
+    }*/
 
-    const request = {filters: filterList};
+    const options: RequestDeviceOptions = {
+      filters: filterList,
+    };
 
-    debug('startScanning', request, allowDuplicates);
+    debug('startScanning', options, allowDuplicates);
 
-    this._ble.requestDevice(request)
+    this._ble.requestDevice(options)
       .then((device) => {
         debug('scan finished', device);
         this.emit('scanStop', {});
@@ -100,8 +100,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
           const address = device.id;
           //TODO use device.adData when api is ready
-          //rssi = device.adData.rssi;
-
+          //const rssi = device.adData.rssi;
           this._peripherals[address] = {
             uuid: address,
             address: address,
@@ -109,13 +108,21 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
             device: device,
             cachedServices: {},
             localName: device.name,
-            serviceUuids: options.services
+            serviceUuids: dashedUuids
           };
-          if(device.adData){
-            this._peripherals[address].rssi = device.adData.rssi;
-          }
 
-          this.emit('discover', device.id, device.id, device.addressType, !device.paired, this._peripherals[address].advertisement, this._peripherals[address].rssi);
+          const rssi = 0;
+          const paired = false;
+          // const addressType = device.addressType;
+          const addressType = 'public';
+          // const paired = !device.paired
+          /*
+           if(device.adData){
+            this._peripherals[address].rssi = device.adData.rssi;
+           }
+          */
+
+          this.emit('discover', device.id, device.id, addressType, paired, this._peripherals[address].advertisement, rssi);
         }
       })
       .catch((err) => {
