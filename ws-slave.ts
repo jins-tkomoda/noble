@@ -2,6 +2,10 @@ import * as debugModule from 'debug';
 import * as WebSocket from 'ws';
 
 import * as noble from './index';
+import { Characteristic } from './lib/characteristic';
+import { Descriptor } from './lib/descriptor';
+import { Peripheral } from './lib/peripheral';
+import { Service } from './lib/service';
 
 const debug = debugModule('slave');
 
@@ -181,43 +185,43 @@ noble.on('discover', (peripheral) => {
   peripheral.on('connect', function() {
     sendEvent({
       type: 'connect',
-      peripheralUuid: this.uuid
+      peripheralUuid: peripheral.uuid
     });
   });
 
   peripheral.on('disconnect', function() {
     sendEvent({
       type: 'disconnect',
-      peripheralUuid: this.uuid
+      peripheralUuid: peripheral.uuid
     });
 
-    for (const i in this.services) {
-      for (const j in this.services[i].characteristics) {
-        for (const k in this.services[i].characteristics[j].descriptors) {
-          this.services[i].characteristics[j].descriptors[k].removeAllListeners();
+    for (const i in peripheral.services) {
+      for (const j in peripheral.services[i].characteristics) {
+        for (const k in peripheral.services[i].characteristics[j].descriptors) {
+          peripheral.services[i].characteristics[j].descriptors[k].removeAllListeners();
         }
 
-        this.services[i].characteristics[j].removeAllListeners();
+        peripheral.services[i].characteristics[j].removeAllListeners();
       }
-      this.services[i].removeAllListeners();
+      peripheral.services[i].removeAllListeners();
     }
 
-    this.removeAllListeners();
+    peripheral.removeAllListeners();
   });
 
   peripheral.on('rssiUpdate', function(rssi) {
     sendEvent({
       type: 'rssiUpdate',
-      peripheralUuid: this.uuid,
+      peripheralUuid: peripheral.uuid,
       rssi: rssi
     });
   });
 
-  peripheral.on('servicesDiscover', function(services) {
+  peripheral.on('servicesDiscover', function(this: Peripheral, services) {
     const peripheral = this;
     const serviceUuids = [];
 
-    const includedServicesDiscover = function(includedServiceUuids: string[]) {
+    const includedServicesDiscover = function(this: Service, includedServiceUuids: string[]) {
       sendEvent({
         type: 'includedServicesDiscover',
         peripheralUuid: peripheral.uuid,
@@ -226,11 +230,11 @@ noble.on('discover', (peripheral) => {
       });
     };
 
-    const characteristicsDiscover = function(characteristics) {
+    const characteristicsDiscover = function(this: Service, characteristics) {
       const service = this;
       const discoveredCharacteristics = [];
 
-      const read = function(data, isNotification) {
+      const read = function(this: Characteristic, data, isNotification) {
         const characteristic = this;
 
         sendEvent({
@@ -243,7 +247,7 @@ noble.on('discover', (peripheral) => {
         });
       };
 
-      const write = function() {
+      const write = function(this: Characteristic) {
         const characteristic = this;
 
         sendEvent({
@@ -254,7 +258,7 @@ noble.on('discover', (peripheral) => {
         });
       };
 
-      const broadcast = function(state) {
+      const broadcast = function(this: Characteristic, state) {
         const characteristic = this;
 
         sendEvent({
@@ -266,7 +270,7 @@ noble.on('discover', (peripheral) => {
         });
       };
 
-      const notify = function(state) {
+      const notify = function(this: Characteristic, state) {
         const characteristic = this;
 
         sendEvent({
@@ -278,12 +282,12 @@ noble.on('discover', (peripheral) => {
         });
       };
 
-      const descriptorsDiscover = function(descriptors) {
+      const descriptorsDiscover = function(this: Characteristic, descriptors) {
         const characteristic = this;
 
         const discoveredDescriptors = [];
 
-        const valueRead = function(data) {
+        const valueRead = function(this: Descriptor, data) {
           const descriptor = this;
 
           sendEvent({
@@ -296,7 +300,7 @@ noble.on('discover', (peripheral) => {
           });
         };
 
-        const valueWrite = function(data) {
+        const valueWrite = function(this: Descriptor, data) {
           const descriptor = this;
 
           sendEvent({
@@ -360,7 +364,7 @@ noble.on('discover', (peripheral) => {
 
     sendEvent({
       type: 'servicesDiscover',
-      peripheralUuid: this.uuid,
+      peripheralUuid: peripheral.uuid,
       serviceUuids: serviceUuids
     });
   });
@@ -368,7 +372,7 @@ noble.on('discover', (peripheral) => {
   peripheral.on('handleRead', function(handle, data) {
     sendEvent({
       type: 'handleRead',
-      peripheralUuid: this.uuid,
+      peripheralUuid: peripheral.uuid,
       handle: handle,
       data: data.toString('hex')
     });
@@ -377,7 +381,7 @@ noble.on('discover', (peripheral) => {
   peripheral.on('handleWrite', function(handle) {
     sendEvent({
       type: 'handleWrite',
-      peripheralUuid: this.uuid,
+      peripheralUuid: peripheral.uuid,
       handle: handle
     });
   });
@@ -385,7 +389,7 @@ noble.on('discover', (peripheral) => {
   peripheral.on('handleNotify', function(handle, data) {
     sendEvent({
       type: 'handleNotify',
-      peripheralUuid: this.uuid,
+      peripheralUuid: peripheral.uuid,
       handle: handle,
       data: data.toString('hex')
     });

@@ -28,18 +28,18 @@ noble.on('discover', (peripheral) => {
 
   noble.stopScanning();
 
-  peripheral.on('connect', function() {
+  peripheral.on('connect', () => {
     console.log('on -> connect');
-    this.updateRssi();
+    peripheral.updateRssi();
   });
 
   peripheral.on('disconnect', () => {
     console.log('on -> disconnect');
   });
 
-  peripheral.on('rssiUpdate', function(rssi) {
+  peripheral.on('rssiUpdate', (rssi) => {
     console.log(`on -> RSSI update ${rssi}`);
-    this.discoverServices();
+    peripheral.discoverServices();
   });
 
   peripheral.on('servicesDiscover', (services) => {
@@ -47,9 +47,9 @@ noble.on('discover', (peripheral) => {
 
     const serviceIndex = 0;
 
-    services[serviceIndex].on('includedServicesDiscover', function(includedServiceUuids: string[]) {
+    services[serviceIndex].on('includedServicesDiscover', (includedServiceUuids: string[]) => {
       console.log(`on -> service included services discovered ${includedServiceUuids}`);
-      this.discoverCharacteristics();
+      services[serviceIndex].discoverCharacteristics();
     });
 
     services[serviceIndex].on('characteristicsDiscover', (characteristics) => {
