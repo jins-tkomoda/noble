@@ -6,7 +6,6 @@ import { Service } from './service';
 export class Peripheral extends events.EventEmitter {
   private _noble: Noble;
   private id: string;
-  private uuid: string;
   private address: string;
   private addressType;
   private connectable;
@@ -14,6 +13,7 @@ export class Peripheral extends events.EventEmitter {
   private rssi;
   private state;
 
+  public uuid: string;
   public services: Service[];
 
   constructor(noble: Noble, id: string, address: string, addressType, connectable, advertisement, rssi) {

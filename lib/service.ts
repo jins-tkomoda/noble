@@ -8,11 +8,11 @@ import * as services from './services.json';
 export class Service extends events.EventEmitter {
   private _noble: Noble;
   private _peripheralId: string;
-  private uuid: string;
   private name;
   private type;
   private includedServiceUuids: string[];
 
+  public uuid: string;k
   public characteristics: Characteristic[];
 
   constructor(noble: Noble, peripheralId: string, uuid: string) {

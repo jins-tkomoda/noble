@@ -9,9 +9,10 @@ export class Descriptor extends events.EventEmitter {
   private _peripheralId: string;
   private _serviceUuid: string;
   private _characteristicUuid: string;
-  private uuid: string;
   private name;
   private type;
+
+  public uuid: string;
 
   constructor(noble: Noble, peripheralId: string, serviceUuid: string, characteristicUuid: string, uuid: string) {
     super();
