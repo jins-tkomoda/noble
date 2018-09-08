@@ -10,8 +10,8 @@ const port = 0xB1e;
 const host = process.argv[2];
 
 
-let ws;
-let wss;
+let ws: WebSocket;
+let wss: WebSocket.Server;
 
 
 if (serverMode) {
@@ -20,7 +20,7 @@ if (serverMode) {
     port: 0xB1e
   });
 
-  wss.on('connection', (ws_) => {
+  wss.on('connection', (ws_: WebSocket) => {
     debug('ws -> connection');
 
     ws = ws_;

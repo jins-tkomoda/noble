@@ -1,6 +1,8 @@
 import * as events from 'events';
 import * as crypto from './crypto';
 
+import { AclStream } from './acl-stream';
+
 const SMP_CID = 0x0006;
 
 const SMP_PAIRING_REQUEST = 0x01;
@@ -12,7 +14,7 @@ const SMP_ENCRYPT_INFO = 0x06;
 const SMP_MASTER_IDENT = 0x07;
 
 export class Smp extends events.EventEmitter {
-  private _aclStream;
+  private _aclStream: AclStream;
   private _iat;
   private _ia;
   private _r;
@@ -25,7 +27,7 @@ export class Smp extends events.EventEmitter {
   private onAclStreamDataBinded;
   private onAclStreamEndBinded;
 
-  constructor(aclStream, localAddressType, localAddress: string, remoteAddressType, remoteAddress: string) {
+  constructor(aclStream: AclStream, localAddressType, localAddress: string, remoteAddressType, remoteAddress: string) {
     super();
     this._aclStream = aclStream;
 

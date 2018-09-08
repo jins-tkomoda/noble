@@ -77,18 +77,19 @@ const LE_START_ENCRYPTION_CMD = OCF_LE_START_ENCRYPTION | OGF_LE_CTL << 10;
 const HCI_OE_USER_ENDED_CONNECTION = 0x13;
 
 export class Hci extends events.EventEmitter {
-  private _socket;
+  private _socket: BluetoothHciSocket;
   private _isDevUp;
   private _state;
   private _deviceId;
-  private address!: string;
-  private addressType;
   private _useUserChannel
   private _aclMtu;
   private _aclMaxInProgress;
   private _handleAclsInProgress;
   private _aclOutQueue;
   private _handleBuffers;
+
+  public address!: string;
+  public addressType;
   public STATUS_MAPPER;
 
   constructor(deviceId = 0, useUserChannel = false) {
@@ -397,10 +398,8 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  disconnect(handle, reason) {
+  disconnect(handle, reason: number = HCI_OE_USER_ENDED_CONNECTION) {
     const cmd = Buffer.alloc(7);
-
-    reason = reason || HCI_OE_USER_ENDED_CONNECTION;
 
     // header
     cmd.writeUInt8(HCI_COMMAND_PKT, 0);

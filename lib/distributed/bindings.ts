@@ -5,7 +5,7 @@ import * as ws from 'ws';
 import { NobleBindingsInterface } from '../bindings';
 
 export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
-  private _wss;
+  private _wss: ws.Server;
   private _startScanCommand;
   private _peripherals;
 

@@ -1,6 +1,7 @@
 import * as events from 'events';
 
 import { Noble } from './noble';
+import { Characteristic }  from './characteristic';
 
 import * as services from './services.json';
 
@@ -11,7 +12,8 @@ export class Service extends events.EventEmitter {
   private name;
   private type;
   private includedServiceUuids: string[];
-  private characteristics;
+
+  public characteristics: Characteristic[];
 
   constructor(noble: Noble, peripheralId: string, uuid: string) {
     super();
@@ -22,7 +24,7 @@ export class Service extends events.EventEmitter {
     this.name = null;
     this.type = null;
     this.includedServiceUuids = null;
-    this.characteristics = null;
+    this.characteristics = [];
 
     const service = services[uuid];
     if (service) {

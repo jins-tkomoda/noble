@@ -3,6 +3,8 @@ import * as events from 'events';
 import * as debugModule from 'debug';
 const debug = debugModule('att');
 
+import { AclStream } from './acl-stream';
+
 const ATT_OP_ERROR                    = 0x01;
 const ATT_OP_MTU_REQ                  = 0x02;
 const ATT_OP_MTU_RESP                 = 0x03;
@@ -65,7 +67,7 @@ const ATT_CID = 0x0004;
 
 export class Gatt extends events.EventEmitter {
   private _address;
-  private _aclStream;
+  private _aclStream: AclStream;
   private _isMultiRole;
   private _services;
   private _characteristics;
@@ -79,7 +81,7 @@ export class Gatt extends events.EventEmitter {
   private onAclStreamEncryptFailBinded;
   private onAclStreamEndBinded;
 
-  constructor(address, aclStream, isMultiRole = false) {
+  constructor(address, aclStream: AclStream, isMultiRole = false) {
     super();
     this._address = address;
     this._aclStream = aclStream;

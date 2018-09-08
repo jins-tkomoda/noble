@@ -1,16 +1,17 @@
 import * as events from 'events';
 
+import { Hci } from './hci';
 import { Smp } from './smp';
 
 export class AclStream extends events.EventEmitter {
-  private _hci;
+  private _hci: Hci;
   private _handle;
-  private _smp;
+  private _smp: Smp;
   private onSmpStkBinded;
   private onSmpFailBinded;
   private onSmpEndBinded;
 
-  constructor(hci, handle, localAddressType, localAddress: string, remoteAddressType, remoteAddress: string) {
+  constructor(hci: Hci, handle, localAddressType, localAddress: string, remoteAddressType, remoteAddress: string) {
     super();
     this._hci = hci;
     this._handle = handle;

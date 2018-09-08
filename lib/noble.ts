@@ -7,6 +7,7 @@ import { Characteristic } from './characteristic';
 import { Descriptor } from './descriptor';
 import { Peripheral } from './peripheral';
 import { Service } from './service';
+
 const debug = debugModule('noble');
 
 export class Noble extends events.EventEmitter {

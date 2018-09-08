@@ -3,17 +3,19 @@ import * as os from 'os';
 
 import * as debugModule from 'debug';
 
+import { Hci } from './hci';
+
 const debug = debugModule('gap');
 const isChip = (os.platform() === 'linux') && (os.release().includes('-ntc'));
 
 export class Gap extends events.EventEmitter {
-  private _hci;
+  private _hci: Hci;
   private _hciReportAllEvents;
   private _scanState;
   private _scanFilterDuplicates;
   private _discoveries;
 
-  constructor(hci, hciReportAllEvents = false) {
+  constructor(hci: Hci, hciReportAllEvents = false) {
     super();
     this._hci = hci;
     this._hciReportAllEvents = hciReportAllEvents;

@@ -14,7 +14,7 @@ const debug = debugModule('highsierra-bindings');
  */
 export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
   private _peripherals;
-  private _xpcConnection;
+  private _xpcConnection: XpcConnection;
 
   constructor() {
     super();

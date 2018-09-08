@@ -1,6 +1,7 @@
 import * as events from 'events';
 
 import { Noble } from './noble';
+import { Descriptor } from './descriptor';
 
 import * as characteristics from './characteristics.json';
 
@@ -12,7 +13,7 @@ export class Characteristic extends events.EventEmitter {
   private name;
   private type;
   private properties;
-  private descriptors;
+  public descriptors: Descriptor[];
 
   constructor(noble: Noble, peripheralId: string, serviceUuid: string, uuid: string, properties) {
     super();

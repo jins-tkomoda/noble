@@ -3,6 +3,8 @@ import * as os from 'os';
 
 import * as debugModule from 'debug';
 
+import { AclStream } from './acl-stream';
+
 const debug = debugModule('signaling');
 
 const CONNECTION_PARAMETER_UPDATE_REQUEST  = 0x12;
@@ -12,12 +14,12 @@ const SIGNALING_CID = 0x0005;
 
 export class Signaling extends events.EventEmitter {
   private _handle;
-  private _aclStream;
+  private _aclStream: AclStream;
   private _useHciUserChannel;
   private onAclStreamDataBinded;
   private onAclStreamEndBinded;
 
-  constructor(handle, aclStream, useHciUserChannel = false) {
+  constructor(handle, aclStream: AclStream, useHciUserChannel = false) {
     super();
     this._handle = handle;
     this._aclStream = aclStream;
