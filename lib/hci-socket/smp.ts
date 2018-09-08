@@ -25,7 +25,7 @@ export class Smp extends events.EventEmitter {
   private onAclStreamDataBinded;
   private onAclStreamEndBinded;
 
-  constructor(aclStream, localAddressType, localAddress, remoteAddressType, remoteAddress) {
+  constructor(aclStream, localAddressType, localAddress: string, remoteAddressType, remoteAddress: string) {
     super();
     this._aclStream = aclStream;
 

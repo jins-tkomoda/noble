@@ -81,7 +81,7 @@ export class Hci extends events.EventEmitter {
   private _isDevUp;
   private _state;
   private _deviceId;
-  private address;
+  private address!: string;
   private addressType;
   private _useUserChannel
   private _aclMtu;
@@ -323,7 +323,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  createLeConn(address, addressType) {
+  createLeConn(address: string, addressType) {
     const cmd = Buffer.alloc(29);
 
     // header

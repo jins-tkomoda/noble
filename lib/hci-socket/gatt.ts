@@ -353,7 +353,7 @@ export class Gatt extends events.EventEmitter {
     });
   }
 
-  discoverServices(uuids) {
+  discoverServices(uuids: string[]) {
     const services = [];
 
     const callback = (data) => {
@@ -390,7 +390,7 @@ export class Gatt extends events.EventEmitter {
     this._queueCommand(this.readByGroupRequest(0x0001, 0xffff, GATT_PRIM_SVC_UUID), callback);
   }
 
-  discoverIncludedServices(serviceUuid, uuids) {
+  discoverIncludedServices(serviceUuid: string, uuids: string[]) {
     const service = this._services[serviceUuid];
     const includedServices = [];
 
@@ -429,7 +429,7 @@ export class Gatt extends events.EventEmitter {
     this._queueCommand(this.readByTypeRequest(service.startHandle, service.endHandle, GATT_INCLUDE_UUID), callback);
   }
 
-  discoverCharacteristics(serviceUuid, characteristicUuids) {
+  discoverCharacteristics(serviceUuid: string, characteristicUuids: string[]) {
     const service = this._services[serviceUuid];
     const characteristics = [];
 
@@ -520,7 +520,7 @@ export class Gatt extends events.EventEmitter {
     this._queueCommand(this.readByTypeRequest(service.startHandle, service.endHandle, GATT_CHARAC_UUID), callback);
   }
 
-  read(serviceUuid, characteristicUuid) {
+  read(serviceUuid: string, characteristicUuid: string) {
     const characteristic = this._characteristics[serviceUuid][characteristicUuid];
 
     let readData = Buffer.alloc(0);
@@ -544,7 +544,7 @@ export class Gatt extends events.EventEmitter {
     this._queueCommand(this.readRequest(characteristic.valueHandle), callback);
   }
 
-  write(serviceUuid, characteristicUuid, data, withoutResponse) {
+  write(serviceUuid: string, characteristicUuid: string, data, withoutResponse) {
     const characteristic = this._characteristics[serviceUuid][characteristicUuid];
 
     if (withoutResponse) {
@@ -565,7 +565,7 @@ export class Gatt extends events.EventEmitter {
   }
 
   /* Perform a "long write" as described Bluetooth Spec section 4.9.4 "Write Long Characteristic Values" */
-  longWrite(serviceUuid, characteristicUuid, data, withoutResponse) {
+  longWrite(serviceUuid: string, characteristicUuid: string, data, withoutResponse) {
     const characteristic = this._characteristics[serviceUuid][characteristicUuid];
     const limit = this._mtu - 5;
 
@@ -606,7 +606,7 @@ export class Gatt extends events.EventEmitter {
     });
   }
 
-  broadcast(serviceUuid, characteristicUuid, broadcast) {
+  broadcast(serviceUuid: string, characteristicUuid: string, broadcast) {
     const characteristic = this._characteristics[serviceUuid][characteristicUuid];
 
     this._queueCommand(this.readByTypeRequest(characteristic.startHandle, characteristic.endHandle, GATT_SERVER_CHARAC_CFG_UUID), (data) => {
@@ -635,7 +635,7 @@ export class Gatt extends events.EventEmitter {
     });
   }
 
-  notify(serviceUuid, characteristicUuid, notify) {
+  notify(serviceUuid: string, characteristicUuid: string, notify) {
     const characteristic = this._characteristics[serviceUuid][characteristicUuid];
 
     this._queueCommand(this.readByTypeRequest(characteristic.startHandle, characteristic.endHandle, GATT_CLIENT_CHARAC_CFG_UUID), (data) => {
@@ -675,7 +675,7 @@ export class Gatt extends events.EventEmitter {
     });
   }
 
-  discoverDescriptors(serviceUuid, characteristicUuid) {
+  discoverDescriptors(serviceUuid: string, characteristicUuid: string) {
     const characteristic = this._characteristics[serviceUuid][characteristicUuid];
     const descriptors = [];
 
@@ -712,7 +712,7 @@ export class Gatt extends events.EventEmitter {
     this._queueCommand(this.findInfoRequest(characteristic.valueHandle + 1, characteristic.endHandle), callback);
   }
 
-  readValue(serviceUuid, characteristicUuid, descriptorUuid) {
+  readValue(serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
     const descriptor = this._descriptors[serviceUuid][characteristicUuid][descriptorUuid];
 
     this._queueCommand(this.readRequest(descriptor.handle), (data) => {
@@ -724,7 +724,7 @@ export class Gatt extends events.EventEmitter {
     });
   }
 
-  writeValue(serviceUuid, characteristicUuid, descriptorUuid, data) {
+  writeValue(serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data) {
     const descriptor = this._descriptors[serviceUuid][characteristicUuid][descriptorUuid];
 
     this._queueCommand(this.writeRequest(descriptor.handle, data, false), (data) => {

@@ -6,14 +6,14 @@ import * as services from './services.json';
 
 export class Service extends events.EventEmitter {
   private _noble: Noble;
-  private _peripheralId;
-  private uuid;
+  private _peripheralId: string;
+  private uuid: string;
   private name;
   private type;
-  private includedServiceUuids;
+  private includedServiceUuids: string[];
   private characteristics;
 
-  constructor(noble: Noble, peripheralId, uuid) {
+  constructor(noble: Noble, peripheralId: string, uuid: string) {
     super();
     this._noble = noble;
     this._peripheralId = peripheralId;
@@ -40,7 +40,7 @@ export class Service extends events.EventEmitter {
     });
   }
 
-  discoverIncludedServices(serviceUuids, callback) {
+  discoverIncludedServices(serviceUuids: string[], callback) {
     const promise = new Promise((resolve, reject) => {
       this.once('includedServicesDiscover', resolve);
 
@@ -58,7 +58,7 @@ export class Service extends events.EventEmitter {
     return promise;
   }
 
-  discoverCharacteristics(characteristicUuids, callback) {
+  discoverCharacteristics(characteristicUuids: string[] = [], callback) {
     const promise = new Promise((resolve, reject) => {
       this.once('characteristicsDiscover', resolve);
 

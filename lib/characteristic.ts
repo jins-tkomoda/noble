@@ -6,15 +6,15 @@ import * as characteristics from './characteristics.json';
 
 export class Characteristic extends events.EventEmitter {
   private _noble: Noble;
-  private _peripheralId;
-  private _serviceUuid;
-  private uuid;
+  private _peripheralId: string;
+  private _serviceUuid: string;
+  private uuid: string;
   private name;
   private type;
   private properties;
   private descriptors;
 
-  constructor(noble: Noble, peripheralId, serviceUuid, uuid, properties) {
+  constructor(noble: Noble, peripheralId: string, serviceUuid: string, uuid: string, properties) {
     super();
     this._noble = noble;
     this._peripheralId = peripheralId;

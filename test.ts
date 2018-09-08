@@ -47,7 +47,7 @@ noble.on('discover', (peripheral) => {
 
     const serviceIndex = 0;
 
-    services[serviceIndex].on('includedServicesDiscover', function(includedServiceUuids) {
+    services[serviceIndex].on('includedServicesDiscover', function(includedServiceUuids: string[]) {
       console.log(`on -> service included services discovered ${includedServiceUuids}`);
       this.discoverCharacteristics();
     });

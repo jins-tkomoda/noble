@@ -1,6 +1,6 @@
 import * as bplist from 'bplist-parser'
 
-export const uuidToAddress = (uuid, callback) => {
+export const uuidToAddress = (uuid: string, callback?: (error: Error | null, address?: string) => void) => {
   bplist.parseFile('/Library/Preferences/com.apple.Bluetooth.plist', (err, obj) => {
     if (err) {
       return callback(err);

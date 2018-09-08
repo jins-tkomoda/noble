@@ -11,7 +11,7 @@ export interface NobleBindingsInterface {
   connect(peripheralUuid: string): void;
   disconnect(peripheralUuid: string): void;
   updateRssi(peripheralUuid: string): void;
-  discoverServices(peripheralUuid: string, uuids: string[]): void;
+  discoverServices(peripheralUuid: string, serviceUuids: string[]): void;
   discoverIncludedServices(peripheralUuid: string, serviceUuid: string, serviceUuids: string[]): void;
   discoverCharacteristics(peripheralUuid: string, serviceUuid: string, characteristicUuids: string[]): void;
   discoverDescriptors(peripheralUuid: string, serviceUuid: string, characteristicUuid: string): void;

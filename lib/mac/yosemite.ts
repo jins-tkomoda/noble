@@ -34,7 +34,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this._xpcConnection.setup();
     this.setupListeners();
 
-    localAddress((address) => {
+    localAddress((address: string | null) => {
       if (address) {
         this.emit('addressChange', address);
       }
@@ -65,7 +65,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  startScanning(serviceUuids, allowDuplicates) {
+  startScanning(serviceUuids: string[] = [], allowDuplicates) {
     const args = {
       kCBMsgArgOptions: { kCBScanOptionAllowDuplicates: allowDuplicates ? 1 : 0 },
       kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex'))
@@ -91,7 +91,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  connect(deviceUuid) {
+  connect(deviceUuid: string) {
     this.sendCBMsg(31, {
       kCBMsgArgOptions: {
         kCBConnectOptionNotifyOnDisconnection: 1
@@ -107,7 +107,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  disconnect(deviceUuid) {
+  disconnect(deviceUuid: string) {
     this.sendCBMsg(32, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid
     });
@@ -118,7 +118,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  updateRssi(deviceUuid) {
+  updateRssi(deviceUuid: string) {
     this.sendCBMsg(44, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid
     });
@@ -132,10 +132,10 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  discoverServices(deviceUuid, uuids) {
+  discoverServices(deviceUuid: string, serviceUuids: string[] = []) {
     const args = {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
-      kCBMsgArgUUIDs: uuids.map(uuid => Buffer.from(uuid, 'hex'))
+      kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex'))
     };
 
     this.sendCBMsg(45, args);
@@ -150,7 +150,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @dicussion tested
    */
-  discoverIncludedServices(deviceUuid, serviceUuid, serviceUuids) {
+  discoverIncludedServices(deviceUuid: string, serviceUuid: string, serviceUuids: string[] = []) {
     const args = {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgServiceStartHandle: this._peripherals[deviceUuid].services[serviceUuid].startHandle,
@@ -170,7 +170,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  discoverCharacteristics(deviceUuid, serviceUuid, characteristicUuids) {
+  discoverCharacteristics(deviceUuid: string, serviceUuid: string, characteristicUuids: string[] = []) {
     const args = {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgServiceStartHandle: this._peripherals[deviceUuid].services[serviceUuid].startHandle,
@@ -190,7 +190,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  read(deviceUuid, serviceUuid, characteristicUuid) {
+  read(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
     this.sendCBMsg(65 , {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
@@ -208,7 +208,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  write(deviceUuid, serviceUuid, characteristicUuid, data, withoutResponse) {
+  write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data, withoutResponse) {
     this.sendCBMsg(66, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
@@ -232,7 +232,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion The ids were incemented but there seems to be no CoreBluetooth function to call/verify this.
    */
-  broadcast(deviceUuid, serviceUuid, characteristicUuid, broadcast) {
+  broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast) {
     this.sendCBMsg(67, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
@@ -251,7 +251,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  notify(deviceUuid, serviceUuid, characteristicUuid, notify) {
+  notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify) {
     this.sendCBMsg(68, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
@@ -269,7 +269,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  discoverDescriptors(deviceUuid, serviceUuid, characteristicUuid) {
+  discoverDescriptors(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
     this.sendCBMsg(70, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
@@ -287,7 +287,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  readValue(deviceUuid, serviceUuid, characteristicUuid, descriptorUuid) {
+  readValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
     this.sendCBMsg(77, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgDescriptorHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].descriptors[descriptorUuid].handle
@@ -305,7 +305,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  writeValue(deviceUuid, serviceUuid, characteristicUuid, descriptorUuid, data) {
+  writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data) {
     this.sendCBMsg(78, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgDescriptorHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].descriptors[descriptorUuid].handle,
@@ -321,7 +321,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  readHandle(deviceUuid, handle) {
+  readHandle(deviceUuid: string, handle) {
     this.sendCBMsg(77, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgDescriptorHandle: handle
@@ -338,7 +338,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  writeHandle(deviceUuid, handle, data, withoutResponse) {
+  writeHandle(deviceUuid: string, handle, data, withoutResponse) {
     // TODO: use without response
     this.sendCBMsg(78, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
@@ -436,7 +436,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       this._peripherals[deviceUuid].advertisement = advertisement;
       this._peripherals[deviceUuid].rssi = rssi;
 
-      ((deviceUuid, advertisement, rssi) => {
+      ((deviceUuid: string, advertisement, rssi) => {
         uuidToAddress(deviceUuid, (error, address = 'unknown', addressType = 'unknown') => {
           this._peripherals[deviceUuid].address = address;
           this._peripherals[deviceUuid].addressType = addressType;

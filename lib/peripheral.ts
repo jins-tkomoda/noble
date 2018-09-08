@@ -4,9 +4,9 @@ import { Noble } from './noble';
 
 export class Peripheral extends events.EventEmitter {
   private _noble: Noble;
-  private id;
-  private uuid;
-  private address;
+  private id: string;
+  private uuid: string;
+  private address: string;
   private addressType;
   private connectable;
   private advertisement;
@@ -14,7 +14,7 @@ export class Peripheral extends events.EventEmitter {
   private services;
   private state;
 
-  constructor(noble: Noble, id, address, addressType, connectable, advertisement, rssi) {
+  constructor(noble: Noble, id: string, address: string, addressType, connectable, advertisement, rssi) {
     super();
     this._noble = noble;
 
@@ -99,7 +99,7 @@ export class Peripheral extends events.EventEmitter {
     return promise;
   }
 
-  discoverServices(uuids, callback) {
+  discoverServices(uuids: string[] = [], callback) {
     const promise = new Promise((resolve, reject) => {
       this.once('servicesDiscover', (services) => {
         resolve(services);
@@ -115,7 +115,7 @@ export class Peripheral extends events.EventEmitter {
     return promise;
   }
 
-  discoverSomeServicesAndCharacteristics(serviceUuids, characteristicsUuids, callback) {
+  discoverSomeServicesAndCharacteristics(serviceUuids: string[] = [], characteristicsUuids: string[], callback) {
     const promise = new Promise((resolve, reject) => {
       this.discoverServices(serviceUuids, (err, services) => {
         let numDiscovered = 0;

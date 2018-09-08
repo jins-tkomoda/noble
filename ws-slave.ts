@@ -217,7 +217,7 @@ noble.on('discover', (peripheral) => {
     const peripheral = this;
     const serviceUuids = [];
 
-    const includedServicesDiscover = function(includedServiceUuids) {
+    const includedServicesDiscover = function(includedServiceUuids: string[]) {
       sendEvent({
         type: 'includedServicesDiscover',
         peripheralUuid: peripheral.uuid,

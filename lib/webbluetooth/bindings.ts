@@ -62,7 +62,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('stateChange', 'poweredOff');
   }
 
-  startScanning(serviceUuids, allowDuplicates) {
+  startScanning(serviceUuids: string[] = [], allowDuplicates) {
 
     const options: BluetoothRequestDeviceFilter = {
       services: serviceUuids
@@ -134,7 +134,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('scanStop');
   }
 
-  connect(deviceUuid) {
+  connect(deviceUuid: string) {
     debug('connect', deviceUuid);
     const peripheral = this._peripherals[deviceUuid];
     //clear any cached services in case this is a reconnect
@@ -159,7 +159,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
   }
 
-  disconnect(deviceUuid) {
+  disconnect(deviceUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
     if(peripheral.device.gatt){
       peripheral.device.gatt.disconnect();
@@ -167,14 +167,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  updateRssi(deviceUuid) {
+  updateRssi(deviceUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO: need web api completed for this to work
     // this.emit('rssiUpdate', deviceUuid, rssi);
   }
 
-  discoverServices(deviceUuid, uuids) {
+  discoverServices(deviceUuid: string, serviceUuids: string[] = []) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO: need web api completed for this to work
@@ -184,14 +184,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
   }
 
-  discoverIncludedServices(deviceUuid, serviceUuid, serviceUuids) {
+  discoverIncludedServices(deviceUuid: string, serviceUuid: string, serviceUuids: string[]) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('includedServicesDiscover', deviceUuid, serviceUuid, includedServiceUuids);
   }
 
-  discoverCharacteristics(deviceUuid, serviceUuid, characteristicUuids) {
+  discoverCharacteristics(deviceUuid: string, serviceUuid: string, characteristicUuids: string[]) {
     const peripheral = this._peripherals[deviceUuid];
 
     if(peripheral){
@@ -247,7 +247,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       });
   }
 
-  read(deviceUuid, serviceUuid, characteristicUuid) {
+  read(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
     debug('read', deviceUuid, serviceUuid, characteristicUuid);
 
@@ -267,7 +267,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       });
   }
 
-  write(deviceUuid, serviceUuid, characteristicUuid, data, withoutResponse) {
+  write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data, withoutResponse) {
     const peripheral = this._peripherals[deviceUuid];
     debug('write', deviceUuid, serviceUuid, characteristicUuid, data, withoutResponse);
 
@@ -288,14 +288,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
   }
 
-  broadcast(deviceUuid, serviceUuid, characteristicUuid, broadcast) {
+  broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('broadcast', deviceUuid, serviceUuid, characteristicUuid, state);
   }
 
-  notify(deviceUuid, serviceUuid, characteristicUuid, notify) {
+  notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify) {
     const peripheral = this._peripherals[deviceUuid];
 
     const charPromise = this.getPrimaryService(peripheral, serviceUuid)
@@ -352,35 +352,35 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
   }
 
-  discoverDescriptors(deviceUuid, serviceUuid, characteristicUuid) {
+  discoverDescriptors(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('descriptorsDiscover', deviceUuid, serviceUuid, characteristicUuid, descriptors);
   }
 
-  readValue(deviceUuid, serviceUuid, characteristicUuid, descriptorUuid) {
+  readValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('valueRead', deviceUuid, serviceUuid, characteristicUuid, descriptorUuid, data);
   }
 
-  writeValue(deviceUuid, serviceUuid, characteristicUuid, descriptorUuid, data) {
+  writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('valueWrite', deviceUuid, serviceUuid, characteristicUuid, descriptorUuid);
   }
 
-  readHandle(deviceUuid, handle) {
+  readHandle(deviceUuid: string, handle) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('handleRead', deviceUuid, handle, data);
   }
 
-  writeHandle(deviceUuid, handle, data, withoutResponse) {
+  writeHandle(deviceUuid: string, handle, data, withoutResponse) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response

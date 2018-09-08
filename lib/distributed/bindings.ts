@@ -136,7 +136,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     clients.forEach(client => client.send(message));
   }
 
-  startScanning(serviceUuids, allowDuplicates) {
+  startScanning(serviceUuids: string[] = [], allowDuplicates) {
     this._startScanCommand = {
       action: 'startScanning',
       serviceUuids: serviceUuids,
@@ -158,7 +158,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('scanStop');
   }
 
-  connect(deviceUuid) {
+  connect(deviceUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -167,7 +167,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  disconnect(deviceUuid) {
+  disconnect(deviceUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -176,7 +176,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  updateRssi(deviceUuid) {
+  updateRssi(deviceUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -185,17 +185,17 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  discoverServices(deviceUuid, uuids) {
+  discoverServices(deviceUuid: string, serviceUuids: string[] = []) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
       action: 'discoverServices',
       peripheralUuid: peripheral.uuid,
-      uuids: uuids
+      uuids: serviceUuids
     });
   }
 
-  discoverIncludedServices(deviceUuid, serviceUuid, serviceUuids) {
+  discoverIncludedServices(deviceUuid: string, serviceUuid: string, serviceUuids: string[]) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -206,7 +206,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  discoverCharacteristics(deviceUuid, serviceUuid, characteristicUuids) {
+  discoverCharacteristics(deviceUuid: string, serviceUuid: string, characteristicUuids: string[]) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -217,7 +217,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  read(deviceUuid, serviceUuid, characteristicUuid) {
+  read(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -228,7 +228,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  write(deviceUuid, serviceUuid, characteristicUuid, data, withoutResponse) {
+  write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data, withoutResponse) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -241,7 +241,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  broadcast(deviceUuid, serviceUuid, characteristicUuid, broadcast) {
+  broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -253,7 +253,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  notify(deviceUuid, serviceUuid, characteristicUuid, notify) {
+  notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -265,7 +265,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  discoverDescriptors(deviceUuid, serviceUuid, characteristicUuid) {
+  discoverDescriptors(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -276,7 +276,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  readValue(deviceUuid, serviceUuid, characteristicUuid, descriptorUuid) {
+  readValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -288,7 +288,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  writeValue(deviceUuid, serviceUuid, characteristicUuid, descriptorUuid, data) {
+  writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -301,7 +301,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  readHandle(deviceUuid, handle) {
+  readHandle(deviceUuid: string, handle) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
@@ -311,7 +311,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  writeHandle(deviceUuid, handle, data, withoutResponse) {
+  writeHandle(deviceUuid: string, handle, data, withoutResponse) {
     const peripheral = this._peripherals[deviceUuid];
 
     this._sendCommand(peripheral.ws, {
