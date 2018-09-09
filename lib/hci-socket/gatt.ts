@@ -389,7 +389,7 @@ export class Gatt extends events.EventEmitter {
           services.push({
             startHandle: data.readUInt16LE(2 + i * type + 0),
             endHandle: data.readUInt16LE(2 + i * type + 2),
-            uuid: (type === 6) ? data.readUInt16LE(2 + i * type + 4).toString(16) : data.slice(2 + i * type + 4).slice(0, 16).toString('hex').match(/.{1,2}/g).reverse().join('')
+            uuid: (type === 6) ? data.readUInt16LE(2 + i * type + 4).toString(16) : data.slice(2 + i * type + 4).slice(0, 16).toString('hex').match(/.{1,2}/g)!.reverse().join('')
           });
         }
       }
@@ -428,7 +428,7 @@ export class Gatt extends events.EventEmitter {
           includedServices.push({
             endHandle: data.readUInt16LE(2 + i * type + 0),
             startHandle: data.readUInt16LE(2 + i * type + 2),
-            uuid: (type === 8) ? data.readUInt16LE(2 + i * type + 6).toString(16) : data.slice(2 + i * type + 6).slice(0, 16).toString('hex').match(/.{1,2}/g).reverse().join('')
+            uuid: (type === 8) ? data.readUInt16LE(2 + i * type + 6).toString(16) : data.slice(2 + i * type + 6).slice(0, 16).toString('hex').match(/.{1,2}/g)!.reverse().join('')
           });
         }
       }
@@ -471,7 +471,7 @@ export class Gatt extends events.EventEmitter {
             endHandle: 0,
             properties: shared.propertyBitstoPropertyNames(data.readUInt8(2 + i * type + 2)),
             valueHandle: data.readUInt16LE(2 + i * type + 3),
-            uuid: (type === 7) ? data.readUInt16LE(2 + i * type + 5).toString(16) : data.slice(2 + i * type + 5).slice(0, 16).toString('hex').match(/.{1,2}/g).reverse().join('')
+            uuid: (type === 7) ? data.readUInt16LE(2 + i * type + 5).toString(16) : data.slice(2 + i * type + 5).slice(0, 16).toString('hex').match(/.{1,2}/g)!.reverse().join('')
           });
         }
       }

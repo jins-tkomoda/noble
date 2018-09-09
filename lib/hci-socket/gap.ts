@@ -164,7 +164,7 @@ export class Gap extends events.EventEmitter {
         case 0x06: // Incomplete List of 128-bit Service Class UUIDs
         case 0x07: { // Complete List of 128-bit Service Class UUIDs
           for (let j = 0; j < bytes.length; j += 16) {
-            serviceUuid = bytes.slice(j, j + 16).toString('hex').match(/.{1,2}/g).reverse().join('');
+            serviceUuid = bytes.slice(j, j + 16).toString('hex').match(/.{1,2}/g)!.reverse().join('');
             if (!advertisement.serviceUuids.includes(serviceUuid)) {
               advertisement.serviceUuids.push(serviceUuid);
             }
@@ -191,7 +191,7 @@ export class Gap extends events.EventEmitter {
         }
         case 0x15: { // List of 128 bit solicitation UUIDs
           for (let j = 0; j < bytes.length; j += 16) {
-            serviceSolicitationUuid = bytes.slice(j, j + 16).toString('hex').match(/.{1,2}/g).reverse().join('');
+            serviceSolicitationUuid = bytes.slice(j, j + 16).toString('hex').match(/.{1,2}/g)!.reverse().join('');
             if (!advertisement.serviceSolicitationUuids.includes(serviceSolicitationUuid)) {
               advertisement.serviceSolicitationUuids.push(serviceSolicitationUuid);
             }
@@ -199,7 +199,7 @@ export class Gap extends events.EventEmitter {
           break;
         }
         case 0x16: { // 16-bit Service Data, there can be multiple occurences
-          const serviceDataUuid = bytes.slice(0, 2).toString('hex').match(/.{1,2}/g).reverse().join('');
+          const serviceDataUuid = bytes.slice(0, 2).toString('hex').match(/.{1,2}/g)!.reverse().join('');
           const serviceData = bytes.slice(2, bytes.length);
 
           advertisement.serviceData.push({
@@ -209,7 +209,7 @@ export class Gap extends events.EventEmitter {
           break;
         }
         case 0x20: { // 32-bit Service Data, there can be multiple occurences
-          const serviceData32Uuid = bytes.slice(0, 4).toString('hex').match(/.{1,2}/g).reverse().join('');
+          const serviceData32Uuid = bytes.slice(0, 4).toString('hex').match(/.{1,2}/g)!.reverse().join('');
           const serviceData32 = bytes.slice(4, bytes.length);
 
           advertisement.serviceData.push({
@@ -219,7 +219,7 @@ export class Gap extends events.EventEmitter {
           break;
         }
         case 0x21: { // 128-bit Service Data, there can be multiple occurences
-          const serviceData128Uuid = bytes.slice(0, 16).toString('hex').match(/.{1,2}/g).reverse().join('');
+          const serviceData128Uuid = bytes.slice(0, 16).toString('hex').match(/.{1,2}/g)!.reverse().join('');
           const serviceData128 = bytes.slice(16, bytes.length);
 
           advertisement.serviceData.push({

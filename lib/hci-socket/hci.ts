@@ -732,7 +732,7 @@ export class Hci extends events.EventEmitter {
       this.emit('readLocalVersion', hciVer, hciRev, lmpVer, manufacturer, lmpSubVer);
     } else if (cmd === READ_BD_ADDR_CMD) {
       this.addressType = 'public';
-      this.address = result.toString('hex').match(/.{1,2}/g).reverse().join(':');
+      this.address = result.toString('hex').match(/.{1,2}/g)!.reverse().join(':');
 
       debug(`address = ${this.address}`);
 
@@ -799,7 +799,7 @@ export class Hci extends events.EventEmitter {
     const handle = data.readUInt16LE(0);
     const role = data.readUInt8(2);
     const addressType = data.readUInt8(3) === 0x01 ? 'random': 'public';
-    const address = data.slice(4, 10).toString('hex').match(/.{1,2}/g).reverse().join(':');
+    const address = data.slice(4, 10).toString('hex').match(/.{1,2}/g)!.reverse().join(':');
     const interval = data.readUInt16LE(10) * 1.25;
     const latency = data.readUInt16LE(12); // TODO: multiplier?
     const supervisionTimeout = data.readUInt16LE(14) * 10;
@@ -823,7 +823,7 @@ export class Hci extends events.EventEmitter {
     for (let i = 0; i < count; i++) {
       const type = data.readUInt8(0);
       const addressType = data.readUInt8(1) === 0x01 ? 'random' : 'public';
-      const address = data.slice(2, 8).toString('hex').match(/.{1,2}/g).reverse().join(':');
+      const address = data.slice(2, 8).toString('hex').match(/.{1,2}/g)!.reverse().join(':');
       const eirLength = data.readUInt8(8);
       const eir = data.slice(9, eirLength + 9);
       const rssi = data.readInt8(eirLength + 9);
