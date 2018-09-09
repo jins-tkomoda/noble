@@ -23,7 +23,7 @@ export class Service extends events.EventEmitter {
     this.uuid = uuid;
     this.name = null;
     this.type = null;
-    this.includedServiceUuids = null;
+    this.includedServiceUuids = [];
     this.characteristics = [];
 
     const service = services[uuid];

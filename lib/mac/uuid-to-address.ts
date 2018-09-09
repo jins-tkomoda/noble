@@ -1,10 +1,10 @@
 import * as bplist from 'bplist-parser'
 
-export const uuidToAddress = (uuid: string, callback?: (error: Error | null, address?: string) => void) => {
+export const uuidToAddress = (uuid: string, callback: (error: Error | null, address?: string) => void) => {
   bplist.parseFile('/Library/Preferences/com.apple.Bluetooth.plist', (err, obj) => {
     if (err) {
       return callback(err);
-    } else if (obj[0].CoreBluetoothCache === undefined) {
+    } else if (!obj || obj[0].CoreBluetoothCache === undefined) {
       return callback(new Error('Empty CoreBluetoothCache entry!'));
     }
 

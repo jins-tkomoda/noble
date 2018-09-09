@@ -103,6 +103,7 @@ export class Hci extends events.EventEmitter {
     // see Bluetooth spec 4.2 [Vol 3, Part A, Chapter 4]
     this._aclMtu = 23 + 4;
     this._aclMaxInProgress = 1;
+    this._aclOutQueue = [];
 
     this.STATUS_MAPPER = STATUS_MAPPER;
     this.resetBuffers();
@@ -512,6 +513,9 @@ export class Hci extends events.EventEmitter {
 
   writeOneAclDataPkt() {
     const pkt = this._aclOutQueue.shift();
+    if (!pkt) {
+      return;
+    }
     this._handleAclsInProgress[pkt.handle]++;
     debug(`write acl data pkt frag ${pkt.fragId} handle ${pkt.handle} - writing: ${pkt.pkt.toString('hex')}`);
     this._socket.write(pkt.pkt);

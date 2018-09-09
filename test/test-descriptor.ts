@@ -4,13 +4,13 @@ import * as sinon from 'sinon';
 import { Descriptor } from '../lib/descriptor';
 
 describe('Descriptor', () => {
-  let mockNoble = null;
+  let mockNoble;
   const mockPeripheralId = 'mock-peripheral-id';
   const mockServiceUuid = 'mock-service-uuid';
   const mockCharacteristicUuid = 'mock-characteristic-uuid';
   const mockUuid = 'mock-uuid';
 
-  let descriptor = null;
+  let descriptor;
 
   beforeEach(() => {
     mockNoble = {
@@ -96,7 +96,7 @@ describe('Descriptor', () => {
   });
 
   describe('writeValue', () => {
-    let mockData = null;
+    let mockData;
 
     beforeEach(() => {
       mockData = Buffer.alloc(0);

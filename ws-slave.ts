@@ -104,9 +104,9 @@ const onMessage = function(message) {
   const handle = command.handle;
 
   const peripheral = peripherals[peripheralUuid];
-  let service = null;
-  let characteristic = null;
-  let descriptor = null;
+  let service;
+  let characteristic;
+  let descriptor;
 
 
   if (peripheral && serviceUuid) {

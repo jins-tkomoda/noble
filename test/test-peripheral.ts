@@ -4,7 +4,7 @@ import * as sinon from 'sinon';
 import { Peripheral } from '../lib/peripheral';
 
 describe('Peripheral', () => {
-  let mockNoble = null;
+  let mockNoble;
   const mockId = 'mock-id';
   const mockAddress = 'mock-address';
   const mockAddressType = 'mock-address-type';
@@ -14,7 +14,7 @@ describe('Peripheral', () => {
   const mockHandle = 'mock-handle';
   let mockData = Buffer.from('mock-data');
 
-  let peripheral = null;
+  let peripheral;
 
   beforeEach(() => {
     mockNoble = {
@@ -184,7 +184,7 @@ describe('Peripheral', () => {
   describe('discoverSomeServicesAndCharacteristics', () => {
     const mockServiceUuids = [];
     const mockCharacteristicUuids = [];
-    let mockServices = null;
+    let mockServices;
 
     beforeEach(() => {
       peripheral.discoverServices = sinon.spy();

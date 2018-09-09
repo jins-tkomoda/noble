@@ -4,13 +4,13 @@ import * as sinon from 'sinon';
 import { Characteristic } from '../lib/characteristic';
 
 describe('Characteristic', () => {
-  let mockNoble = null;
+  let mockNoble;
   const mockPeripheralId = 'mock-peripheral-id';
   const mockServiceUuid = 'mock-service-uuid';
   const mockUuid = 'mock-uuid';
   const mockProperties = ['mock-property-1', 'mock-property-2'];
 
-  let characteristic = null;
+  let characteristic;
 
   beforeEach(() => {
     mockNoble = {
@@ -84,7 +84,7 @@ describe('Characteristic', () => {
   });
 
   describe('write', () => {
-    let mockData = null;
+    let mockData;
 
     beforeEach(() => {
       mockData = Buffer.alloc(0);

@@ -26,7 +26,7 @@ export class Characteristic extends events.EventEmitter {
     this.name = null;
     this.type = null;
     this.properties = properties;
-    this.descriptors = null;
+    this.descriptors = [];
 
     const characteristic = characteristics[uuid];
     if (characteristic) {

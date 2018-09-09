@@ -4,11 +4,11 @@ import * as sinon from 'sinon';
 import { Service } from '../lib/service';
 
 describe('service', () => {
-  let mockNoble = null;
+  let mockNoble;
   const mockPeripheralId = 'mock-peripheral-id';
   const mockUuid = 'mock-uuid';
 
-  let service = null;
+  let service;
 
   beforeEach(() => {
     mockNoble = {

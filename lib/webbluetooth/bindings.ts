@@ -30,7 +30,7 @@ function stripDashes(uuid){
 
 
 export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
-  private _ble: Bluetooth | null;
+  private _ble: Bluetooth;
   private _startScanCommand;
   private _peripherals;
 

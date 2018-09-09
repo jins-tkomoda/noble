@@ -209,9 +209,8 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     supervisionTimeout,
     masterClockAccuracy
   ) {
-    let uuid = null;
-
-    let error = null;
+    let error;
+    let uuid;
 
     if (status === 0) {
       uuid = address.split(':').join('').toLowerCase();
