@@ -10,6 +10,16 @@ import { uuidToAddress } from './uuid-to-address';
 
 const debug = debugModule('yosemite-bindings');
 
+interface MacCharacteristic {
+  uuid: string;
+  properties: string[]
+}
+
+interface MacServiceData {
+  uuid: string;
+  data: Buffer;
+}
+
 /**
  *  NobleBindings for mac
  */
@@ -398,8 +408,8 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
         localName: args.kCBMsgArgAdvertisementData.kCBAdvDataLocalName || args.kCBMsgArgName,
         txPowerLevel: args.kCBMsgArgAdvertisementData.kCBAdvDataTxPowerLevel,
         manufacturerData: args.kCBMsgArgAdvertisementData.kCBAdvDataManufacturerData,
-        serviceData: [],
-        serviceUuids: []
+        serviceData: [] as MacServiceData[],
+        serviceUuids: [] as string[]
       };
       const connectable = !!args.kCBMsgArgAdvertisementData.kCBAdvDataIsConnectable;
       const rssi = args.kCBMsgArgRssi;
@@ -554,7 +564,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const serviceStartHandle = args.kCBMsgArgServiceStartHandle;
       const serviceUuid = this._peripherals[deviceUuid].services[serviceStartHandle].uuid;
-      const characteristics = [];
+      const characteristics: MacCharacteristic[] = [];
 
       this._peripherals[deviceUuid].services[serviceStartHandle].characteristics =
         this._peripherals[deviceUuid].services[serviceStartHandle].characteristics || {};

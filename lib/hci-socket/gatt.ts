@@ -66,6 +66,25 @@ const GATT_SERVER_CHARAC_CFG_UUID     = 0x2903;
 
 const ATT_CID = 0x0004;
 
+interface GattCharacteristic {
+  startHandle: number;
+  endHandle: number;
+  valueHandle: number;
+  properties: string[];
+  uuid: string;
+}
+
+interface GattDescriptor {
+  handle: number;
+  uuid: string;
+}
+
+interface GattService {
+  startHandle: number;
+  endHandle: number;
+  uuid: string;
+}
+
 export class Gatt extends events.EventEmitter {
   private _address;
   private _aclStream: AclStream;
@@ -357,7 +376,7 @@ export class Gatt extends events.EventEmitter {
   }
 
   discoverServices(uuids: string[]) {
-    const services = [];
+    const services: GattService[] = [];
 
     const callback = (data) => {
       const opcode = data[0];
@@ -395,7 +414,7 @@ export class Gatt extends events.EventEmitter {
 
   discoverIncludedServices(serviceUuid: string, uuids: string[]) {
     const service = this._services[serviceUuid];
-    const includedServices = [];
+    const includedServices: GattService[] = [];
 
     const callback = (data) => {
       const opcode = data[0];
@@ -434,7 +453,7 @@ export class Gatt extends events.EventEmitter {
 
   discoverCharacteristics(serviceUuid: string, characteristicUuids: string[]) {
     const service = this._services[serviceUuid];
-    const characteristics = [];
+    const characteristics: GattCharacteristic[] = [];
 
     this._characteristics[serviceUuid] = this._characteristics[serviceUuid] || {};
     this._descriptors[serviceUuid] = this._descriptors[serviceUuid] || {};
@@ -449,6 +468,7 @@ export class Gatt extends events.EventEmitter {
         for (let i = 0; i < num; i++) {
           characteristics.push({
             startHandle: data.readUInt16LE(2 + i * type + 0),
+            endHandle: 0,
             properties: shared.propertyBitstoPropertyNames(data.readUInt8(2 + i * type + 2)),
             valueHandle: data.readUInt16LE(2 + i * type + 3),
             uuid: (type === 7) ? data.readUInt16LE(2 + i * type + 5).toString(16) : data.slice(2 + i * type + 5).slice(0, 16).toString('hex').match(/.{1,2}/g).reverse().join('')
@@ -458,7 +478,7 @@ export class Gatt extends events.EventEmitter {
 
       if (opcode !== ATT_OP_READ_BY_TYPE_RESP || characteristics[characteristics.length - 1].valueHandle === service.endHandle) {
 
-        const characteristicsDiscovered = [];
+        const characteristicsDiscovered: Partial<GattCharacteristic>[] = [];
         for (let i = 0; i < characteristics.length; i++) {
 
           const characteristic = {
@@ -646,7 +666,7 @@ export class Gatt extends events.EventEmitter {
 
   discoverDescriptors(serviceUuid: string, characteristicUuid: string) {
     const characteristic = this._characteristics[serviceUuid][characteristicUuid];
-    const descriptors = [];
+    const descriptors: GattDescriptor[] = [];
 
     this._descriptors[serviceUuid][characteristicUuid] = {};
 

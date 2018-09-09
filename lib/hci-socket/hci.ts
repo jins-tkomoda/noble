@@ -76,6 +76,12 @@ const LE_START_ENCRYPTION_CMD = OCF_LE_START_ENCRYPTION | OGF_LE_CTL << 10;
 
 const HCI_OE_USER_ENDED_CONNECTION = 0x13;
 
+interface AclOutQueueEntry {
+  handle: number;
+  pkt: Buffer;
+  fragId: number;
+}
+
 export class Hci extends events.EventEmitter {
   private _socket: BluetoothHciSocket;
   private _isDevUp;
@@ -85,7 +91,7 @@ export class Hci extends events.EventEmitter {
   private _aclMtu;
   private _aclMaxInProgress;
   private _handleAclsInProgress;
-  private _aclOutQueue;
+  private _aclOutQueue: AclOutQueueEntry[];
   private _handleBuffers;
 
   public address!: string;
@@ -547,7 +553,7 @@ export class Hci extends events.EventEmitter {
         Controller for the returned Handle have been flushed, and that the
         corresponding data buffers have been freed. */
         delete this._handleAclsInProgress[handle];
-        const aclOutQueue = [];
+        const aclOutQueue: AclOutQueueEntry[] = [];
         let discarded = 0;
         for (const i in this._aclOutQueue) {
           if (this._aclOutQueue[i].handle !== handle) {

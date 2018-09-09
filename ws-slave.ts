@@ -17,6 +17,10 @@ const host = process.argv[2];
 let ws: WebSocket;
 let wss: WebSocket.Server;
 
+interface WsSlaveCharacteristic {
+  uuid: string;
+  properties: string[];
+}
 
 if (serverMode) {
   debug('noble - ws slave - server mode');
@@ -232,7 +236,7 @@ noble.on('discover', (peripheral) => {
 
     const characteristicsDiscover = function(this: Service, characteristics) {
       const service = this;
-      const discoveredCharacteristics = [];
+      const discoveredCharacteristics: WsSlaveCharacteristic[] = [];
 
       const read = function(this: Characteristic, data, isNotification) {
         const characteristic = this;
