@@ -219,7 +219,7 @@ noble.on('discover', (peripheral) => {
 
   peripheral.on('servicesDiscover', function(this: Peripheral, services) {
     const peripheral = this;
-    const serviceUuids = [];
+    const serviceUuids: string[] = [];
 
     const includedServicesDiscover = function(this: Service, includedServiceUuids: string[]) {
       sendEvent({
@@ -285,7 +285,7 @@ noble.on('discover', (peripheral) => {
       const descriptorsDiscover = function(this: Characteristic, descriptors) {
         const characteristic = this;
 
-        const discoveredDescriptors = [];
+        const discoveredDescriptors: string[] = [];
 
         const valueRead = function(this: Descriptor, data) {
           const descriptor = this;

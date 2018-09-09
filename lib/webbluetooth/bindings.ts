@@ -209,7 +209,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
         })
         .then((characteristics) => {
           const discoveredCharacteristics = characteristics.map((char) => {
-            const charInfo = {uuid: stripDashes(char.uuid), properties: []};
+            const charInfo = {uuid: stripDashes(char.uuid), properties: [] as string[]};
 
             if(char.properties.writeWithoutResponse){
               charInfo.properties.push('writeWithoutResponse');

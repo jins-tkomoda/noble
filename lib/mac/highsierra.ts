@@ -481,7 +481,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      */
     this.on('kCBMsgId72', (args) => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
-      const serviceUuids = [];
+      const serviceUuids: string[] = [];
 
       this._peripherals[deviceUuid].services = this._peripherals[deviceUuid].services || {};
 
@@ -514,7 +514,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const serviceStartHandle = args.kCBMsgArgServiceStartHandle;
       const serviceUuid = this._peripherals[deviceUuid].services[serviceStartHandle].uuid;
-      const includedServiceUuids = [];
+      const includedServiceUuids: string[] = [];
 
       this._peripherals[deviceUuid].services[serviceStartHandle].includedServices =
         this._peripherals[deviceUuid].services[serviceStartHandle].includedServices || {};
@@ -558,7 +558,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
           uuid: kCBMsgArgCharacteristic.kCBMsgArgUUID.toString('hex'),
           handle: kCBMsgArgCharacteristic.kCBMsgArgCharacteristicHandle,
           valueHandle: kCBMsgArgCharacteristic.kCBMsgArgCharacteristicValueHandle,
-          properties: []
+          properties: [] as string[]
         };
 
         if (properties & 0x01) {
@@ -682,7 +682,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.on('kCBMsgId87', (args) => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const characteristicHandle = args.kCBMsgArgCharacteristicHandle;
-      const descriptors = []; //args.kCBMsgArgDescriptors;
+      const descriptors: string[] = []; //args.kCBMsgArgDescriptors;
 
       for (const i in this._peripherals[deviceUuid].services) {
         if (this._peripherals[deviceUuid].services[i].characteristics &&

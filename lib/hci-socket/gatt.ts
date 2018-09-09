@@ -375,7 +375,7 @@ export class Gatt extends events.EventEmitter {
       }
 
       if (opcode !== ATT_OP_READ_BY_GROUP_RESP || services[services.length - 1].endHandle === 0xffff) {
-        const serviceUuids = [];
+        const serviceUuids: string[] = [];
         for (const service of services) {
           if (uuids.length === 0 || uuids.includes(service.uuid)) {
             serviceUuids.push(service.uuid);
@@ -414,7 +414,7 @@ export class Gatt extends events.EventEmitter {
       }
 
       if (opcode !== ATT_OP_READ_BY_TYPE_RESP || includedServices[includedServices.length - 1].endHandle === service.endHandle) {
-        const includedServiceUuids = [];
+        const includedServiceUuids: string[] = [];
 
         for (i = 0; i < includedServices.length; i++) {
           if (uuids.length === 0 || uuids.includes(includedServices[i].uuid)) {
@@ -698,7 +698,7 @@ export class Gatt extends events.EventEmitter {
       }
 
       if (opcode !== ATT_OP_FIND_INFO_RESP || descriptors[descriptors.length - 1].handle === characteristic.endHandle) {
-        const descriptorUuids = [];
+        const descriptorUuids: string[] = [];
         for (let i = 0; i < descriptors.length; i++) {
           descriptorUuids.push(descriptors[i].uuid);
 
