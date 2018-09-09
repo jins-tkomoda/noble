@@ -3,6 +3,7 @@ import * as events from 'events';
 import * as debugModule from 'debug'
 import * as XpcConnection from 'xpc-connection';
 
+import * as shared from '../shared';
 import { NobleBindingsInterface } from '../bindings';
 import { localAddress } from './local-address';
 import { uuidToAddress } from './uuid-to-address';
@@ -559,46 +560,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
         this._peripherals[deviceUuid].services[serviceStartHandle].characteristics || {};
 
       for (const kCBMsgArgCharacteristic of args.kCBMsgArgCharacteristics) {
-        const properties = kCBMsgArgCharacteristic.kCBMsgArgCharacteristicProperties;
+        const properties = shared.propertyBitstoPropertyNames(kCBMsgArgCharacteristic.kCBMsgArgCharacteristicProperties);
 
         const characteristic = {
           uuid: kCBMsgArgCharacteristic.kCBMsgArgUUID.toString('hex'),
           handle: kCBMsgArgCharacteristic.kCBMsgArgCharacteristicHandle,
           valueHandle: kCBMsgArgCharacteristic.kCBMsgArgCharacteristicValueHandle,
-          properties: [] as string[]
+          properties: properties
         };
-
-        if (properties & 0x01) {
-          characteristic.properties.push('broadcast');
-        }
-
-        if (properties & 0x02) {
-          characteristic.properties.push('read');
-        }
-
-        if (properties & 0x04) {
-          characteristic.properties.push('writeWithoutResponse');
-        }
-
-        if (properties & 0x08) {
-          characteristic.properties.push('write');
-        }
-
-        if (properties & 0x10) {
-          characteristic.properties.push('notify');
-        }
-
-        if (properties & 0x20) {
-          characteristic.properties.push('indicate');
-        }
-
-        if (properties & 0x40) {
-          characteristic.properties.push('authenticatedSignedWrites');
-        }
-
-        if (properties & 0x80) {
-          characteristic.properties.push('extendedProperties');
-        }
 
         this._peripherals[deviceUuid].services[serviceStartHandle].characteristics[characteristic.uuid] =
           this._peripherals[deviceUuid].services[serviceStartHandle].characteristics[characteristic.handle] =

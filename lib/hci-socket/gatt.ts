@@ -3,6 +3,7 @@ import * as events from 'events';
 import * as debugModule from 'debug';
 const debug = debugModule('att');
 
+import * as shared from '../shared';
 import { AclStream } from './acl-stream';
 
 const ATT_OP_ERROR                    = 0x01;
@@ -448,7 +449,7 @@ export class Gatt extends events.EventEmitter {
         for (let i = 0; i < num; i++) {
           characteristics.push({
             startHandle: data.readUInt16LE(2 + i * type + 0),
-            properties: data.readUInt8(2 + i * type + 2),
+            properties: shared.propertyBitstoPropertyNames(data.readUInt8(2 + i * type + 2)),
             valueHandle: data.readUInt16LE(2 + i * type + 3),
             uuid: (type === 7) ? data.readUInt16LE(2 + i * type + 5).toString(16) : data.slice(2 + i * type + 5).slice(0, 16).toString('hex').match(/.{1,2}/g).reverse().join('')
           });
@@ -459,10 +460,8 @@ export class Gatt extends events.EventEmitter {
 
         const characteristicsDiscovered = [];
         for (let i = 0; i < characteristics.length; i++) {
-          const properties = characteristics[i].properties;
 
           const characteristic = {
-            properties: [],
             uuid: characteristics[i].uuid
           };
 
@@ -475,38 +474,6 @@ export class Gatt extends events.EventEmitter {
           }
 
           this._characteristics[serviceUuid][characteristics[i].uuid] = characteristics[i];
-
-          if (properties & 0x01) {
-            characteristic.properties.push('broadcast');
-          }
-
-          if (properties & 0x02) {
-            characteristic.properties.push('read');
-          }
-
-          if (properties & 0x04) {
-            characteristic.properties.push('writeWithoutResponse');
-          }
-
-          if (properties & 0x08) {
-            characteristic.properties.push('write');
-          }
-
-          if (properties & 0x10) {
-            characteristic.properties.push('notify');
-          }
-
-          if (properties & 0x20) {
-            characteristic.properties.push('indicate');
-          }
-
-          if (properties & 0x40) {
-            characteristic.properties.push('authenticatedSignedWrites');
-          }
-
-          if (properties & 0x80) {
-            characteristic.properties.push('extendedProperties');
-          }
 
           if (characteristicUuids.length === 0 || characteristicUuids.includes(characteristic.uuid)) {
             characteristicsDiscovered.push(characteristic);
