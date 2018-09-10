@@ -13,13 +13,13 @@ const CONNECTION_PARAMETER_UPDATE_RESPONSE = 0x13;
 const SIGNALING_CID = 0x0005;
 
 export class Signaling extends events.EventEmitter {
-  private _handle;
+  private _handle: number;
   private _aclStream: AclStream;
-  private _useHciUserChannel;
+  private _useHciUserChannel: boolean;
   private onAclStreamDataBinded;
   private onAclStreamEndBinded;
 
-  constructor(handle, aclStream: AclStream, useHciUserChannel = false) {
+  constructor(handle: number, aclStream: AclStream, useHciUserChannel = false) {
     super();
     this._handle = handle;
     this._aclStream = aclStream;
@@ -32,7 +32,7 @@ export class Signaling extends events.EventEmitter {
     this._aclStream.on('end', this.onAclStreamEndBinded);
   }
 
-  onAclStreamData(cid, data) {
+  onAclStreamData(cid: number, data: Buffer) {
     if (cid !== SIGNALING_CID) {
       return;
     }
@@ -58,7 +58,7 @@ export class Signaling extends events.EventEmitter {
     this._aclStream.removeListener('end', this.onAclStreamEndBinded);
   }
 
-  processConnectionParameterUpdateRequest(identifier, data) {
+  processConnectionParameterUpdateRequest(identifier: number, data: Buffer) {
     const minInterval = data.readUInt16LE(0) * 1.25;
     const maxInterval = data.readUInt16LE(2) * 1.25;
     const latency = data.readUInt16LE(4);

@@ -45,7 +45,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this._xpcConnection.setup();
     this.setupListeners();
 
-    localAddress((address: string | null) => {
+    localAddress((address: string | undefined) => {
       if (address) {
         this.emit('addressChange', address);
       }
@@ -60,7 +60,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  sendCBMsg(id, args) {
+  sendCBMsg(id: number, args) {
     debug(`sendCBMsg: ${id}, ${JSON.stringify(args, undefined, 2)}`);
     this.sendXpcMessage({kCBMsgId: id, kCBMsgArgs: args});
   }
@@ -76,7 +76,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  startScanning(serviceUuids: string[] = [], allowDuplicates = false) {
+  startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false) {
     const args = {
       kCBMsgArgOptions: { kCBScanOptionAllowDuplicates: allowDuplicates ? 1 : 0 },
       kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex'))
@@ -219,7 +219,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data, withoutResponse) {
+  write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean = false) {
     this.sendCBMsg(79, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
@@ -243,7 +243,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion The ids were incemented but there seems to be no CoreBluetooth function to call/verify this.
    */
-  broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast) {
+  broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
     throw new Error('This OS does not support broadcast.');
   }
 
@@ -257,7 +257,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify) {
+  notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
     this.sendCBMsg(81, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
@@ -311,7 +311,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data) {
+  writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
     this.sendCBMsg(89, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgDescriptorHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].descriptors[descriptorUuid].handle,
@@ -327,7 +327,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  readHandle(deviceUuid: string, handle) {
+  readHandle(deviceUuid: string, handle: number) {
     this.sendCBMsg(88, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgDescriptorHandle: handle
@@ -344,7 +344,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    *
    * @discussion tested
    */
-  writeHandle(deviceUuid: string, handle, data, withoutResponse) {
+  writeHandle(deviceUuid: string, handle: number, data: Buffer, withoutResponse: boolean = false) {
     // TODO: use without response
     this.sendCBMsg(89, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
@@ -399,7 +399,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       }
 
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
-      const serviceUuids = args.kCBMsgArgAdvertisementData.kCBAdvDataServiceUUIDs || [];
+      const serviceUuids: Buffer[] = args.kCBMsgArgAdvertisementData.kCBAdvDataServiceUUIDs || [];
 
       const advertisement = {
         localName: args.kCBMsgArgAdvertisementData.kCBAdvDataLocalName || args.kCBMsgArgName,

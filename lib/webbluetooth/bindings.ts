@@ -7,11 +7,11 @@ import { NobleBindingsInterface } from '../bindings';
 
 const debug = debugModule('webble-bindings');
 
-function makeList(uuid: string){
+function makeList(uuid: string: number) {
   return {services:[ uuid ]};
 }
 
-function addDashes(uuid){
+function addDashes(uuid: string | number) {
   if(!uuid || typeof uuid !== 'string'){
     return uuid;
   }
@@ -21,7 +21,7 @@ function addDashes(uuid){
   return uuid.toLowerCase();
 }
 
-function stripDashes(uuid){
+function stripDashes(uuid: string | number) {
   if(typeof uuid === 'string'){
     uuid = uuid.split('-').join('');
   }
@@ -63,7 +63,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('stateChange', 'poweredOff');
   }
 
-  startScanning(serviceUuids: string[] = [], allowDuplicates) {
+  startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false) {
 
     const uuids = serviceUuids.map((service: string | number) => {
       //web bluetooth requires 4 char hex service names to be passed in as integers
@@ -238,7 +238,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
   }
 
-  getPrimaryService(peripheral, serviceUuid) {
+  getPrimaryService(peripheral, serviceUuid: string | number) {
     serviceUuid = addDashes(serviceUuid);
 
     if(peripheral.cachedServices[serviceUuid]){
@@ -274,7 +274,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       });
   }
 
-  write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data, withoutResponse) {
+  write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean = false) {
     const peripheral = this._peripherals[deviceUuid];
     debug('write', deviceUuid, serviceUuid, characteristicUuid, data, withoutResponse);
 
@@ -295,14 +295,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
   }
 
-  broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast) {
+  broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('broadcast', deviceUuid, serviceUuid, characteristicUuid, state);
   }
 
-  notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify) {
+  notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
     const peripheral = this._peripherals[deviceUuid];
 
     const charPromise = this.getPrimaryService(peripheral, serviceUuid)
@@ -373,21 +373,21 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     //this.emit('valueRead', deviceUuid, serviceUuid, characteristicUuid, descriptorUuid, data);
   }
 
-  writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data) {
+  writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('valueWrite', deviceUuid, serviceUuid, characteristicUuid, descriptorUuid);
   }
 
-  readHandle(deviceUuid: string, handle) {
+  readHandle(deviceUuid: string, handle: number) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('handleRead', deviceUuid, handle, data);
   }
 
-  writeHandle(deviceUuid: string, handle, data, withoutResponse) {
+  writeHandle(deviceUuid: string, handle: number, data: Buffer, withoutResponse: boolean = false) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response

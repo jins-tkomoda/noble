@@ -37,7 +37,7 @@ noble.on('discover', (peripheral) => {
     console.log('on -> disconnect');
   });
 
-  peripheral.on('rssiUpdate', (rssi) => {
+  peripheral.on('rssiUpdate', (rssi: number) => {
     console.log(`on -> RSSI update ${rssi}`);
     peripheral.discoverServices();
   });
@@ -57,7 +57,7 @@ noble.on('discover', (peripheral) => {
 
       const characteristicIndex = 0;
 
-      characteristics[characteristicIndex].on('read', (data, isNotification) => {
+      characteristics[characteristicIndex].on('read', (data: Buffer, isNotification: boolean) => {
         console.log(`on -> characteristic read ${data} ${isNotification}`);
         console.log(data);
 
@@ -70,13 +70,13 @@ noble.on('discover', (peripheral) => {
         peripheral.disconnect();
       });
 
-      characteristics[characteristicIndex].on('broadcast', (state) => {
+      characteristics[characteristicIndex].on('broadcast', (state: string) => {
         console.log(`on -> characteristic broadcast ${state}`);
 
         peripheral.disconnect();
       });
 
-      characteristics[characteristicIndex].on('notify', (state) => {
+      characteristics[characteristicIndex].on('notify', (state: string) => {
         console.log(`on -> characteristic notify ${state}`);
 
         peripheral.disconnect();
@@ -87,7 +87,7 @@ noble.on('discover', (peripheral) => {
 
         const descriptorIndex = 0;
 
-        descriptors[descriptorIndex].on('valueRead', (data) => {
+        descriptors[descriptorIndex].on('valueRead', (data: Buffer) => {
           console.log(`on -> descriptor value read ${data}`);
           console.log(data);
           peripheral.disconnect();

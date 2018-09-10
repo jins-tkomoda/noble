@@ -16,7 +16,7 @@ export class Characteristic extends events.EventEmitter {
   public properties: string[];
   public descriptors: Descriptor[];
 
-  constructor(noble: Noble, peripheralId: string, serviceUuid: string, uuid: string, properties) {
+  constructor(noble: Noble, peripheralId: string, serviceUuid: string, uuid: string, properties: string[]) {
     super();
     this._noble = noble;
     this._peripheralId = peripheralId;
@@ -46,7 +46,7 @@ export class Characteristic extends events.EventEmitter {
 
   read(callback) {
     const promise = new Promise((resolve, reject) => {
-      const onRead = (data, isNotificaton) => {
+      const onRead = (data: Buffer, isNotificaton: boolean) => {
         // only call the callback if 'read' event and non-notification
         // 'read' for non-notifications is only present for backwards compatbility
         if (!isNotificaton) {
@@ -74,7 +74,7 @@ export class Characteristic extends events.EventEmitter {
     return promise;
   }
 
-  write(data, withoutResponse, callback) {
+  write(data: Buffer, withoutResponse: boolean = false, callback) {
     if (process.title !== 'browser' && !(data instanceof Buffer)) {
       throw new Error('data must be a Buffer');
     }
@@ -98,7 +98,7 @@ export class Characteristic extends events.EventEmitter {
     return promise;
   }
 
-  broadcast(broadcast, callback) {
+  broadcast(broadcast: boolean, callback) {
     const promise = new Promise((resolve, reject) => {
       this.once('broadcast', resolve);
 
@@ -118,7 +118,7 @@ export class Characteristic extends events.EventEmitter {
   }
 
   // deprecated in favour of subscribe/unsubscribe
-  notify(notify, callback) {
+  notify(notify: boolean, callback) {
     const promise = new Promise((resolve, reject) => {
       this.once('notify', resolve);
 

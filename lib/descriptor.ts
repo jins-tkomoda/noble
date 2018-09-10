@@ -59,7 +59,7 @@ export class Descriptor extends events.EventEmitter {
     return promise;
   }
 
-  writeValue(data, callback) {
+  writeValue(data: Buffer, callback) {
     if (!(data instanceof Buffer)) {
       throw new Error('data must be a Buffer');
     }

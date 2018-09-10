@@ -213,7 +213,7 @@ noble.on('discover', (peripheral) => {
     peripheral.removeAllListeners();
   });
 
-  peripheral.on('rssiUpdate', function(rssi) {
+  peripheral.on('rssiUpdate', function(rssi: number) {
     sendEvent({
       type: 'rssiUpdate',
       peripheralUuid: peripheral.uuid,
@@ -238,7 +238,7 @@ noble.on('discover', (peripheral) => {
       const service = this;
       const discoveredCharacteristics: WsSlaveCharacteristic[] = [];
 
-      const read = function(this: Characteristic, data, isNotification) {
+      const read = function(this: Characteristic, data: Buffer, isNotification: boolean) {
         const characteristic = this;
 
         sendEvent({
@@ -262,7 +262,7 @@ noble.on('discover', (peripheral) => {
         });
       };
 
-      const broadcast = function(this: Characteristic, state) {
+      const broadcast = function(this: Characteristic, state: string) {
         const characteristic = this;
 
         sendEvent({
@@ -274,7 +274,7 @@ noble.on('discover', (peripheral) => {
         });
       };
 
-      const notify = function(this: Characteristic, state) {
+      const notify = function(this: Characteristic, state: string) {
         const characteristic = this;
 
         sendEvent({
@@ -291,7 +291,7 @@ noble.on('discover', (peripheral) => {
 
         const discoveredDescriptors: string[] = [];
 
-        const valueRead = function(this: Descriptor, data) {
+        const valueRead = function(this: Descriptor, data: Buffer) {
           const descriptor = this;
 
           sendEvent({
@@ -304,7 +304,7 @@ noble.on('discover', (peripheral) => {
           });
         };
 
-        const valueWrite = function(this: Descriptor, data) {
+        const valueWrite = function(this: Descriptor, data: Buffer) {
           const descriptor = this;
 
           sendEvent({
@@ -373,7 +373,7 @@ noble.on('discover', (peripheral) => {
     });
   });
 
-  peripheral.on('handleRead', function(handle, data) {
+  peripheral.on('handleRead', function(handle: number, data: Buffer) {
     sendEvent({
       type: 'handleRead',
       peripheralUuid: peripheral.uuid,
@@ -382,7 +382,7 @@ noble.on('discover', (peripheral) => {
     });
   });
 
-  peripheral.on('handleWrite', function(handle) {
+  peripheral.on('handleWrite', function(handle: number) {
     sendEvent({
       type: 'handleWrite',
       peripheralUuid: peripheral.uuid,
@@ -390,7 +390,7 @@ noble.on('discover', (peripheral) => {
     });
   });
 
-  peripheral.on('handleNotify', function(handle, data) {
+  peripheral.on('handleNotify', function(handle: number, data: Buffer) {
     sendEvent({
       type: 'handleNotify',
       peripheralUuid: peripheral.uuid,

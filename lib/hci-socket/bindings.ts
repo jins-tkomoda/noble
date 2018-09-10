@@ -11,12 +11,12 @@ import { Signaling } from './signaling';
 
 export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
   private options;
-  private _state;
   private _addresses: { [peripheralUuid: string]: string };
   private _addresseTypes;
   private _connectable;
+  private _state: string | null;
   private _pendingConnectionUuid: string | null;
-  private _connectionQueue;
+  private _connectionQueue: string[];
   private _handles;
   private _gatts;
   private _aclStreams;
@@ -55,7 +55,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this._gap = new Gap(this._hci, this.options.hciReportAllEvents);
   }
 
-  startScanning(serviceUuids: string[] = [], allowDuplicates) {
+  startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false) {
     this._scanServiceUuids = serviceUuids;
 
     this._gap.startScanning(allowDuplicates);
@@ -129,7 +129,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onStateChange(state) {
+  onStateChange(state: string) {
     if (this._state === state) {
       return;
     }
@@ -153,7 +153,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('addressChange', address);
   }
 
-  onScanStart(filterDuplicates) {
+  onScanStart(filterDuplicates: boolean) {
     this.emit('scanStart', filterDuplicates);
   }
 
@@ -161,7 +161,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('scanStop');
   }
 
-  onDiscover(status, address: string, addressType, connectable, advertisement, rssi) {
+  onDiscover(status: number, address: string, addressType: string, connectable: boolean, advertisement, rssi: number) {
     if (this._scanServiceUuids === undefined) {
       return;
     }
@@ -199,15 +199,15 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   onLeConnComplete(
-    status,
-    handle,
-    role,
-    addressType,
+    status: number,
+    handle: number,
+    role: number,
+    addressType: string,
     address: string,
-    interval,
-    latency,
-    supervisionTimeout,
-    masterClockAccuracy
+    interval: number,
+    latency: number,
+    supervisionTimeout: number,
+    masterClockAccuracy: number
   ) {
     let error;
     let uuid;
@@ -268,11 +268,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onLeConnUpdateComplete(handle, interval, latency, supervisionTimeout) {
+  onLeConnUpdateComplete(handle: number, interval: number, latency: number, supervisionTimeout: number) {
     // no-op
   }
 
-  onDisconnComplete(handle, reason) {
+  onDisconnComplete(handle: number, reason: number) {
     const uuid = this._handles[handle];
 
     if (uuid) {
@@ -294,7 +294,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onEncryptChange(handle, encrypt) {
+  onEncryptChange(handle: number, encrypt: boolean) {
     const aclStream = this._aclStreams[handle];
 
     if (aclStream) {
@@ -302,15 +302,15 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onMtu(address: string, mtu) {
+  onMtu(address: string, mtu: number) {
 
   }
 
-  onRssiRead(handle, rssi) {
+  onRssiRead(handle: number, rssi: number) {
     this.emit('rssiUpdate', this._handles[handle], rssi);
   }
 
-  onAclDataPkt(handle, cid, data) {
+  onAclDataPkt(handle: number, cid: number, data: Buffer) {
     const aclStream = this._aclStreams[handle];
 
     if (aclStream) {
@@ -380,13 +380,13 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onRead(address: string, serviceUuid: string, characteristicUuid: string, data) {
+  onRead(address: string, serviceUuid: string, characteristicUuid: string, data: Buffer) {
     const uuid = address.split(':').join('').toLowerCase();
 
     this.emit('read', uuid, serviceUuid, characteristicUuid, data, false);
   }
 
-  write(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, data, withoutResponse) {
+  write(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean) {
     const handle = this._handles[peripheralUuid];
     const gatt = this._gatts[handle];
 
@@ -403,7 +403,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('write', uuid, serviceUuid, characteristicUuid);
   }
 
-  broadcast(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, broadcast) {
+  broadcast(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
     const handle = this._handles[peripheralUuid];
     const gatt = this._gatts[handle];
 
@@ -414,13 +414,13 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onBroadcast(address: string, serviceUuid: string, characteristicUuid: string, state) {
+  onBroadcast(address: string, serviceUuid: string, characteristicUuid: string, state: string) {
     const uuid = address.split(':').join('').toLowerCase();
 
     this.emit('broadcast', uuid, serviceUuid, characteristicUuid, state);
   }
 
-  notify(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, notify) {
+  notify(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
     const handle = this._handles[peripheralUuid];
     const gatt = this._gatts[handle];
 
@@ -431,13 +431,13 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onNotify(address: string, serviceUuid: string, characteristicUuid: string, state) {
+  onNotify(address: string, serviceUuid: string, characteristicUuid: string, state: string) {
     const uuid = address.split(':').join('').toLowerCase();
 
     this.emit('notify', uuid, serviceUuid, characteristicUuid, state);
   }
 
-  onNotification(address: string, serviceUuid: string, characteristicUuid: string, data) {
+  onNotification(address: string, serviceUuid: string, characteristicUuid: string, data: Buffer) {
     const uuid = address.split(':').join('').toLowerCase();
 
     this.emit('read', uuid, serviceUuid, characteristicUuid, data, true);
@@ -471,13 +471,13 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onValueRead(address: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data) {
+  onValueRead(address: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
     const uuid = address.split(':').join('').toLowerCase();
 
     this.emit('valueRead', uuid, serviceUuid, characteristicUuid, descriptorUuid, data);
   }
 
-  writeValue(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data) {
+  writeValue(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
     const handle = this._handles[peripheralUuid];
     const gatt = this._gatts[handle];
 
@@ -494,7 +494,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('valueWrite', uuid, serviceUuid, characteristicUuid, descriptorUuid);
   }
 
-  readHandle(peripheralUuid: string, attHandle) {
+  readHandle(peripheralUuid: string, attHandle: number) {
     const handle = this._handles[peripheralUuid];
     const gatt = this._gatts[handle];
 
@@ -505,13 +505,13 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onHandleRead(address: string, handle, data) {
+  onHandleRead(address: string, handle: number, data: Buffer) {
     const uuid = address.split(':').join('').toLowerCase();
 
     this.emit('handleRead', uuid, handle, data);
   }
 
-  writeHandle(peripheralUuid: string, attHandle, data, withoutResponse) {
+  writeHandle(peripheralUuid: string, attHandle: number, data: Buffer, withoutResponse: boolean) {
     const handle = this._handles[peripheralUuid];
     const gatt = this._gatts[handle];
 
@@ -522,19 +522,19 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onHandleWrite(address: string, handle) {
+  onHandleWrite(address: string, handle: number) {
     const uuid = address.split(':').join('').toLowerCase();
 
     this.emit('handleWrite', uuid, handle);
   }
 
-  onHandleNotify(address: string, handle, data) {
+  onHandleNotify(address: string, handle: number, data: Buffer) {
     const uuid = address.split(':').join('').toLowerCase();
 
     this.emit('handleNotify', uuid, handle, data);
   }
 
-  onConnectionParameterUpdateRequest(handle, minInterval, maxInterval, latency, supervisionTimeout) {
+  onConnectionParameterUpdateRequest(handle: number, minInterval: number, maxInterval: number, latency: number, supervisionTimeout: number) {
     this._hci.connUpdateLe(handle, minInterval, maxInterval, latency, supervisionTimeout);
   }
 }

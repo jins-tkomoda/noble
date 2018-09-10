@@ -84,12 +84,12 @@ interface AclOutQueueEntry {
 
 export class Hci extends events.EventEmitter {
   private _socket: BluetoothHciSocket;
-  private _isDevUp;
-  private _state;
-  private _deviceId;
-  private _useUserChannel
-  private _aclMtu;
-  private _aclMaxInProgress;
+  private _isDevUp: boolean | null;
+  private _state: string | null;
+  private _deviceId: number;
+  private _useUserChannel: boolean;
+  private _aclMtu: number;
+  private _aclMaxInProgress: number;
   private _handleAclsInProgress;
   private _aclOutQueue: AclOutQueueEntry[];
   private _handleBuffers;
@@ -104,6 +104,7 @@ export class Hci extends events.EventEmitter {
     this._isDevUp = null;
     this._state = null;
     this._deviceId = deviceId;
+    this.addressType = 'public';
     this._useUserChannel = useUserChannel;
     // le-u min payload size + l2cap header size
     // see Bluetooth spec 4.2 [Vol 3, Part A, Chapter 4]
@@ -313,7 +314,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  setScanEnabled(enabled, filterDuplicates) {
+  setScanEnabled(enabled: boolean, filterDuplicates: boolean) {
     const cmd = Buffer.alloc(6);
 
     // header
@@ -331,7 +332,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  createLeConn(address: string, addressType) {
+  createLeConn(address: string, addressType: string) {
     const cmd = Buffer.alloc(29);
 
     // header
@@ -362,7 +363,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  connUpdateLe(handle, minInterval, maxInterval, latency, supervisionTimeout) {
+  connUpdateLe(handle: number, minInterval: number, maxInterval: number, latency: number, supervisionTimeout: number) {
     const cmd = Buffer.alloc(18);
 
     // header
@@ -385,7 +386,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  startLeEncryption(handle, random, diversifier, key) {
+  startLeEncryption(handle: number, random: Buffer, diversifier: Buffer, key: Buffer) {
     const cmd = Buffer.alloc(32);
 
     // header
@@ -405,7 +406,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  disconnect(handle, reason: number = HCI_OE_USER_ENDED_CONNECTION) {
+  disconnect(handle: number, reason: number = HCI_OE_USER_ENDED_CONNECTION) {
     const cmd = Buffer.alloc(7);
 
     // header
@@ -423,7 +424,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  readRssi(handle) {
+  readRssi(handle: number) {
     const cmd = Buffer.alloc(6);
 
     // header
@@ -468,7 +469,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  queueAclDataPkt(handle, cid, data) {
+  queueAclDataPkt(handle: number, cid: number, data: Buffer) {
     let hf = handle | ACL_START_NO_FLUSH << 12;
     // l2cap pdu may be fragmented on hci level
     let l2capPdu = Buffer.alloc(4 + data.length);
@@ -527,7 +528,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(pkt.pkt);
   }
 
-  onSocketData(data) {
+  onSocketData(data: Buffer) {
     debug(`onSocketData: ${data.toString('hex')}`);
 
     const eventType = data.readUInt8(0);
@@ -687,7 +688,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  onSocketError(error) {
+  onSocketError(error: Error) {
     debug(`onSocketError: ${error.message}`);
 
     if (error.message === 'Operation not permitted') {
@@ -697,7 +698,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  processCmdCompleteEvent(cmd, status, result) {
+  processCmdCompleteEvent(cmd: number, status: number, result: Buffer) {
     if (cmd === RESET_CMD) {
       /*
       * @todo this.initDev does more than this, but bleno has it.
@@ -770,7 +771,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  processLeReadBufferSize(result) {
+  processLeReadBufferSize(result: Buffer) {
     const aclMtu = result.readUInt16LE(0);
     const aclMaxInProgress = result.readUInt8(2);
     if (!aclMtu) {
@@ -785,7 +786,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  processLeMetaEvent(eventType, status, data) {
+  processLeMetaEvent(eventType: number, status: number, data: Buffer) {
     if (eventType === EVT_LE_CONN_COMPLETE) {
       this.processLeConnComplete(status, data);
     } else if (eventType === EVT_LE_ADVERTISING_REPORT) {
@@ -795,7 +796,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  processLeConnComplete(status, data) {
+  processLeConnComplete(status: number, data: Buffer) {
     const handle = data.readUInt16LE(0);
     const role = data.readUInt8(2);
     const addressType = data.readUInt8(3) === 0x01 ? 'random': 'public';
@@ -819,7 +820,7 @@ export class Hci extends events.EventEmitter {
     this.emit('leConnComplete', status, handle, role, addressType, address, interval, latency, supervisionTimeout, masterClockAccuracy);
   }
 
-  processLeAdvertisingReport(count, data) {
+  processLeAdvertisingReport(count: number, data: Buffer) {
     for (let i = 0; i < count; i++) {
       const type = data.readUInt8(0);
       const addressType = data.readUInt8(1) === 0x01 ? 'random' : 'public';
@@ -840,7 +841,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  processLeConnUpdateComplete(status, data) {
+  processLeConnUpdateComplete(status: number, data: Buffer) {
     const handle = data.readUInt16LE(0);
     const interval = data.readUInt16LE(2) * 1.25;
     const latency = data.readUInt16LE(4); // TODO: multiplier?
@@ -854,7 +855,7 @@ export class Hci extends events.EventEmitter {
     this.emit('leConnUpdateComplete', status, handle, interval, latency, supervisionTimeout);
   }
 
-  processCmdStatusEvent(cmd, status) {
+  processCmdStatusEvent(cmd: number, status: number) {
     if (cmd === LE_CREATE_CONN_CMD) {
       if (status !== 0) {
         this.emit('leConnComplete', status);
@@ -862,7 +863,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  onStateChange(state) {
+  onStateChange(state: string) {
     this._state = state;
   }
 }

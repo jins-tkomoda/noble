@@ -16,7 +16,7 @@ export class Peripheral extends events.EventEmitter {
   public services: Service[];
   public state: 'error' | 'connecting' | 'connected' | 'disconnecting' | 'disconnected';
 
-  constructor(noble: Noble, id: string, address: string, addressType, connectable, advertisement, rssi) {
+  constructor(noble: Noble, id: string, address: string, addressType: string, connectable: boolean, advertisement, rssi: number) {
     super();
     this._noble = noble;
 
@@ -157,7 +157,7 @@ export class Peripheral extends events.EventEmitter {
     return this.discoverSomeServicesAndCharacteristics([], [], callback);
   }
 
-  readHandle(handle, callback) {
+  readHandle(handle: number, callback) {
     const promise = new Promise((resolve, reject) => {
       this.once(`handleRead${handle}`, (data) => {
         resolve(data);
@@ -172,7 +172,7 @@ export class Peripheral extends events.EventEmitter {
     return promise;
   }
 
-  writeHandle(handle, data, withoutResponse, callback) {
+  writeHandle(handle: number, data: Buffer, withoutResponse: boolean = false, callback) {
     if (!(data instanceof Buffer)) {
       throw new Error('data must be a Buffer');
     }

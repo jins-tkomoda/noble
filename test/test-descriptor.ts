@@ -75,7 +75,7 @@ describe('Descriptor', () => {
     it('should callback with error, data', (done) => {
       const mockData = Buffer.alloc(0);
 
-      descriptor.readValue((error, data) => {
+      descriptor.readValue((error, data: Buffer) => {
         data.should.equal(mockData);
 
         done();
@@ -86,7 +86,7 @@ describe('Descriptor', () => {
     it('should return a promise', (done) => {
       const mockData = Buffer.alloc(0);
 
-      descriptor.readValue().then((data) => {
+      descriptor.readValue().then((data: Buffer) => {
         data.should.equal(mockData);
 
         done();
@@ -96,7 +96,7 @@ describe('Descriptor', () => {
   });
 
   describe('writeValue', () => {
-    let mockData;
+    let mockData: Buffer;
 
     beforeEach(() => {
       mockData = Buffer.alloc(0);

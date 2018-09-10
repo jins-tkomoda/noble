@@ -11,7 +11,7 @@ import { Service } from './service';
 const debug = debugModule('noble');
 
 export class Noble extends events.EventEmitter {
-  private initialized;
+  private initialized: boolean;
   private address: string;
   private _bindings: NobleBindingsInterface;
   private _peripherals;
@@ -19,8 +19,8 @@ export class Noble extends events.EventEmitter {
   private _characteristics;
   private _descriptors;
   private _discoveredPeripheralUUids: string[];
-  private _allowDuplicates;
-  public _state;
+  private _allowDuplicates: boolean;
+  public _state: string;
 
   constructor(bindings: NobleBindingsInterface) {
     super();
@@ -91,7 +91,7 @@ export class Noble extends events.EventEmitter {
 
   }
 
-  onStateChange(state) {
+  onStateChange(state: string) {
     debug(`stateChange ${state}`);
 
     this._state = state;
@@ -105,9 +105,9 @@ export class Noble extends events.EventEmitter {
     this.address = address;
   }
 
-  startScanning(serviceUuids: string[] = [], allowDuplicates?, callback?) {
+  startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false, callback?) {
     const promise = new Promise((resolve, reject) => {
-      const scan = (state) => {
+      const scan = (state: string) => {
         if (state !== 'poweredOn') {
           const error = new Error(`Could not start scanning, state is ${state} (not poweredOn)`);
 
@@ -139,7 +139,7 @@ export class Noble extends events.EventEmitter {
     return promise;
   }
 
-  onScanStart(filterDuplicates) {
+  onScanStart(filterDuplicates: boolean) {
     debug('scanStart');
     this.emit('scanStart', filterDuplicates);
   }
@@ -165,7 +165,7 @@ export class Noble extends events.EventEmitter {
     this.emit('scanStop');
   }
 
-  onDiscover(uuid: string, address: string, addressType, connectable, advertisement, rssi) {
+  onDiscover(uuid: string, address: string, addressType: string, connectable: boolean, advertisement, rssi: number) {
     let peripheral = this._peripherals[uuid];
 
     if (!peripheral) {
@@ -198,7 +198,7 @@ export class Noble extends events.EventEmitter {
     this._bindings.connect(peripheralUuid);
   }
 
-  onConnect(peripheralUuid: string, error) {
+  onConnect(peripheralUuid: string, error?: Error) {
     const peripheral = this._peripherals[peripheralUuid];
 
     if (peripheral) {
@@ -228,7 +228,7 @@ export class Noble extends events.EventEmitter {
     this._bindings.updateRssi(peripheralUuid);
   }
 
-  onRssiUpdate(peripheralUuid: string, rssi) {
+  onRssiUpdate(peripheralUuid: string, rssi: number) {
     const peripheral = this._peripherals[peripheralUuid];
 
     if (peripheral) {
@@ -323,7 +323,7 @@ export class Noble extends events.EventEmitter {
     this._bindings.read(peripheralUuid, serviceUuid, characteristicUuid);
   }
 
-  ;onRead(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, data, isNotification) {
+  onRead(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, isNotification: boolean) {
     const characteristic = this._characteristics[peripheralUuid][serviceUuid][characteristicUuid];
 
     if (characteristic) {
@@ -335,7 +335,7 @@ export class Noble extends events.EventEmitter {
     }
   }
 
-  write(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, data, withoutResponse) {
+  write(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean) {
     this._bindings.write(peripheralUuid, serviceUuid, characteristicUuid, data, withoutResponse);
   }
 
@@ -349,11 +349,11 @@ export class Noble extends events.EventEmitter {
     }
   }
 
-  broadcast(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, broadcast) {
+  broadcast(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
     this._bindings.broadcast(peripheralUuid, serviceUuid, characteristicUuid, broadcast);
   }
 
-  onBroadcast(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, state) {
+  onBroadcast(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, state: string) {
     const characteristic = this._characteristics[peripheralUuid][serviceUuid][characteristicUuid];
 
     if (characteristic) {
@@ -363,11 +363,11 @@ export class Noble extends events.EventEmitter {
     }
   }
 
-  notify(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, notify) {
+  notify(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
     this._bindings.notify(peripheralUuid, serviceUuid, characteristicUuid, notify);
   }
 
-  onNotify(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, state) {
+  onNotify(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, state: string) {
     const characteristic = this._characteristics[peripheralUuid][serviceUuid][characteristicUuid];
 
     if (characteristic) {
@@ -413,7 +413,7 @@ export class Noble extends events.EventEmitter {
     this._bindings.readValue(peripheralUuid, serviceUuid, characteristicUuid, descriptorUuid);
   }
 
-  onValueRead(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data) {
+  onValueRead(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
     const descriptor = this._descriptors[peripheralUuid][serviceUuid][characteristicUuid][descriptorUuid];
 
     if (descriptor) {
@@ -423,7 +423,7 @@ export class Noble extends events.EventEmitter {
     }
   }
 
-  writeValue(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data) {
+  writeValue(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
     this._bindings.writeValue(peripheralUuid, serviceUuid, characteristicUuid, descriptorUuid, data);
   }
 
@@ -437,11 +437,11 @@ export class Noble extends events.EventEmitter {
     }
   }
 
-  readHandle(peripheralUuid: string, handle) {
+  readHandle(peripheralUuid: string, handle: number) {
     this._bindings.readHandle(peripheralUuid, handle);
   }
 
-  onHandleRead(peripheralUuid: string, handle, data) {
+  onHandleRead(peripheralUuid: string, handle: number, data: Buffer) {
     const peripheral = this._peripherals[peripheralUuid];
 
     if (peripheral) {
@@ -451,11 +451,11 @@ export class Noble extends events.EventEmitter {
     }
   }
 
-  writeHandle(peripheralUuid: string, handle, data, withoutResponse) {
+  writeHandle(peripheralUuid: string, handle: number, data: Buffer, withoutResponse: boolean) {
     this._bindings.writeHandle(peripheralUuid, handle, data, withoutResponse);
   }
 
-  onHandleWrite(peripheralUuid: string, handle) {
+  onHandleWrite(peripheralUuid: string, handle: number) {
     const peripheral = this._peripherals[peripheralUuid];
 
     if (peripheral) {
@@ -465,7 +465,7 @@ export class Noble extends events.EventEmitter {
     }
   }
 
-  onHandleNotify(peripheralUuid: string, handle, data) {
+  onHandleNotify(peripheralUuid: string, handle: number, data: Buffer) {
     const peripheral = this._peripherals[peripheralUuid];
 
     if (peripheral) {

@@ -1,10 +1,10 @@
 import * as crypto from 'crypto';
 
-export function r() {
+export function r(){
   return crypto.randomBytes(16);
 }
 
-export function c1(k, r, pres, preq, iat, ia, rat, ra) {
+export function c1(k: Buffer, r: Buffer, pres: Buffer, preq: Buffer, iat: Buffer, ia: Buffer, rat: Buffer, ra: Buffer) {
   const p1 = Buffer.concat([
     iat,
     rat,
@@ -26,14 +26,14 @@ export function c1(k, r, pres, preq, iat, ia, rat, ra) {
   return res;
 }
 
-export function s1(k, r1, r2) {
+export function s1(k: Buffer, r1: Buffer, r2: Buffer) {
   return e(k, Buffer.concat([
     r2.slice(0, 8),
     r1.slice(0, 8)
   ]));
 }
 
-export function e(key, data) {
+export function e(key: Buffer, data: Buffer) {
   key = swap(key);
   data = swap(data);
 
@@ -46,7 +46,7 @@ export function e(key, data) {
   ]));
 }
 
-function xor(b1, b2) {
+function xor(b1: Buffer, b2: Buffer) {
   const result = Buffer.alloc(b1.length);
 
   for (let i = 0; i < b1.length; i++) {
@@ -56,7 +56,7 @@ function xor(b1, b2) {
   return result;
 }
 
-function swap(input) {
+function swap(input: Buffer) {
   const output = Buffer.alloc(input.length);
 
   for (let i = 0; i < output.length; i++) {

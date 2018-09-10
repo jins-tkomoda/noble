@@ -122,7 +122,7 @@ describe('Peripheral', () => {
     });
 
     it('should callback with rssi', (done) => {
-      peripheral.updateRssi((error, rssi) => {
+      peripheral.updateRssi((error: Error, rssi: number) => {
         rssi.should.equal(mockRssi);
         done();
       });
@@ -146,7 +146,7 @@ describe('Peripheral', () => {
     });
 
     it('should delegate to noble, service uuids', () => {
-      const mockServiceUuids = [];
+      const mockServiceUuids: string[] = [];
 
       peripheral.discoverServices(mockServiceUuids);
 
@@ -154,7 +154,7 @@ describe('Peripheral', () => {
     });
 
     it('should callback', (done) => {
-      peripheral.discoverServices(null, () => {
+      peripheral.discoverServices([], () => {
         done();
       });
       peripheral.emit('servicesDiscover');
@@ -163,7 +163,7 @@ describe('Peripheral', () => {
     it('should callback with services', (done) => {
       const mockServices = [];
 
-      peripheral.discoverServices(null, (error, services) => {
+      peripheral.discoverServices([], (error: Error, services) => {
         services.should.equal(mockServices);
         done();
       });
@@ -173,7 +173,7 @@ describe('Peripheral', () => {
     it('should return a promise', (done) => {
       const mockServices = [];
 
-      peripheral.discoverServices(null).then((services) => {
+      peripheral.discoverServices().then((services) => {
         services.should.equal(mockServices);
         done();
       });

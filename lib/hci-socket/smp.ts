@@ -15,19 +15,19 @@ const SMP_MASTER_IDENT = 0x07;
 
 export class Smp extends events.EventEmitter {
   private _aclStream: AclStream;
-  private _iat;
-  private _ia;
-  private _r;
-  private _rat;
-  private _ra;
-  private _tk;
-  private _pcnf;
-  private _preq;
-  private _pres;
+  private _iat: Buffer;
+  private _ia: Buffer;
+  private _r!: Buffer;
+  private _rat: Buffer;
+  private _ra: Buffer;
+  private _tk!: Buffer;
+  private _pcnf!: Buffer;
+  private _preq!: Buffer;
+  private _pres!: Buffer;
   private onAclStreamDataBinded;
   private onAclStreamEndBinded;
 
-  constructor(aclStream: AclStream, localAddressType, localAddress: string, remoteAddressType, remoteAddress: string) {
+  constructor(aclStream: AclStream, localAddressType: string, localAddress: string, remoteAddressType: string, remoteAddress: string) {
     super();
     this._aclStream = aclStream;
 
@@ -57,7 +57,7 @@ export class Smp extends events.EventEmitter {
     this.write(this._preq);
   }
 
-  onAclStreamData(cid, data) {
+  onAclStreamData(cid: number, data: Buffer) {
     if (cid !== SMP_CID) {
       return;
     }
@@ -86,7 +86,7 @@ export class Smp extends events.EventEmitter {
     this.emit('end');
   }
 
-  handlePairingResponse(data) {
+  handlePairingResponse(data: Buffer) {
     this._pres = data;
 
     this._tk = Buffer.from('00000000000000000000000000000000', 'hex');
@@ -98,7 +98,7 @@ export class Smp extends events.EventEmitter {
     ]));
   }
 
-  handlePairingConfirm(data) {
+  handlePairingConfirm(data: Buffer) {
     this._pcnf = data;
 
     this.write(Buffer.concat([
@@ -107,7 +107,7 @@ export class Smp extends events.EventEmitter {
     ]));
   }
 
-  handlePairingRandom(data) {
+  handlePairingRandom(data: Buffer) {
     const r = data.slice(1);
 
     const pcnf = Buffer.concat([
@@ -129,24 +129,24 @@ export class Smp extends events.EventEmitter {
     }
   }
 
-  handlePairingFailed(data) {
+  handlePairingFailed(data: Buffer) {
     this.emit('fail');
   }
 
-  handleEncryptInfo(data) {
+  handleEncryptInfo(data: Buffer) {
     const ltk = data.slice(1);
 
     this.emit('ltk', ltk);
   }
 
-  handleMasterIdent(data) {
+  handleMasterIdent(data: Buffer) {
     const ediv = data.slice(1, 3);
     const rand = data.slice(3);
 
     this.emit('masterIdent', ediv, rand);
   }
 
-  write(data) {
+  write(data: Buffer) {
     this._aclStream.write(SMP_CID, data);
   }
 }

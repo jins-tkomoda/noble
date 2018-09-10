@@ -5,13 +5,13 @@ import { Smp } from './smp';
 
 export class AclStream extends events.EventEmitter {
   private _hci: Hci;
-  private _handle;
+  private _handle: number;
   private _smp: Smp;
   private onSmpStkBinded;
   private onSmpFailBinded;
   private onSmpEndBinded;
 
-  constructor(hci: Hci, handle, localAddressType, localAddress: string, remoteAddressType, remoteAddress: string) {
+  constructor(hci: Hci, handle: number, localAddressType: string, localAddress: string, remoteAddressType: string, remoteAddress: string) {
     super();
     this._hci = hci;
     this._handle = handle;
@@ -31,11 +31,11 @@ export class AclStream extends events.EventEmitter {
     this._smp.sendPairingRequest();
   }
 
-  write(cid, data) {
+  write(cid: number, data: Buffer) {
     this._hci.queueAclDataPkt(this._handle, cid, data);
   }
 
-  push(cid, data) {
+  push(cid: number | null, data?: Buffer) {
     if (data) {
       this.emit('data', cid, data);
     } else {
@@ -43,11 +43,11 @@ export class AclStream extends events.EventEmitter {
     }
   }
 
-  pushEncrypt(encrypt) {
+  pushEncrypt(encrypt: boolean) {
     this.emit('encrypt', encrypt);
   }
 
-  onSmpStk(stk) {
+  onSmpStk(stk: Buffer) {
     const random = Buffer.from('0000000000000000', 'hex');
     const diversifier = Buffer.from('0000', 'hex');
 
