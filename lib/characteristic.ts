@@ -9,11 +9,11 @@ export class Characteristic extends events.EventEmitter {
   private _noble: Noble;
   private _peripheralId: string;
   private _serviceUuid: string;
-  private name;
-  private type;
-  private properties;
 
+  public name: string | null;
+  public type: string | null;
   public uuid: string;
+  public properties: string[];
   public descriptors: Descriptor[];
 
   constructor(noble: Noble, peripheralId: string, serviceUuid: string, uuid: string, properties) {

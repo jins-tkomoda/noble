@@ -95,7 +95,7 @@ export class Hci extends events.EventEmitter {
   private _handleBuffers;
 
   public address!: string;
-  public addressType;
+  public addressType: string;
   public STATUS_MAPPER;
 
   constructor(deviceId = 0, useUserChannel = false) {

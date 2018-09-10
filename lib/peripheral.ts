@@ -5,16 +5,16 @@ import { Service } from './service';
 
 export class Peripheral extends events.EventEmitter {
   private _noble: Noble;
-  private id: string;
-  private address: string;
-  private addressType;
-  private connectable;
-  private advertisement;
-  private rssi;
-  private state;
 
+  public addressType: string;
+  public connectable: boolean;
+  public rssi: number;
+  public address: string;
+  public id: string;
   public uuid: string;
+  public advertisement;
   public services: Service[];
+  public state: 'error' | 'connecting' | 'connected' | 'disconnecting' | 'disconnected';
 
   constructor(noble: Noble, id: string, address: string, addressType, connectable, advertisement, rssi) {
     super();
