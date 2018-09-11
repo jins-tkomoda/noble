@@ -5,6 +5,7 @@ import * as XpcConnection from 'xpc-connection';
 
 import * as shared from '../shared';
 import { NobleBindingsInterface } from '../bindings';
+import { Advertisement, AdvertismentServiceData } from '../peripheral';
 import { localAddress } from './local-address';
 import { uuidToAddress } from './uuid-to-address';
 
@@ -13,11 +14,6 @@ const debug = debugModule('highsierra-bindings');
 interface MacCharacteristic {
   uuid: string;
   properties: string[]
-}
-
-interface MacServiceData {
-  uuid: string;
-  data: Buffer;
 }
 
 /**
@@ -405,9 +401,9 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
         localName: args.kCBMsgArgAdvertisementData.kCBAdvDataLocalName || args.kCBMsgArgName,
         txPowerLevel: args.kCBMsgArgAdvertisementData.kCBAdvDataTxPowerLevel,
         manufacturerData: args.kCBMsgArgAdvertisementData.kCBAdvDataManufacturerData,
-        serviceData: [] as MacServiceData[],
+        serviceData: [] as AdvertismentServiceData[],
         serviceUuids: serviceUuids.map(uuid => uuid.toString('hex')),
-      };
+      } as Advertisement;
       const connectable = !!args.kCBMsgArgAdvertisementData.kCBAdvDataIsConnectable;
       const rssi = args.kCBMsgArgRssi;
 

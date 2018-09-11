@@ -5,6 +5,7 @@ import * as XpcConnection from 'xpc-connection';
 
 import * as shared from '../shared';
 import { NobleBindingsInterface } from '../bindings';
+import { Advertisement, AdvertismentServiceData } from '../peripheral';
 import { localAddress } from './local-address';
 import { uuidToAddress } from './uuid-to-address';
 
@@ -13,11 +14,6 @@ const debug = debugModule('yosemite-bindings');
 interface MacCharacteristic {
   uuid: string;
   properties: string[]
-}
-
-interface MacServiceData {
-  uuid: string;
-  data: Buffer;
 }
 
 /**
@@ -404,21 +400,17 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       }
 
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
+      const serviceUuids: Buffer[] = args.kCBMsgArgAdvertisementData.kCBAdvDataServiceUUIDs || [];
+
       const advertisement = {
         localName: args.kCBMsgArgAdvertisementData.kCBAdvDataLocalName || args.kCBMsgArgName,
         txPowerLevel: args.kCBMsgArgAdvertisementData.kCBAdvDataTxPowerLevel,
         manufacturerData: args.kCBMsgArgAdvertisementData.kCBAdvDataManufacturerData,
-        serviceData: [] as MacServiceData[],
-        serviceUuids: [] as string[]
-      };
+        serviceData: [] as AdvertismentServiceData[],
+        serviceUuids: serviceUuids.map(uuid => uuid.toString('hex')),
+      } as Advertisement;
       const connectable = !!args.kCBMsgArgAdvertisementData.kCBAdvDataIsConnectable;
       const rssi = args.kCBMsgArgRssi;
-
-      if (args.kCBMsgArgAdvertisementData.kCBAdvDataServiceUUIDs) {
-        for (const kCBAdvDataServiceUUID of args.kCBMsgArgAdvertisementData.kCBAdvDataServiceUUIDs) {
-          advertisement.serviceUuids.push(kCBAdvDataServiceUUID.toString('hex'));
-        }
-      }
 
       const serviceData = args.kCBMsgArgAdvertisementData.kCBAdvDataServiceData;
       if (serviceData) {
