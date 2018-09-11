@@ -75,11 +75,11 @@ if (serverMode) {
   });
 }
 
-const peripherals = {};
+const peripherals = {} as any;
 
 // TODO: open/close ws on state change
 
-function sendEvent(event) {
+function sendEvent(event: any) {
   const message = JSON.stringify(event);
 
   debug(`ws -> send: ${message}`);
@@ -89,7 +89,7 @@ function sendEvent(event) {
   clients.forEach(client => client.send(message));
 }
 
-const onMessage = function(message) {
+const onMessage = function(message: any) {
   debug(`ws -> message: ${message}`);
 
   const command = JSON.parse(message);
@@ -221,7 +221,7 @@ noble.on('discover', (peripheral) => {
     });
   });
 
-  peripheral.on('servicesDiscover', function(this: Peripheral, services) {
+  peripheral.on('servicesDiscover', function(this: Peripheral, services: Service[]) {
     const peripheral = this;
     const serviceUuids: string[] = [];
 
@@ -234,7 +234,7 @@ noble.on('discover', (peripheral) => {
       });
     };
 
-    const characteristicsDiscover = function(this: Service, characteristics) {
+    const characteristicsDiscover = function(this: Service, characteristics: Characteristic[]) {
       const service = this;
       const discoveredCharacteristics: WsSlaveCharacteristic[] = [];
 
@@ -286,7 +286,7 @@ noble.on('discover', (peripheral) => {
         });
       };
 
-      const descriptorsDiscover = function(this: Characteristic, descriptors) {
+      const descriptorsDiscover = function(this: Characteristic, descriptors: Descriptor[]) {
         const characteristic = this;
 
         const discoveredDescriptors: string[] = [];

@@ -6,8 +6,8 @@ import { NobleBindingsInterface } from '../bindings';
 
 export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
   private _wss: ws.Server;
-  private _startScanCommand;
-  private _peripherals;
+  private _startScanCommand: any;
+  private _peripherals: any;
 
   constructor() {
     super();
@@ -32,7 +32,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     // no-op
   }
 
-  _onConnection(ws) {
+  _onConnection(ws: ws) {
     if (this._wss.clients.size === 1) {
       this.emit('stateChange', 'poweredOn');
     } else if (this._startScanCommand) {
@@ -43,18 +43,18 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       this.emit('close', ws);
     });
 
-    ws.on('message', (data) => {
+    ws.on('message', (data: any) => {
       this.emit('message', ws, JSON.parse(data));
     });
   }
 
-  _onClose(ws) {
+  _onClose(ws: ws) {
     if (this._wss.clients.size === 0) {
       this.emit('stateChange', 'poweredOff');
     }
   }
 
-  _onMessage(ws, event) {
+  _onMessage(ws: ws, event: any) {
     const type = event.type;
     const peripheralUuid = event.peripheralUuid;
     const address = event.address;
@@ -128,7 +128,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  _sendCommand(ws, command) {
+  _sendCommand(ws: ws | null, command: any) {
     const clients = ws ? new Set([ws]) : this._wss.clients;
 
     const message = JSON.stringify(command);

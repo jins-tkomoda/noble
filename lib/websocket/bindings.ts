@@ -10,8 +10,8 @@ import { NobleBindingsInterface } from '../bindings';
 
 export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
   private _ws: WebSocket;
-  private _startScanCommand;
-  private _peripherals;
+  private _startScanCommand: any;
+  private _peripherals: { [uuid: string]: any };
 
   constructor() {
     super();
@@ -45,8 +45,8 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('stateChange', 'poweredOff');
   }
 
-  _onMessage(event) {
-    const type = event.type;
+  _onMessage(event: any) {
+    const type = event.action;
     const peripheralUuid = event.peripheralUuid;
     const address = event.address;
     const addressType = event.addressType;
@@ -80,7 +80,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
         uuid: peripheralUuid,
         address: address,
         advertisement: advertisement,
-        rssi: rssi
+        rssi: rssi,
       };
 
       this.emit('discover', peripheralUuid, address, addressType, connectable, advertisement, rssi);
@@ -119,7 +119,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  _sendCommand(command, errorCallback?) {
+  _sendCommand(command: any, errorCallback?: (error: Error) => void) {
     const message = JSON.stringify(command);
     this._ws.send(message, (error) => {
       if (error !== null) {
@@ -131,12 +131,13 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false) {
-    this._startScanCommand = {
+    const startScanCommand = {
       action: 'startScanning',
       serviceUuids: serviceUuids,
       allowDuplicates: allowDuplicates
     };
-    this._sendCommand(this._startScanCommand);
+    this._startScanCommand = startScanCommand;
+    this._sendCommand(startScanCommand);
 
     this.emit('scanStart');
   }

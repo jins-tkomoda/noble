@@ -7,7 +7,7 @@ import { NobleBindingsInterface } from '../bindings';
 
 const debug = debugModule('webble-bindings');
 
-function makeList(uuid: string: number) {
+function makeList(uuid: string | number) {
   return {services:[ uuid ]};
 }
 
@@ -31,10 +31,10 @@ function stripDashes(uuid: string | number) {
 
 export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
   private _ble: Bluetooth;
-  private _startScanCommand;
-  private _peripherals;
+  private _startScanCommand: null;
+  private _peripherals: any;
 
-  constructor(ble?) {
+  constructor(ble?: Bluetooth) {
     super();
     this._ble = ble || navigator.bluetooth;
     this._startScanCommand = null;
@@ -106,7 +106,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
             address: address,
             advertisement: {localName:device.name}, //advertisement,
             device: device,
-            cachedServices: {},
+            cachedServices: {} as { [uuid:string]: BluetoothRemoteGATTService[] },
             localName: device.name,
             serviceUuids: dashedUuids
           };
@@ -149,17 +149,17 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
     // Attempts to connect to remote GATT Server.
     peripheral.device.gatt.connect()
-      .then((gattServer) => {
+      .then((gattServer: BluetoothRemoteGATTServer) => {
         debug('peripheral connected', gattServer);
 
-        const onDisconnected = (event) => {
+        const onDisconnected = (event: Event) => {
           debug('disconnected', peripheral.uuid);
           this.emit('disconnect', peripheral.uuid);
         };
         peripheral.device.addEventListener('gattserverdisconnected', onDisconnected, {once: true});
 
         this.emit('connect', deviceUuid);
-      }, (err) => {
+      }, (err: Error) => {
         debug('err connecting', err);
         this.emit('connect', deviceUuid, err);
       });
@@ -204,10 +204,10 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     if(peripheral){
 
       this.getPrimaryService(peripheral, serviceUuid)
-        .then((service) => {
+        .then((service: BluetoothRemoteGATTService) => {
           return service.getCharacteristics();
         })
-        .then((characteristics) => {
+        .then((characteristics: BluetoothRemoteGATTCharacteristic[]) => {
           const discoveredCharacteristics = characteristics.map((char) => {
             const charInfo = {uuid: stripDashes(char.uuid), properties: [] as string[]};
 
@@ -238,7 +238,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
   }
 
-  getPrimaryService(peripheral, serviceUuid: string | number) {
+  getPrimaryService(peripheral: any, serviceUuid: string | number): Promise<BluetoothRemoteGATTService> {
     serviceUuid = addDashes(serviceUuid);
 
     if(peripheral.cachedServices[serviceUuid]){
@@ -248,7 +248,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
 
     return peripheral.device.gatt.getPrimaryService(serviceUuid)
-      .then((service) => {
+      .then((service: BluetoothRemoteGATTService) => {
         peripheral.cachedServices[serviceUuid] = service;
         return service;
       });
@@ -318,7 +318,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       })
         .then((characteristic) => {
           debug('notifications started', characteristicUuid);
-          peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`] = (evt) => {
+          peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`] = (evt: any) => {
             debug('oncharacteristicvaluechanged', evt, Buffer.from(evt.target.value.buffer));
             this.emit('read', deviceUuid, serviceUuid, characteristicUuid, Buffer.from(evt.target.value.buffer), true);
           };

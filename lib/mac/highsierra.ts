@@ -20,7 +20,7 @@ interface MacCharacteristic {
  *  NobleBindings for mac
  */
 export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
-  private _peripherals;
+  private _peripherals: any;
   private _xpcConnection: XpcConnection;
 
   constructor() {
@@ -56,12 +56,12 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  sendCBMsg(id: number, args) {
+  sendCBMsg(id: number, args: any) {
     debug(`sendCBMsg: ${id}, ${JSON.stringify(args, undefined, 2)}`);
     this.sendXpcMessage({kCBMsgId: id, kCBMsgArgs: args});
   }
 
-  sendXpcMessage(message) {
+  sendXpcMessage(message: any) {
     this._xpcConnection.sendMessage(message);
   }
 

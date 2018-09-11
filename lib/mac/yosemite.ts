@@ -20,7 +20,7 @@ interface MacCharacteristic {
  *  NobleBindings for mac
  */
 export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
-  private _peripherals;
+  private _peripherals: any;
   private _xpcConnection: XpcConnection;
 
   constructor() {
@@ -56,12 +56,12 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  sendCBMsg(id: number, args) {
+  sendCBMsg(id: number, args: any) {
     debug(`sendCBMsg: ${id}, ${JSON.stringify(args, undefined, 2)}`);
-    this.sendXpcMessage({kCBMsgId: id,kCBMsgArgs: args});
+    this.sendXpcMessage({kCBMsgId: id, kCBMsgArgs: args});
   }
 
-  sendXpcMessage(message) {
+  sendXpcMessage(message: any) {
     this._xpcConnection.sendMessage(message);
   }
 
@@ -359,7 +359,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.on('xpcEvent', (event) => {
       debug(`xpcEvent: ${JSON.stringify(event, undefined, 2)}`);
 
-      const kCBMsgId   = event.kCBMsgId;
+      const kCBMsgId = event.kCBMsgId;
       const kCBMsgArgs = event.kCBMsgArgs;
       this.emit(`kCBMsgId${kCBMsgId}`, kCBMsgArgs);
     });
@@ -439,7 +439,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       this._peripherals[deviceUuid].advertisement = advertisement;
       this._peripherals[deviceUuid].rssi = rssi;
 
-      ((deviceUuid: string, advertisement, rssi) => {
+      ((deviceUuid, advertisement, rssi) => {
         uuidToAddress(deviceUuid, (error, address = 'unknown', addressType = 'unknown') => {
           this._peripherals[deviceUuid].address = address;
           this._peripherals[deviceUuid].addressType = addressType;
