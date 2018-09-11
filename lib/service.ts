@@ -2,8 +2,7 @@ import * as events from 'events';
 
 import { Noble } from './noble';
 import { Characteristic }  from './characteristic';
-
-import * as services from './services.json';
+import { serviceInfo } from './gatt-database';
 
 export class Service extends events.EventEmitter {
   private _noble: Noble;
@@ -25,7 +24,7 @@ export class Service extends events.EventEmitter {
     this.includedServiceUuids = [];
     this.characteristics = [];
 
-    const service = services[uuid];
+    const service = serviceInfo(uuid);
     if (service) {
       this.name = service.name;
       this.type = service.type;

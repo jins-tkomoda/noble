@@ -1,8 +1,7 @@
 import * as events from 'events';
 
 import { Noble } from './noble';
-
-import * as descriptors from './descriptors.json';
+import { descriptorInfo } from './gatt-database';
 
 export class Descriptor extends events.EventEmitter {
   private _noble: Noble;
@@ -25,7 +24,7 @@ export class Descriptor extends events.EventEmitter {
     this.name = null;
     this.type = null;
 
-    const descriptor = descriptors[uuid];
+    const descriptor = descriptorInfo(uuid);
     if (descriptor) {
       this.name = descriptor.name;
       this.type = descriptor.type;
@@ -40,7 +39,7 @@ export class Descriptor extends events.EventEmitter {
     });
   }
 
-  readValue(callback) {
+  readValue(callback?) {
     const promise = new Promise((resolve, reject) => {
       this.once('valueRead', resolve);
 
@@ -59,7 +58,7 @@ export class Descriptor extends events.EventEmitter {
     return promise;
   }
 
-  writeValue(data: Buffer, callback) {
+  writeValue(data: Buffer, callback?) {
     if (!(data instanceof Buffer)) {
       throw new Error('data must be a Buffer');
     }

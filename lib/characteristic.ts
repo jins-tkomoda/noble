@@ -2,8 +2,8 @@ import * as events from 'events';
 
 import { Noble } from './noble';
 import { Descriptor } from './descriptor';
+import { characteristicInfo } from './gatt-database';
 
-import * as characteristics from './characteristics.json';
 
 export class Characteristic extends events.EventEmitter {
   private _noble: Noble;
@@ -28,7 +28,7 @@ export class Characteristic extends events.EventEmitter {
     this.properties = properties;
     this.descriptors = [];
 
-    const characteristic = characteristics[uuid];
+    const characteristic = characteristicInfo(uuid);
     if (characteristic) {
       this.name = characteristic.name;
       this.type = characteristic.type;
