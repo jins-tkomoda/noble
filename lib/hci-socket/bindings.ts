@@ -2,6 +2,7 @@
 import * as events from 'events';
 
 import { NobleBindingsInterface } from '../bindings';
+import { Advertisement } from '../peripheral';
 import { AclStream } from './acl-stream';
 import { Gap } from './gap';
 import { Gatt } from './gatt';
@@ -167,7 +168,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('scanStop');
   }
 
-  onDiscover(status: number, address: string, addressType: string, connectable: boolean, advertisement, rssi: number) {
+  onDiscover(status: number, address: string, addressType: string, connectable: boolean, advertisement: Advertisement, rssi: number) {
     if (this._scanServiceUuids === undefined) {
       return;
     }

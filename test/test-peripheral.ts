@@ -1,7 +1,7 @@
 import 'should';
 import * as sinon from 'sinon';
 
-import { Peripheral } from '../lib/peripheral';
+import { Advertisement, Peripheral } from '../lib/peripheral';
 
 describe('Peripheral', () => {
   let mockNoble;
@@ -9,7 +9,13 @@ describe('Peripheral', () => {
   const mockAddress = 'mock-address';
   const mockAddressType = 'mock-address-type';
   const mockConnectable = 'mock-connectable';
-  const mockAdvertisement = 'mock-advertisement';
+  const mockAdvertisement = {
+    localName: 'mockName',
+    txPowerLevel: 0,
+    manufacturerData: null,
+    serviceUuids: [],
+    serviceData: [ {uuid: 'mock-service-uuid', data: Buffer.alloc(0)} ]
+  };
   const mockRssi = 'mock-rssi';
   const mockHandle = 'mock-handle';
   let mockData = Buffer.from('mock-data');
@@ -58,8 +64,18 @@ describe('Peripheral', () => {
   });
 
   describe('toString', () => {
+    const expected = JSON.stringify({
+      id: mockId,
+      address: mockAddress,
+      addressType: mockAddressType,
+      connectable: mockConnectable,
+      advertisement: mockAdvertisement,
+      rssi: mockRssi,
+      state: 'disconnected'
+    });
     it('should be id, address, address type, connectable, advertisement, rssi, state', () => {
-      peripheral.toString().should.equal('{"id":"mock-id","address":"mock-address","addressType":"mock-address-type","connectable":"mock-connectable","advertisement":"mock-advertisement","rssi":"mock-rssi","state":"disconnected"}');
+      //peripheral.toString().should.equal('{"id":"mock-id","address":"mock-address","addressType":"mock-address-type","connectable":true,"advertisement":"mock-advertisement","rssi":-1,"state":"disconnected"}');
+      peripheral.toString().should.equal(expected);
     });
   });
 

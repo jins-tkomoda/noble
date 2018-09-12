@@ -3,6 +3,7 @@ import * as os from 'os';
 
 import * as debugModule from 'debug';
 
+import { Advertisement } from '../peripheral';
 import { Hci } from './hci';
 
 const debug = debugModule('gap');
@@ -107,9 +108,9 @@ export class Gap extends events.EventEmitter {
   onHciLeAdvertisingReport(status: number, type: number, address: string, addressType: string, eir: Buffer, rssi: number) {
     const previouslyDiscovered = !!this._discoveries[address];
     const advertisement =  previouslyDiscovered ? this._discoveries[address].advertisement : {
-      localName: undefined,
-      txPowerLevel: undefined,
-      manufacturerData: undefined,
+      localName: '',
+      txPowerLevel: 0,
+      manufacturerData: null,
       serviceData: [],
       serviceUuids: [],
       serviceSolicitationUuids: []

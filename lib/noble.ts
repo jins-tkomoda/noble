@@ -5,7 +5,7 @@ import * as debugModule from 'debug';
 import { NobleBindingsInterface } from './bindings';
 import { Characteristic } from './characteristic';
 import { Descriptor } from './descriptor';
-import { Peripheral } from './peripheral';
+import { Peripheral, Advertisement } from './peripheral';
 import { Service } from './service';
 
 const debug = debugModule('noble');
@@ -165,7 +165,7 @@ export class Noble extends events.EventEmitter {
     this.emit('scanStop');
   }
 
-  onDiscover(uuid: string, address: string, addressType: string, connectable: boolean, advertisement, rssi: number) {
+  onDiscover(uuid: string, address: string, addressType: string, connectable: boolean, advertisement: Advertisement, rssi: number) {
     let peripheral = this._peripherals[uuid];
 
     if (!peripheral) {

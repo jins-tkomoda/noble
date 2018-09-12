@@ -4,6 +4,20 @@ import { Noble } from './noble';
 import { Characteristic } from './characteristic';
 import { Service } from './service';
 
+export interface AdvertismentServiceData {
+  uuid: string;
+  data: Buffer;
+}
+
+export interface Advertisement {
+    localName: string;
+    serviceData: AdvertismentServiceData[];
+    txPowerLevel: number;
+    manufacturerData: Buffer | null;
+    serviceUuids: string[];
+    serviceSolicitationUuids?: string[];
+}
+
 interface ServicesAndCharacteristics {
   services?: Service[];
   characteristics?: Characteristic[];
@@ -18,11 +32,11 @@ export class Peripheral extends events.EventEmitter {
   public address: string;
   public id: string;
   public uuid: string;
-  public advertisement;
+  public advertisement: Advertisement;
   public services: Service[];
   public state: 'error' | 'connecting' | 'connected' | 'disconnecting' | 'disconnected';
 
-  constructor(noble: Noble, id: string, address: string, addressType: string, connectable: boolean, advertisement, rssi: number) {
+  constructor(noble: Noble, id: string, address: string, addressType: string, connectable: boolean, advertisement: Advertisement, rssi: number) {
     super();
     this._noble = noble;
 
