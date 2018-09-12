@@ -112,7 +112,7 @@ export class Gap extends events.EventEmitter {
       manufacturerData: undefined,
       serviceData: [],
       serviceUuids: [],
-      solicitationServiceUuids: []
+      serviceSolicitationUuids: []
     };
 
     let discoveryCount = previouslyDiscovered ? this._discoveries[address].count : 0;

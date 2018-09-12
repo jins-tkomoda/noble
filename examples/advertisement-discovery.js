@@ -21,7 +21,7 @@ noble.on('discover', (peripheral) => {
     console.log('\there is my service data:');
     serviceData.forEach(serviceIndex => {
       console.log(`\t\t${JSON.stringify(serviceIndex.uuid)}: ${JSON.stringify(serviceIndex.data.toString('hex'))}`);
-    })
+    });
   }
   if (peripheral.advertisement.manufacturerData) {
     console.log('\there is my manufacturer data:');
