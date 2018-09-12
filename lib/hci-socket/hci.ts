@@ -4,7 +4,8 @@ import * as debugModule from 'debug';
 
 import * as BluetoothHciSocket from 'bluetooth-hci-socket';
 
-import * as STATUS_MAPPER from './hci-status.json';
+import * as hciStatusJson from './hci-status.json';
+export const STATUS_MAPPER = hciStatusJson;
 
 const debug = debugModule('hci');
 
@@ -96,7 +97,6 @@ export class Hci extends events.EventEmitter {
 
   public address!: string;
   public addressType: string;
-  public STATUS_MAPPER;
 
   constructor(deviceId = 0, useUserChannel = false) {
     super();
@@ -112,7 +112,6 @@ export class Hci extends events.EventEmitter {
     this._aclMaxInProgress = 1;
     this._aclOutQueue = [];
 
-    this.STATUS_MAPPER = STATUS_MAPPER;
     this.resetBuffers();
 
     this.on('stateChange', this.onStateChange.bind(this));

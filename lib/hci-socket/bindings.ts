@@ -5,7 +5,7 @@ import { NobleBindingsInterface } from '../bindings';
 import { AclStream } from './acl-stream';
 import { Gap } from './gap';
 import { Gatt } from './gatt';
-import { Hci } from './hci';
+import { Hci, STATUS_MAPPER } from './hci';
 import { Signaling } from './signaling';
 
 interface NobleBindingsOptions {
@@ -252,7 +252,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       this._gatts[handle].exchangeMtu(256);
     } else {
       uuid = this._pendingConnectionUuid;
-      let statusMessage = this._hci.STATUS_MAPPER[status] || 'HCI Error: Unknown';
+      let statusMessage = STATUS_MAPPER[status] || 'HCI Error: Unknown';
       const errorCode = ` (0x${status.toString(16)})`;
       statusMessage = statusMessage + errorCode;
       error = new Error(statusMessage);
