@@ -199,7 +199,7 @@ export class Gatt extends events.EventEmitter {
     if (encrypt) {
       this._security = 'medium';
 
-      this.writeAtt(this._currentCommand.buffer);
+      this.writeAtt(this._currentCommand!.buffer);
     }
   }
 

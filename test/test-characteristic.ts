@@ -36,8 +36,8 @@ describe('Characteristic', () => {
   it('should lookup name and type by uuid', () => {
     characteristic = new Characteristic(mockNoble, mockPeripheralId, mockServiceUuid, '2a00', mockProperties);
 
-    characteristic.name.should.equal('Device Name');
-    characteristic.type.should.equal('org.bluetooth.characteristic.gap.device_name');
+    characteristic.name!.should.equal('Device Name');
+    characteristic.type!.should.equal('org.bluetooth.characteristic.gap.device_name');
   });
 
   it('should have properties', () => {
@@ -67,7 +67,7 @@ describe('Characteristic', () => {
     it('should callback with data', (done) => {
       const mockData = Buffer.alloc(0);
       characteristic.read((error, data) => {
-        data.should.equal(mockData);
+        data!.should.equal(mockData);
         done();
       });
       characteristic.emit('read', mockData);
@@ -233,7 +233,7 @@ describe('Characteristic', () => {
     it('should callback with descriptors', (done) => {
       const mockDescriptors: Descriptor[] = [];
       characteristic.discoverDescriptors((error, descriptors) => {
-        descriptors.should.equal(mockDescriptors);
+        descriptors!.should.equal(mockDescriptors);
         done();
       });
       characteristic.emit('descriptorsDiscover', mockDescriptors);

@@ -194,8 +194,8 @@ export class Gap extends events.EventEmitter {
         case 0x14: { // List of 16 bit solicitation UUIDs
           for (let j = 0; j < bytes.length; j += 2) {
             serviceSolicitationUuid = bytes.readUInt16LE(j).toString(16);
-            if (!advertisement.serviceSolicitationUuids.includes(serviceSolicitationUuid)) {
-              advertisement.serviceSolicitationUuids.push(serviceSolicitationUuid);
+            if (!advertisement.serviceSolicitationUuids!.includes(serviceSolicitationUuid)) {
+              advertisement.serviceSolicitationUuids!.push(serviceSolicitationUuid);
             }
           }
           break;
@@ -203,8 +203,8 @@ export class Gap extends events.EventEmitter {
         case 0x15: { // List of 128 bit solicitation UUIDs
           for (let j = 0; j < bytes.length; j += 16) {
             serviceSolicitationUuid = bytes.slice(j, j + 16).toString('hex').match(/.{1,2}/g)!.reverse().join('');
-            if (!advertisement.serviceSolicitationUuids.includes(serviceSolicitationUuid)) {
-              advertisement.serviceSolicitationUuids.push(serviceSolicitationUuid);
+            if (!advertisement.serviceSolicitationUuids!.includes(serviceSolicitationUuid)) {
+              advertisement.serviceSolicitationUuids!.push(serviceSolicitationUuid);
             }
           }
           break;
@@ -242,8 +242,8 @@ export class Gap extends events.EventEmitter {
         case 0x1f: { // List of 32 bit solicitation UUIDs
           for (let j = 0; j < bytes.length; j += 4) {
             serviceSolicitationUuid = bytes.readUInt32LE(j).toString(16);
-            if (!advertisement.serviceSolicitationUuids.includes(serviceSolicitationUuid)) {
-              advertisement.serviceSolicitationUuids.push(serviceSolicitationUuid);
+            if (!advertisement.serviceSolicitationUuids!.includes(serviceSolicitationUuid)) {
+              advertisement.serviceSolicitationUuids!.push(serviceSolicitationUuid);
             }
           }
           break;

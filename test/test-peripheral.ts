@@ -141,7 +141,7 @@ describe('Peripheral', () => {
 
     it('should callback with rssi', (done) => {
       peripheral.updateRssi((error: Error, rssi: number) => {
-        rssi.should.equal(mockRssi);
+        rssi!.should.equal(mockRssi);
         done();
       });
       peripheral.emit('rssiUpdate', mockRssi);
@@ -182,7 +182,7 @@ describe('Peripheral', () => {
       const mockServices: Service[] = [];
 
       peripheral.discoverServices([], (error: Error, services) => {
-        services.should.equal(mockServices);
+        services!.should.equal(mockServices);
         done();
       });
       peripheral.emit('servicesDiscover', mockServices);
@@ -251,8 +251,8 @@ describe('Peripheral', () => {
 
     it('should callback with the services and characteristics discovered', (done) => {
       peripheral.discoverSomeServicesAndCharacteristics(mockServiceUuids, mockCharacteristicUuids, (err, services, characteristics) => {
-        services.should.equal(mockServices);
-        characteristics.should.eql([mockCharacteristic1, mockCharacteristic2, mockCharacteristic3]);
+        services!.should.equal(mockServices);
+        characteristics!.should.eql([mockCharacteristic1, mockCharacteristic2, mockCharacteristic3]);
         done();
       });
 
@@ -270,8 +270,8 @@ describe('Peripheral', () => {
 
     it('should return a promise', (done) => {
       peripheral.discoverSomeServicesAndCharacteristics(mockServiceUuids, mockCharacteristicUuids).then(({services, characteristics}) => {
-        services.should.equal(mockServices);
-        characteristics.should.eql([mockCharacteristic1, mockCharacteristic2, mockCharacteristic3]);
+        services!.should.equal(mockServices);
+        characteristics!.should.eql([mockCharacteristic1, mockCharacteristic2, mockCharacteristic3]);
         done();
       });
 
@@ -316,7 +316,7 @@ describe('Peripheral', () => {
 
     it('should callback with data', (done) => {
       peripheral.readHandle(mockHandle, (error, data) => {
-        data.should.equal(mockData);
+        data!.should.equal(mockData);
         done();
       });
       peripheral.emit(`handleRead${mockHandle}`, mockData);

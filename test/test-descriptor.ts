@@ -32,8 +32,8 @@ describe('Descriptor', () => {
   it('should lookup name and type by uuid', () => {
     descriptor = new Descriptor(mockNoble, mockPeripheralId, mockServiceUuid, mockCharacteristicUuid, '2900');
 
-    descriptor.name.should.equal('Characteristic Extended Properties');
-    descriptor.type.should.equal('org.bluetooth.descriptor.gatt.characteristic_extended_properties');
+    descriptor.name!.should.equal('Characteristic Extended Properties');
+    descriptor.type!.should.equal('org.bluetooth.descriptor.gatt.characteristic_extended_properties');
   });
 
   describe('toString', () => {

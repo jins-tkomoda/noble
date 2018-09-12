@@ -31,8 +31,8 @@ describe('service', () => {
   it('should lookup name and type by uuid', () => {
     service = new Service(mockNoble, mockPeripheralId, '1800');
 
-    service.name.should.equal('Generic Access');
-    service.type.should.equal('org.bluetooth.service.generic_access');
+    service.name!.should.equal('Generic Access');
+    service.type!.should.equal('org.bluetooth.service.generic_access');
   });
 
   describe('toString', () => {
@@ -66,7 +66,7 @@ describe('service', () => {
     it('should callback with data', (done) => {
       const mockIncludedServiceUuids: string[] = [];
       service.discoverIncludedServices(null, (error, includedServiceUuids) => {
-        includedServiceUuids.should.equal(mockIncludedServiceUuids);
+        includedServiceUuids!.should.equal(mockIncludedServiceUuids);
         done();
       });
       service.emit('includedServicesDiscover', mockIncludedServiceUuids);
@@ -108,7 +108,7 @@ describe('service', () => {
       const mockCharacteristics: Characteristic[] = [];
 
       service.discoverCharacteristics(null, (error, mockCharacteristics) => {
-        mockCharacteristics.should.equal(mockCharacteristics);
+        mockCharacteristics!.should.equal(mockCharacteristics);
         done();
       });
       service.emit('characteristicsDiscover', mockCharacteristics);
