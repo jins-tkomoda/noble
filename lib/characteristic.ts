@@ -44,8 +44,8 @@ export class Characteristic extends events.EventEmitter {
     });
   }
 
-  read(callback) {
-    const promise = new Promise((resolve, reject) => {
+  read(callback?: (error: Error | null, data?: Buffer) => void): void | Promise<Buffer> {
+    const promise = new Promise<Buffer>((resolve, reject) => {
       const onRead = (data: Buffer, isNotificaton: boolean) => {
         // only call the callback if 'read' event and non-notification
         // 'read' for non-notifications is only present for backwards compatbility
@@ -74,12 +74,12 @@ export class Characteristic extends events.EventEmitter {
     return promise;
   }
 
-  write(data: Buffer, withoutResponse: boolean = false, callback) {
+  write(data: Buffer, withoutResponse: boolean = false, callback?: (error?: Error) => void): void | Promise<void> {
     if (process.title !== 'browser' && !(data instanceof Buffer)) {
       throw new Error('data must be a Buffer');
     }
 
-    const promise = new Promise((resolve, reject) => {
+    const promise = new Promise<void>((resolve, reject) => {
       this.once('write', resolve);
 
       this._noble.write(
@@ -98,8 +98,8 @@ export class Characteristic extends events.EventEmitter {
     return promise;
   }
 
-  broadcast(broadcast: boolean, callback) {
-    const promise = new Promise((resolve, reject) => {
+  broadcast(broadcast: boolean, callback?: (error?: Error) => void): void | Promise<void> {
+    const promise = new Promise<void>((resolve, reject) => {
       this.once('broadcast', resolve);
 
       this._noble.broadcast(
@@ -118,8 +118,8 @@ export class Characteristic extends events.EventEmitter {
   }
 
   // deprecated in favour of subscribe/unsubscribe
-  notify(notify: boolean, callback) {
-    const promise = new Promise((resolve, reject) => {
+  notify(notify: boolean, callback?: (error?: Error | null | undefined) => void): void | Promise<void> {
+    const promise = new Promise<void>((resolve, reject) => {
       this.once('notify', resolve);
 
       this._noble.notify(
@@ -137,16 +137,16 @@ export class Characteristic extends events.EventEmitter {
     return promise;
   }
 
-  subscribe(callback) {
+  subscribe(callback?: (error?: Error | null) => void) {
     return this.notify(true, callback);
   }
 
-  unsubscribe(callback) {
+  unsubscribe(callback?: (error?: Error | null) => void) {
     return this.notify(false, callback);
   }
 
-  discoverDescriptors(callback) {
-    const promise = new Promise((resolve, reject) => {
+  discoverDescriptors(callback?: (error: Error | null, descriptors?: Descriptor[]) => void): void | Promise<Descriptor[]> {
+    const promise = new Promise<Descriptor[]>((resolve, reject) => {
       this.once('descriptorsDiscover', resolve);
 
       this._noble.discoverDescriptors(

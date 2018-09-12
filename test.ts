@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import * as noble from './index';
-
+import { Peripheral } from './lib/peripheral';
+import { Characteristic } from './lib/characteristic';
 console.log('noble');
 
 noble.on('stateChange', (state) => {
@@ -23,7 +24,7 @@ noble.on('scanStop', () => {
 
 
 
-noble.on('discover', (peripheral) => {
+noble.on('discover', (peripheral: Peripheral) => {
   console.log(`on -> discover: ${peripheral}`);
 
   noble.stopScanning();
@@ -52,7 +53,7 @@ noble.on('discover', (peripheral) => {
       services[serviceIndex].discoverCharacteristics();
     });
 
-    services[serviceIndex].on('characteristicsDiscover', (characteristics) => {
+    services[serviceIndex].on('characteristicsDiscover', (characteristics: Characteristic[]) => {
       console.log(`on -> service characteristics discovered ${characteristics}`);
 
       const characteristicIndex = 0;

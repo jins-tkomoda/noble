@@ -24,7 +24,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   private _hci: Hci;
   private _gap: Gap;
   private _scanServiceUuids: string[] | undefined;
-  private onSigIntBinded;
+  private onSigIntBinded!: () => void;
 
   constructor(options = {}) {
     super();

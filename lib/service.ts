@@ -40,8 +40,8 @@ export class Service extends events.EventEmitter {
     });
   }
 
-  discoverIncludedServices(serviceUuids: string[], callback) {
-    const promise = new Promise((resolve, reject) => {
+  discoverIncludedServices(serviceUuids: string[] = [], callback?: (error: Error | null, includedServiceUuids?: string[]) => void): void | Promise<string[]> {
+    const promise = new Promise<string[]>((resolve, reject) => {
       this.once('includedServicesDiscover', resolve);
 
       this._noble.discoverIncludedServices(
@@ -58,8 +58,8 @@ export class Service extends events.EventEmitter {
     return promise;
   }
 
-  discoverCharacteristics(characteristicUuids: string[] = [], callback) {
-    const promise = new Promise((resolve, reject) => {
+  discoverCharacteristics(characteristicUuids: string[] = [], callback?: (error: Error | null, characteristics?: Characteristic[]) => void): void | Promise<Characteristic[]> {
+    const promise = new Promise<Characteristic[]>((resolve, reject) => {
       this.once('characteristicsDiscover', resolve);
 
       this._noble.discoverCharacteristics(

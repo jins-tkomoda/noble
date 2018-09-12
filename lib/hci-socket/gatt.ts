@@ -96,10 +96,10 @@ export class Gatt extends events.EventEmitter {
   private _commandQueue;
   private _mtu: number;
   private _security: string;
-  private onAclStreamDataBinded;
-  private onAclStreamEncryptBinded;
-  private onAclStreamEncryptFailBinded;
-  private onAclStreamEndBinded;
+  private onAclStreamDataBinded: (cid: number, data: Buffer) => void;
+  private onAclStreamEncryptBinded: (encrypt: boolean) => void;
+  private onAclStreamEncryptFailBinded: () => void;
+  private onAclStreamEndBinded: () => void;
 
   constructor(address: string, aclStream: AclStream, isMultiRole: boolean = false) {
     super();
@@ -231,7 +231,7 @@ export class Gatt extends events.EventEmitter {
     return buf;
   }
 
-  _queueCommand(buffer: Buffer, callback, writeCallback?) {
+  _queueCommand(buffer: Buffer, callback: ((data: Buffer) => void) | null, writeCallback?: () => void) {
     this._commandQueue.push({
       buffer: buffer,
       callback: callback,
