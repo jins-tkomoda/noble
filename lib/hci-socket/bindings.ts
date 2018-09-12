@@ -8,9 +8,15 @@ import { Gatt } from './gatt';
 import { Hci } from './hci';
 import { Signaling } from './signaling';
 
+interface NobleBindingsOptions {
+  deviceId: number;
+  hciReportAllEvents: boolean;
+  useHciUserChannel: boolean;
+  gattMultiRole: boolean;
+}
 
 export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
-  private options;
+  private options: NobleBindingsOptions;
   private _addresses: { [peripheralUuid: string]: string };
   private _addresseTypes;
   private _connectable;
@@ -26,7 +32,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   private _scanServiceUuids: string[] | undefined;
   private onSigIntBinded!: () => void;
 
-  constructor(options = {}) {
+  constructor(options: Partial<NobleBindingsOptions> = {}) {
     super();
 
     const defaults = {
