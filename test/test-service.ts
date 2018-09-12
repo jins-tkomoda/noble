@@ -2,13 +2,14 @@ import 'should';
 import * as sinon from 'sinon';
 
 import { Service } from '../lib/service';
+import { Characteristic } from '../lib/characteristic';
 
 describe('service', () => {
-  let mockNoble;
+  let mockNoble: any;
   const mockPeripheralId = 'mock-peripheral-id';
   const mockUuid = 'mock-uuid';
 
-  let service;
+  let service: Service;
 
   beforeEach(() => {
     mockNoble = {
@@ -20,7 +21,7 @@ describe('service', () => {
   });
 
   afterEach(() => {
-    service = null;
+    service = null as any as Service;
   });
 
   it('should have a uuid', () => {
@@ -48,7 +49,7 @@ describe('service', () => {
     });
 
     it('should delegate to noble, with uuids', () => {
-      const mockUuids = [];
+      const mockUuids: string[] = [];
 
       service.discoverIncludedServices(mockUuids);
 
@@ -63,7 +64,7 @@ describe('service', () => {
     });
 
     it('should callback with data', (done) => {
-      const mockIncludedServiceUuids = [];
+      const mockIncludedServiceUuids: string[] = [];
       service.discoverIncludedServices(null, (error, includedServiceUuids) => {
         includedServiceUuids.should.equal(mockIncludedServiceUuids);
         done();
@@ -72,7 +73,7 @@ describe('service', () => {
     });
 
     it('should return a promise', (done) => {
-      const mockIncludedServiceUuids = [];
+      const mockIncludedServiceUuids: string[] = [];
       service.discoverIncludedServices(null).then((includedServiceUuids) => {
         includedServiceUuids.should.equal(mockIncludedServiceUuids);
         done();
@@ -89,7 +90,7 @@ describe('service', () => {
     });
 
     it('should delegate to noble, with uuids', () => {
-      const mockUuids = [];
+      const mockUuids: string[] = [];
 
       service.discoverCharacteristics(mockUuids);
 
@@ -104,7 +105,7 @@ describe('service', () => {
     });
 
     it('should callback with data', (done) => {
-      const mockCharacteristics = [];
+      const mockCharacteristics: Characteristic[] = [];
 
       service.discoverCharacteristics(null, (error, mockCharacteristics) => {
         mockCharacteristics.should.equal(mockCharacteristics);
@@ -114,7 +115,7 @@ describe('service', () => {
     });
 
     it('should return a promise', (done) => {
-      const mockCharacteristics = [];
+      const mockCharacteristics: Characteristic[] = [];
 
       service.discoverCharacteristics(null).then((mockCharacteristics) => {
         mockCharacteristics.should.equal(mockCharacteristics);

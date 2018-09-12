@@ -2,9 +2,11 @@ import 'should';
 import * as sinon from 'sinon';
 
 import { Advertisement, Peripheral } from '../lib/peripheral';
+import { Characteristic } from '../lib/characteristic';
+import { Service } from '../lib/service';
 
 describe('Peripheral', () => {
-  let mockNoble;
+  let mockNoble: any;
   const mockId = 'mock-id';
   const mockAddress = 'mock-address';
   const mockAddressType = 'mock-address-type';
@@ -20,7 +22,7 @@ describe('Peripheral', () => {
   const mockHandle = 'mock-handle';
   let mockData = Buffer.from('mock-data');
 
-  let peripheral;
+  let peripheral: Peripheral;
 
   beforeEach(() => {
     mockNoble = {
@@ -36,7 +38,7 @@ describe('Peripheral', () => {
   });
 
   afterEach(() => {
-    peripheral = null;
+    peripheral = null as any as Peripheral;
   });
 
   it('should have a id', () => {
@@ -177,7 +179,7 @@ describe('Peripheral', () => {
     });
 
     it('should callback with services', (done) => {
-      const mockServices = [];
+      const mockServices: Service[] = [];
 
       peripheral.discoverServices([], (error: Error, services) => {
         services.should.equal(mockServices);
@@ -187,7 +189,7 @@ describe('Peripheral', () => {
     });
 
     it('should return a promise', (done) => {
-      const mockServices = [];
+      const mockServices: Service[] = [];
 
       peripheral.discoverServices().then((services) => {
         services.should.equal(mockServices);
@@ -198,9 +200,9 @@ describe('Peripheral', () => {
   });
 
   describe('discoverSomeServicesAndCharacteristics', () => {
-    const mockServiceUuids = [];
-    const mockCharacteristicUuids = [];
-    let mockServices;
+    const mockServiceUuids: string[] = [];
+    const mockCharacteristicUuids: string[] = [];
+    let mockServices: any[];
 
     beforeEach(() => {
       peripheral.discoverServices = sinon.spy();

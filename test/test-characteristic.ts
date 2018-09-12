@@ -2,15 +2,16 @@ import 'should';
 import * as sinon from 'sinon';
 
 import { Characteristic } from '../lib/characteristic';
+import { Descriptor } from '../lib/descriptor';
 
 describe('Characteristic', () => {
-  let mockNoble;
+  let mockNoble: any;
   const mockPeripheralId = 'mock-peripheral-id';
   const mockServiceUuid = 'mock-service-uuid';
   const mockUuid = 'mock-uuid';
   const mockProperties = ['mock-property-1', 'mock-property-2'];
 
-  let characteristic;
+  let characteristic: Characteristic;
 
   beforeEach(() => {
     mockNoble = {
@@ -25,7 +26,7 @@ describe('Characteristic', () => {
   });
 
   afterEach(() => {
-    characteristic = null;
+    characteristic = null as any as Characteristic;
   });
 
   it('should have a uuid', () => {
@@ -84,14 +85,14 @@ describe('Characteristic', () => {
   });
 
   describe('write', () => {
-    let mockData;
+    let mockData: Buffer;
 
     beforeEach(() => {
       mockData = Buffer.alloc(0);
     });
 
     it('should only accept data as a buffer', () => {
-      mockData = {};
+      mockData = {} as Buffer;
 
       (function(){
         characteristic.write(mockData);
@@ -230,7 +231,7 @@ describe('Characteristic', () => {
     });
 
     it('should callback with descriptors', (done) => {
-      const mockDescriptors = [];
+      const mockDescriptors: Descriptor[] = [];
       characteristic.discoverDescriptors((error, descriptors) => {
         descriptors.should.equal(mockDescriptors);
         done();
@@ -239,7 +240,7 @@ describe('Characteristic', () => {
     });
 
     it('should return a promise', (done) => {
-      const mockDescriptors = [];
+      const mockDescriptors: Descriptor[] = [];
       characteristic.discoverDescriptors().then((descriptors) => {
         descriptors.should.equal(mockDescriptors);
         done();

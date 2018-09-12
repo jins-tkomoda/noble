@@ -248,7 +248,7 @@ export class Noble extends events.EventEmitter {
     const peripheral = this._peripherals[peripheralUuid];
 
     if (peripheral) {
-      const services = [];
+      const services:  Service[] = [];
 
       for (const serviceUuid of serviceUuids) {
         const service = new Service(this, peripheralUuid, serviceUuid);
@@ -288,7 +288,7 @@ export class Noble extends events.EventEmitter {
     this._bindings.discoverCharacteristics(peripheralUuid, serviceUuid, characteristicUuids);
   }
 
-  onCharacteristicsDiscover(peripheralUuid: string, serviceUuid: string, characteristics) {
+  onCharacteristicsDiscover(peripheralUuid: string, serviceUuid: string, characteristics: Characteristic[]) {
     const service = this._services[peripheralUuid][serviceUuid];
 
     if (service) {
@@ -385,7 +385,7 @@ export class Noble extends events.EventEmitter {
     const characteristic = this._characteristics[peripheralUuid][serviceUuid][characteristicUuid];
 
     if (characteristic) {
-      const descriptors_ = [];
+      const descriptors_: Descriptor[] = [];
 
       for (const descriptorUuid of descriptorUuids) {
         const descriptor = new Descriptor(
