@@ -9,12 +9,22 @@ import { Hci } from './hci';
 const debug = debugModule('gap');
 const isChip = (os.platform() === 'linux') && (os.release().includes('-ntc'));
 
+interface GapDiscoveredDevices {
+  address: string;
+  addressType: string;
+  connectable: boolean;
+  advertisement: Advertisement;
+  rssi: number;
+  count: number;
+  hasScanResponse: boolean;
+};
+
 export class Gap extends events.EventEmitter {
   private _hci: Hci;
   private _hciReportAllEvents: boolean;
   private _scanState: string | null;
   private _scanFilterDuplicates: boolean | null;
-  private _discoveries;
+  private _discoveries: { [address: string]: GapDiscoveredDevices };
 
   constructor(hci: Hci, hciReportAllEvents: boolean = false) {
     super();

@@ -91,7 +91,7 @@ export class Hci extends events.EventEmitter {
   private _useUserChannel: boolean;
   private _aclMtu: number;
   private _aclMaxInProgress: number;
-  private _handleAclsInProgress;
+  private _handleAclsInProgress!: { [handle: number] : number; }
   private _aclOutQueue: AclOutQueueEntry[];
   private _handleBuffers;
 

@@ -89,9 +89,9 @@ export class Gatt extends events.EventEmitter {
   private _address: string;
   private _aclStream: AclStream;
   private _isMultiRole: boolean;
-  private _services;
-  private _characteristics;
-  private _descriptors;
+  private _services: { [serviceUuid: string]: GattService };
+  private _characteristics: { [serviceUuid: string]: { [characteristicUuid: string]: GattCharacteristic } };
+  private _descriptors: { [serviceUuid: string]: { [characteristicUuid: string]: { [descriptorUuid: string]: GattDescriptor } } };
   private _currentCommand;
   private _commandQueue;
   private _mtu: number;

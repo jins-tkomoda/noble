@@ -14,12 +14,13 @@ export class Noble extends events.EventEmitter {
   private initialized: boolean;
   private address: string;
   private _bindings: NobleBindingsInterface;
-  private _peripherals;
-  private _services;
-  private _characteristics;
-  private _descriptors;
+  private _peripherals!: { [peripheralUuid: string]: Peripheral };
+  private _services!: { [peripheralUuid: string]: { [serviceUuid: string]: Service } };
+  private _characteristics!: {[peripheralUuid: string]: { [serviceUuid: string]: { [characteristicUuid: string]: Characteristic } } };
+  private _descriptors!: {[peripheralUuid: string]: { [serviceUuid: string]: { [characteristicUuid: string]: { [descriptorUuid: string]: Descriptor } } } };
   private _discoveredPeripheralUUids: string[];
   private _allowDuplicates: boolean;
+
   public _state: string;
 
   constructor(bindings: NobleBindingsInterface) {

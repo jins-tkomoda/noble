@@ -19,15 +19,16 @@ interface NobleBindingsOptions {
 export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
   private options: NobleBindingsOptions;
   private _addresses: { [peripheralUuid: string]: string };
-  private _addresseTypes;
-  private _connectable;
+  private _addresseTypes: { [uuid: string]: string };
+  private _connectable: { [uuid: string]: boolean };
   private _state: string | null;
   private _pendingConnectionUuid: string | null;
   private _connectionQueue: string[];
-  private _handles;
-  private _gatts;
-  private _aclStreams;
-  private _signalings;
+  private _uuidsToHandles: { [uuids: string]: number };
+  private _handlesToUuids: { [handle: number]: string; }
+  private _gatts: { [uuid: string]: Gatt; [handle: number]: Gatt; };
+  private _aclStreams: { [handle: number]: AclStream };
+  private _signalings: { [uuid: string]: Signaling; [handle: number]: Signaling; };
   private _hci: Hci;
   private _gap: Gap;
   private _scanServiceUuids: string[] | undefined;
@@ -53,7 +54,8 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this._pendingConnectionUuid = null;
     this._connectionQueue = [];
 
-    this._handles = {};
+    this._handlesToUuids = {};
+    this._uuidsToHandles = {};
     this._gatts = {};
     this._aclStreams = {};
     this._signalings = {};
@@ -86,11 +88,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   disconnect(peripheralUuid: string) {
-    this._hci.disconnect(this._handles[peripheralUuid]);
+    this._hci.disconnect(this._uuidsToHandles[peripheralUuid]);
   }
 
   updateRssi(peripheralUuid: string) {
-    this._hci.readRssi(this._handles[peripheralUuid]);
+    this._hci.readRssi(this._uuidsToHandles[peripheralUuid]);
   }
 
   init() {
@@ -132,7 +134,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.stopScanning();
 
     for (const handle in this._aclStreams) {
-      this._hci.disconnect(handle);
+      this._hci.disconnect(parseInt(handle));
     }
   }
 
@@ -229,8 +231,8 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       this._gatts[uuid] = this._gatts[handle] = gatt;
       this._signalings[uuid] = this._signalings[handle] = signaling;
       this._aclStreams[handle] = aclStream;
-      this._handles[uuid] = handle;
-      this._handles[handle] = uuid;
+      this._uuidsToHandles[uuid] = handle;
+      this._handlesToUuids[handle] = uuid;
 
       this._gatts[handle].on('mtu', this.onMtu.bind(this));
       this._gatts[handle].on('servicesDiscover', this.onServicesDiscovered.bind(this));
@@ -280,7 +282,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   onDisconnComplete(handle: number, reason: number) {
-    const uuid = this._handles[handle];
+    const uuid = this._handlesToUuids[handle];
 
     if (uuid) {
       this._aclStreams[handle].push(null, null);
@@ -292,8 +294,8 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       delete this._signalings[uuid];
       delete this._signalings[handle];
       delete this._aclStreams[handle];
-      delete this._handles[uuid];
-      delete this._handles[handle];
+      delete this._uuidsToHandles[uuid];
+      delete this._handlesToUuids[handle];
 
       this.emit('disconnect', uuid); // TODO: handle reason?
     } else {
@@ -314,7 +316,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   onRssiRead(handle: number, rssi: number) {
-    this.emit('rssiUpdate', this._handles[handle], rssi);
+    this.emit('rssiUpdate', this._handlesToUuids[handle], rssi);
   }
 
   onAclDataPkt(handle: number, cid: number, data: Buffer) {
@@ -326,7 +328,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   discoverServices(peripheralUuid: string, serviceUuids: string[] = []) {
-    const handle = this._handles[peripheralUuid];
+    const handle = this._uuidsToHandles[peripheralUuid];
     const gatt = this._gatts[handle];
 
     if (gatt) {
@@ -343,7 +345,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   discoverIncludedServices(peripheralUuid: string, serviceUuid: string, serviceUuids: string[] = []) {
-    const handle = this._handles[peripheralUuid];
+    const handle = this._uuidsToHandles[peripheralUuid];
     const gatt = this._gatts[handle];
 
     if (gatt) {
@@ -360,7 +362,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   discoverCharacteristics(peripheralUuid: string, serviceUuid: string, characteristicUuids: string[] = []) {
-    const handle = this._handles[peripheralUuid];
+    const handle = this._uuidsToHandles[peripheralUuid];
     const gatt = this._gatts[handle];
 
     if (gatt) {
@@ -377,7 +379,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   read(peripheralUuid: string, serviceUuid: string, characteristicUuid: string) {
-    const handle = this._handles[peripheralUuid];
+    const handle = this._uuidsToHandles[peripheralUuid];
     const gatt = this._gatts[handle];
 
     if (gatt) {
@@ -394,7 +396,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   write(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean) {
-    const handle = this._handles[peripheralUuid];
+    const handle = this._uuidsToHandles[peripheralUuid];
     const gatt = this._gatts[handle];
 
     if (gatt) {
@@ -411,7 +413,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   broadcast(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
-    const handle = this._handles[peripheralUuid];
+    const handle = this._uuidsToHandles[peripheralUuid];
     const gatt = this._gatts[handle];
 
     if (gatt) {
@@ -428,7 +430,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   notify(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
-    const handle = this._handles[peripheralUuid];
+    const handle = this._uuidsToHandles[peripheralUuid];
     const gatt = this._gatts[handle];
 
     if (gatt) {
@@ -451,7 +453,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   discoverDescriptors(peripheralUuid: string, serviceUuid: string, characteristicUuid: string) {
-    const handle = this._handles[peripheralUuid];
+    const handle = this._uuidsToHandles[peripheralUuid];
     const gatt = this._gatts[handle];
 
     if (gatt) {
@@ -468,7 +470,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   readValue(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
-    const handle = this._handles[peripheralUuid];
+    const handle = this._uuidsToHandles[peripheralUuid];
     const gatt = this._gatts[handle];
 
     if (gatt) {
@@ -485,7 +487,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   writeValue(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
-    const handle = this._handles[peripheralUuid];
+    const handle = this._uuidsToHandles[peripheralUuid];
     const gatt = this._gatts[handle];
 
     if (gatt) {
@@ -502,7 +504,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   readHandle(peripheralUuid: string, attHandle: number) {
-    const handle = this._handles[peripheralUuid];
+    const handle = this._uuidsToHandles[peripheralUuid];
     const gatt = this._gatts[handle];
 
     if (gatt) {
@@ -519,7 +521,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   writeHandle(peripheralUuid: string, attHandle: number, data: Buffer, withoutResponse: boolean) {
-    const handle = this._handles[peripheralUuid];
+    const handle = this._uuidsToHandles[peripheralUuid];
     const gatt = this._gatts[handle];
 
     if (gatt) {
