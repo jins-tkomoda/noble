@@ -10,7 +10,7 @@ describe('Peripheral', () => {
   const mockId = 'mock-id';
   const mockAddress = 'mock-address';
   const mockAddressType = 'mock-address-type';
-  const mockConnectable = 'mock-connectable';
+  const mockConnectable = true;
   const mockAdvertisement = {
     localName: 'mockName',
     txPowerLevel: 0,
@@ -18,8 +18,8 @@ describe('Peripheral', () => {
     serviceUuids: [],
     serviceData: [ {uuid: 'mock-service-uuid', data: Buffer.alloc(0)} ]
   };
-  const mockRssi = 'mock-rssi';
-  const mockHandle = 'mock-handle';
+  const mockRssi = 0;
+  const mockHandle = 1;
   let mockData = Buffer.from('mock-data');
 
   let peripheral: Peripheral;
@@ -160,7 +160,7 @@ describe('Peripheral', () => {
     it('should delegate to noble', () => {
       peripheral.discoverServices();
 
-      mockNoble.discoverServices.calledWithExactly(mockId, undefined).should.equal(true);
+      mockNoble.discoverServices.calledWithExactly(mockId, []).should.equal(true);
     });
 
     it('should delegate to noble, service uuids', () => {
@@ -181,7 +181,7 @@ describe('Peripheral', () => {
     it('should callback with services', (done) => {
       const mockServices: Service[] = [];
 
-      peripheral.discoverServices([], (error: Error, services) => {
+      peripheral.discoverServices([], (error, services) => {
         services!.should.equal(mockServices);
         done();
       });
@@ -220,7 +220,7 @@ describe('Peripheral', () => {
     });
 
     it('should call discoverServices', () => {
-      peripheral.discoverSomeServicesAndCharacteristics(mockServiceUuids);
+      peripheral.discoverSomeServicesAndCharacteristics(mockServiceUuids, []);
 
       peripheral.discoverServices.calledWith(mockServiceUuids).should.equal(true);
     });
@@ -296,7 +296,7 @@ describe('Peripheral', () => {
 
       peripheral.discoverAllServicesAndCharacteristics(mockCallback);
 
-      peripheral.discoverSomeServicesAndCharacteristics.calledWithExactly([], [], mockCallback).should.equal(true);
+      (peripheral.discoverSomeServicesAndCharacteristics as any).calledWithExactly([], [], mockCallback).should.equal(true);
     });
   });
 

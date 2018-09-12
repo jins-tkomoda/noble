@@ -285,7 +285,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     const uuid = this._handlesToUuids[handle];
 
     if (uuid) {
-      this._aclStreams[handle].push(null, null);
+      this._aclStreams[handle].push(null);
       this._gatts[handle].removeAllListeners();
       this._signalings[handle].removeAllListeners();
 
