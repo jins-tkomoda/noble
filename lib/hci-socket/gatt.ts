@@ -3,7 +3,7 @@ import * as events from 'events';
 import * as debugModule from 'debug';
 const debug = debugModule('att');
 
-import * as shared from '../shared';
+import { GattCharacteristic, propertyBitstoPropertyNames } from '../shared';
 import { AclStream } from './acl-stream';
 
 const ATT_OP_ERROR                    = 0x01;
@@ -65,14 +65,6 @@ const GATT_CLIENT_CHARAC_CFG_UUID     = 0x2902;
 const GATT_SERVER_CHARAC_CFG_UUID     = 0x2903;
 
 const ATT_CID = 0x0004;
-
-interface GattCharacteristic {
-  startHandle: number;
-  endHandle: number;
-  valueHandle: number;
-  properties: string[];
-  uuid: string;
-}
 
 interface GattDescriptor {
   handle: number;
@@ -480,10 +472,12 @@ export class Gatt extends events.EventEmitter {
         const num = (data.length - 2) / type;
 
         for (let i = 0; i < num; i++) {
+          const properties = data.readUInt8(2 + i * type + 2)
           characteristics.push({
             startHandle: data.readUInt16LE(2 + i * type + 0),
             endHandle: 0,
-            properties: shared.propertyBitstoPropertyNames(data.readUInt8(2 + i * type + 2)),
+            properties: propertyBitstoPropertyNames(properties),
+            propertiesRaw: properties,
             valueHandle: data.readUInt16LE(2 + i * type + 3),
             uuid: (type === 7) ? data.readUInt16LE(2 + i * type + 5).toString(16) : data.slice(2 + i * type + 5).slice(0, 16).toString('hex').match(/.{1,2}/g)!.reverse().join('')
           });
@@ -647,8 +641,8 @@ export class Gatt extends events.EventEmitter {
         const handle = data.readUInt16LE(2);
         let value = data.readUInt16LE(4);
 
-        const useNotify = characteristic.properties & 0x10;
-        const useIndicate = characteristic.properties & 0x20;
+        const useNotify = characteristic.properties.includes('notify');
+        const useIndicate = characteristic.properties.includes('indicate');
 
         if (notify) {
           if (useNotify) {

@@ -8,6 +8,15 @@ export type CharacteristicPropertyNames = 'broadcast'
   | 'extendedProperties'
 ;
 
+export interface GattCharacteristic {
+  startHandle: number;
+  endHandle: number;
+  valueHandle: number;
+  properties: CharacteristicPropertyNames[];
+  propertiesRaw?: number;
+  uuid: string;
+}
+
 export const propertyBitstoPropertyNames = (propertyBits: number): CharacteristicPropertyNames[] => {
   const propertyNames: CharacteristicPropertyNames[] = [];
 

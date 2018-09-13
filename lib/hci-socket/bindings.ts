@@ -2,6 +2,7 @@
 import * as events from 'events';
 
 import { NobleBindingsInterface } from '../bindings';
+import { GattCharacteristic } from '../shared';
 import { Advertisement } from '../peripheral';
 import { AclStream } from './acl-stream';
 import { Gap } from './gap';
@@ -372,7 +373,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onCharacteristicsDiscovered(address: string, serviceUuid: string, characteristics) {
+  onCharacteristicsDiscovered(address: string, serviceUuid: string, characteristics: GattCharacteristic) {
     const uuid = address.split(':').join('').toLowerCase();
 
     this.emit('characteristicsDiscover', uuid, serviceUuid, characteristics);
