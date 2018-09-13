@@ -6,8 +6,7 @@
     "outDir": "dist",
     "removeComments": false,
     "sourceMap": true,
-    "strict": false,
-    "noImplicitAny": false,
+    "strict": true,
     "baseUrl": ".",
     "paths": {
       "*": ["./types/*"]
