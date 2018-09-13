@@ -16,8 +16,10 @@ export class Noble extends events.EventEmitter {
   private _bindings: NobleBindingsInterface;
   private _peripherals!: { [peripheralUuid: string]: Peripheral };
   private _services!: { [peripheralUuid: string]: { [serviceUuid: string]: Service } };
-  private _characteristics!: {[peripheralUuid: string]: { [serviceUuid: string]: { [characteristicUuid: string]: Characteristic } } };
-  private _descriptors!: {[peripheralUuid: string]: { [serviceUuid: string]: { [characteristicUuid: string]: { [descriptorUuid: string]: Descriptor } } } };
+  private _characteristics!: { [peripheralUuid: string]: { [serviceUuid: string]: { [characteristicUuid: string]: Characteristic } } };
+  private _descriptors!: {
+    [peripheralUuid: string]: { [serviceUuid: string]: { [characteristicUuid: string]: { [descriptorUuid: string]: Descriptor } } };
+  };
   private _discoveredPeripheralUUids: string[];
   private _allowDuplicates: boolean;
 
@@ -59,14 +61,14 @@ export class Noble extends events.EventEmitter {
     this._bindings.on('handleWrite', this.onHandleWrite.bind(this));
     this._bindings.on('handleNotify', this.onHandleNotify.bind(this));
 
-    this.on('warning', (message) => {
+    this.on('warning', message => {
       if (this.listeners('warning').length === 1) {
         console.warn(`noble: ${message}`); // eslint-disable-line no-console
       }
     });
 
     //lazy init bindings on first new listener, should be on stateChange
-    this.on('newListener', (event) => {
+    this.on('newListener', event => {
       if (event === 'stateChange' && !this.initialized) {
         this.initialized = true;
 
@@ -79,17 +81,16 @@ export class Noble extends events.EventEmitter {
     //or lazy init bindings if someone attempts to get state first
     Object.defineProperties(this, {
       state: {
-        get: function () {
+        get: function() {
           if (!this.initialized) {
             this.initialized = true;
 
             this._bindings.init();
           }
           return this._state;
-        }
-      }
+        },
+      },
     });
-
   }
 
   onStateChange(state: string) {
@@ -147,14 +148,13 @@ export class Noble extends events.EventEmitter {
     this.emit('scanStart', filterDuplicates);
   }
 
-
   stopScanning(): Promise<void>;
   stopScanning(callback?: () => void): void;
   stopScanning(callback?: () => void): void | Promise<void> {
     const promise = new Promise<void>((resolve, reject) => {
       this.once('scanStop', resolve);
 
-      if(this._bindings && this.initialized){
+      if (this._bindings && this.initialized) {
         this._bindings.stopScanning();
       }
     });
@@ -189,7 +189,7 @@ export class Noble extends events.EventEmitter {
       peripheral.rssi = rssi;
     }
 
-    const previouslyDiscoverd = (this._discoveredPeripheralUUids.includes(uuid));
+    const previouslyDiscoverd = this._discoveredPeripheralUUids.includes(uuid);
 
     if (!previouslyDiscoverd) {
       this._discoveredPeripheralUUids.push(uuid);
@@ -246,7 +246,7 @@ export class Noble extends events.EventEmitter {
     }
   }
 
-  discoverServices(peripheralUuid: string, serviceUuids: string [] = []) {
+  discoverServices(peripheralUuid: string, serviceUuids: string[] = []) {
     this._bindings.discoverServices(peripheralUuid, serviceUuids);
   }
 
@@ -254,7 +254,7 @@ export class Noble extends events.EventEmitter {
     const peripheral = this._peripherals[peripheralUuid];
 
     if (peripheral) {
-      const services:  Service[] = [];
+      const services: Service[] = [];
 
       for (const serviceUuid of serviceUuids) {
         const service = new Service(this, peripheralUuid, serviceUuid);
@@ -303,13 +303,7 @@ export class Noble extends events.EventEmitter {
       for (const characteristic of characteristics) {
         const characteristicUuid = characteristic.uuid;
 
-        const newCharacteristic = new Characteristic(
-          this,
-          peripheralUuid,
-          serviceUuid,
-          characteristicUuid,
-          characteristic.properties
-        );
+        const newCharacteristic = new Characteristic(this, peripheralUuid, serviceUuid, characteristicUuid, characteristic.properties);
 
         this._characteristics[peripheralUuid][serviceUuid][characteristicUuid] = newCharacteristic;
         this._descriptors[peripheralUuid][serviceUuid][characteristicUuid] = {};
@@ -394,13 +388,7 @@ export class Noble extends events.EventEmitter {
       const descriptors_: Descriptor[] = [];
 
       for (const descriptorUuid of descriptorUuids) {
-        const descriptor = new Descriptor(
-          this,
-          peripheralUuid,
-          serviceUuid,
-          characteristicUuid,
-          descriptorUuid
-        );
+        const descriptor = new Descriptor(this, peripheralUuid, serviceUuid, characteristicUuid, descriptorUuid);
 
         this._descriptors[peripheralUuid][serviceUuid][characteristicUuid][descriptorUuid] = descriptor;
 

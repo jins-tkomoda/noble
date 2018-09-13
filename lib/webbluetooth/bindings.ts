@@ -8,26 +8,25 @@ import { NobleBindingsInterface } from '../bindings';
 const debug = debugModule('webble-bindings');
 
 function makeList(uuid: string | number) {
-  return {services:[ uuid ]};
+  return { services: [uuid] };
 }
 
 function addDashes(uuid: string | number) {
-  if(!uuid || typeof uuid !== 'string'){
+  if (!uuid || typeof uuid !== 'string') {
     return uuid;
   }
-  if(uuid && uuid.length === 32){
-    uuid = `${uuid.substring(0,8)}-${uuid.substring(8,12)}-${uuid.substring(12,16)}-${uuid.substring(16,20)}-${uuid.substring(20)}`;
+  if (uuid && uuid.length === 32) {
+    uuid = `${uuid.substring(0, 8)}-${uuid.substring(8, 12)}-${uuid.substring(12, 16)}-${uuid.substring(16, 20)}-${uuid.substring(20)}`;
   }
   return uuid.toLowerCase();
 }
 
 function stripDashes(uuid: string | number) {
-  if(typeof uuid === 'string'){
+  if (typeof uuid === 'string') {
     uuid = uuid.split('-').join('');
   }
   return uuid;
 }
-
 
 export class NobleBindings extends events.EventEmitter implements NobleBindingsInterface {
   private _ble: Bluetooth;
@@ -64,13 +63,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false) {
-
     const uuids = serviceUuids.map((service: string | number) => {
       //web bluetooth requires 4 char hex service names to be passed in as integers
-      if(typeof service === 'string' && service.length === 4){
+      if (typeof service === 'string' && service.length === 4) {
         service = parseInt(`0x${service}`);
-      }
-      else if(typeof service === 'string' && service.length === 6 && service.indexOf('0x') === 0){
+      } else if (typeof service === 'string' && service.length === 6 && service.indexOf('0x') === 0) {
         service = parseInt(service);
       }
       return service;
@@ -92,23 +89,23 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
     debug('startScanning', options, allowDuplicates);
 
-    this._ble.requestDevice(options)
-      .then((device) => {
+    this._ble
+      .requestDevice(options)
+      .then(device => {
         debug('scan finished', device);
         this.emit('scanStop', {});
-        if(device){
-
+        if (device) {
           const address = device.id;
           //TODO use device.adData when api is ready
           //const rssi = device.adData.rssi;
           this._peripherals[address] = {
             uuid: address,
             address: address,
-            advertisement: {localName:device.name}, //advertisement,
+            advertisement: { localName: device.name }, //advertisement,
             device: device,
-            cachedServices: {} as { [uuid:string]: BluetoothRemoteGATTService[] },
+            cachedServices: {} as { [uuid: string]: BluetoothRemoteGATTService[] },
             localName: device.name,
-            serviceUuids: dashedUuids
+            serviceUuids: dashedUuids,
           };
 
           const rssi = 0;
@@ -125,7 +122,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
           this.emit('discover', device.id, device.id, addressType, paired, this._peripherals[address].advertisement, rssi);
         }
       })
-      .catch((err) => {
+      .catch(err => {
         debug('err scanning', err);
         this.emit('scanStop', {});
         this.emit('error', err);
@@ -148,27 +145,28 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     peripheral.cachedServices = {};
 
     // Attempts to connect to remote GATT Server.
-    peripheral.device.gatt.connect()
-      .then((gattServer: BluetoothRemoteGATTServer) => {
+    peripheral.device.gatt.connect().then(
+      (gattServer: BluetoothRemoteGATTServer) => {
         debug('peripheral connected', gattServer);
 
         const onDisconnected = (event: Event) => {
           debug('disconnected', peripheral.uuid);
           this.emit('disconnect', peripheral.uuid);
         };
-        peripheral.device.addEventListener('gattserverdisconnected', onDisconnected, {once: true});
+        peripheral.device.addEventListener('gattserverdisconnected', onDisconnected, { once: true });
 
         this.emit('connect', deviceUuid);
-      }, (err: Error) => {
+      },
+      (err: Error) => {
         debug('err connecting', err);
         this.emit('connect', deviceUuid, err);
-      });
-
+      }
+    );
   }
 
   disconnect(deviceUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
-    if(peripheral.device.gatt){
+    if (peripheral.device.gatt) {
       peripheral.device.gatt.disconnect();
       this.emit('disconnect', deviceUuid);
     }
@@ -185,10 +183,9 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO: need web api completed for this to work
-    if(peripheral){
+    if (peripheral) {
       this.emit('servicesDiscover', deviceUuid, peripheral.serviceUuids);
     }
-
   }
 
   discoverIncludedServices(deviceUuid: string, serviceUuid: string, serviceUuids: string[]) {
@@ -201,29 +198,28 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   discoverCharacteristics(deviceUuid: string, serviceUuid: string, characteristicUuids: string[]) {
     const peripheral = this._peripherals[deviceUuid];
 
-    if(peripheral){
-
+    if (peripheral) {
       this.getPrimaryService(peripheral, serviceUuid)
         .then((service: BluetoothRemoteGATTService) => {
           return service.getCharacteristics();
         })
         .then((characteristics: BluetoothRemoteGATTCharacteristic[]) => {
-          const discoveredCharacteristics = characteristics.map((char) => {
-            const charInfo = {uuid: stripDashes(char.uuid), properties: [] as string[]};
+          const discoveredCharacteristics = characteristics.map(char => {
+            const charInfo = { uuid: stripDashes(char.uuid), properties: [] as string[] };
 
-            if(char.properties.writeWithoutResponse){
+            if (char.properties.writeWithoutResponse) {
               charInfo.properties.push('writeWithoutResponse');
             }
 
-            if(char.properties.write){
+            if (char.properties.write) {
               charInfo.properties.push('write');
             }
 
-            if(char.properties.read){
+            if (char.properties.read) {
               charInfo.properties.push('read');
             }
 
-            if(char.properties.notify){
+            if (char.properties.notify) {
               charInfo.properties.push('notify');
             }
 
@@ -232,26 +228,23 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
           debug('discoverCharacteristics', deviceUuid, serviceUuid, discoveredCharacteristics);
           this.emit('characteristicsDiscover', deviceUuid, serviceUuid, discoveredCharacteristics);
-
         });
     }
-
   }
 
   getPrimaryService(peripheral: any, serviceUuid: string | number): Promise<BluetoothRemoteGATTService> {
     serviceUuid = addDashes(serviceUuid);
 
-    if(peripheral.cachedServices[serviceUuid]){
-      return new Promise(((resolve, reject) => {
+    if (peripheral.cachedServices[serviceUuid]) {
+      return new Promise((resolve, reject) => {
         resolve(peripheral.cachedServices[serviceUuid]);
-      }));
+      });
     }
 
-    return peripheral.device.gatt.getPrimaryService(serviceUuid)
-      .then((service: BluetoothRemoteGATTService) => {
-        peripheral.cachedServices[serviceUuid] = service;
-        return service;
-      });
+    return peripheral.device.gatt.getPrimaryService(serviceUuid).then((service: BluetoothRemoteGATTService) => {
+      peripheral.cachedServices[serviceUuid] = service;
+      return service;
+    });
   }
 
   read(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
@@ -259,16 +252,16 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     debug('read', deviceUuid, serviceUuid, characteristicUuid);
 
     this.getPrimaryService(peripheral, serviceUuid)
-      .then((service) => {
+      .then(service => {
         return service.getCharacteristic(addDashes(characteristicUuid));
       })
-      .then((characteristic) => {
+      .then(characteristic => {
         return characteristic.readValue();
       })
-      .then((data) => {
+      .then(data => {
         this.emit('read', peripheral.uuid, serviceUuid, characteristicUuid, Buffer.from(data.buffer), false);
       })
-      .catch((err) => {
+      .catch(err => {
         debug('error reading characteristic', err);
         this.emit('error', err);
       });
@@ -279,20 +272,19 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     debug('write', deviceUuid, serviceUuid, characteristicUuid, data, withoutResponse);
 
     this.getPrimaryService(peripheral, serviceUuid)
-      .then((service) => {
+      .then(service => {
         return service.getCharacteristic(addDashes(characteristicUuid));
       })
-      .then((characteristic) => {
+      .then(characteristic => {
         return characteristic.writeValue(data);
       })
       .then(() => {
         debug('value written');
         this.emit('write', peripheral.uuid, serviceUuid, characteristicUuid);
       })
-      .catch((err) => {
+      .catch(err => {
         debug('error writing to characteristic', serviceUuid, characteristicUuid, err);
       });
-
   }
 
   broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
@@ -305,58 +297,66 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
     const peripheral = this._peripherals[deviceUuid];
 
-    const charPromise = this.getPrimaryService(peripheral, serviceUuid)
-      .then((service) => {
-        return service.getCharacteristic(addDashes(characteristicUuid));
-      });
+    const charPromise = this.getPrimaryService(peripheral, serviceUuid).then(service => {
+      return service.getCharacteristic(addDashes(characteristicUuid));
+    });
 
     peripheral.notifcationListeners = peripheral.notifcationListeners || {};
 
-    if(notify){
-      charPromise.then((characteristic) => {
-        return characteristic.startNotifications();
-      })
-        .then((characteristic) => {
+    if (notify) {
+      charPromise
+        .then(characteristic => {
+          return characteristic.startNotifications();
+        })
+        .then(characteristic => {
           debug('notifications started', characteristicUuid);
           peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`] = (evt: any) => {
             debug('oncharacteristicvaluechanged', evt, Buffer.from(evt.target.value.buffer));
             this.emit('read', deviceUuid, serviceUuid, characteristicUuid, Buffer.from(evt.target.value.buffer), true);
           };
-          characteristic.addEventListener('characteristicvaluechanged', peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`]);
+          characteristic.addEventListener(
+            'characteristicvaluechanged',
+            peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`]
+          );
 
           const onDisconnected = () => {
-            characteristic.removeEventListener('characteristicvaluechanged', peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`]);
+            characteristic.removeEventListener(
+              'characteristicvaluechanged',
+              peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`]
+            );
             delete peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`];
           };
-          peripheral.device.addEventListener('gattserverdisconnected', onDisconnected, {once: true});
+          peripheral.device.addEventListener('gattserverdisconnected', onDisconnected, { once: true });
 
           this.emit('notify', deviceUuid, serviceUuid, characteristicUuid, true);
           return characteristic;
         })
-        .catch((err) => {
+        .catch(err => {
           debug('error enabling notifications on characteristic', err);
           this.emit('error', err);
         });
-    }
-    else{
-      charPromise.then((characteristic) => {
-        return characteristic.stopNotifications();
-      })
-        .then((characteristic) => {
+    } else {
+      charPromise
+        .then(characteristic => {
+          return characteristic.stopNotifications();
+        })
+        .then(characteristic => {
           debug('notifications stopped', characteristic);
-          if(peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`]){
-            characteristic.removeEventListener('characteristicvaluechanged', peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`]);
+          if (peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`]) {
+            characteristic.removeEventListener(
+              'characteristicvaluechanged',
+              peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`]
+            );
             delete peripheral.notifcationListeners[`${serviceUuid}__${characteristicUuid}`];
           }
           this.emit('notify', deviceUuid, serviceUuid, characteristicUuid, false);
           return characteristic;
         })
-        .catch((err) => {
+        .catch(err => {
           debug('error disabling notifications on characteristic', err);
           this.emit('error', err);
         });
     }
-
   }
 
   discoverDescriptors(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {

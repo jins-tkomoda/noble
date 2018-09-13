@@ -15,14 +15,14 @@ describe('Descriptor', () => {
   beforeEach(() => {
     mockNoble = {
       readValue: sinon.spy(),
-      writeValue: sinon.spy()
+      writeValue: sinon.spy(),
     };
 
     descriptor = new Descriptor(mockNoble, mockPeripheralId, mockServiceUuid, mockCharacteristicUuid, mockUuid);
   });
 
   afterEach(() => {
-    descriptor = null as any as Descriptor;
+    descriptor = (null as any) as Descriptor;
   });
 
   it('should have a uuid', () => {
@@ -49,19 +49,18 @@ describe('Descriptor', () => {
       mockNoble.readValue.calledWithExactly(mockPeripheralId, mockServiceUuid, mockCharacteristicUuid, mockUuid).should.equal(true);
     });
 
-    it('should callback', (done) => {
+    it('should callback', done => {
       descriptor.readValue(() => {
         done();
       });
       descriptor.emit('valueRead');
     });
 
-    it('should not call callback twice', (done) => {
+    it('should not call callback twice', done => {
       let calledback = 0;
 
       descriptor.readValue(() => {
         calledback += 1;
-
       });
       descriptor.emit('valueRead');
       descriptor.emit('valueRead');
@@ -72,7 +71,7 @@ describe('Descriptor', () => {
       }, 100);
     });
 
-    it('should callback with error, data', (done) => {
+    it('should callback with error, data', done => {
       const mockData = Buffer.alloc(0);
 
       descriptor.readValue((error, data) => {
@@ -83,7 +82,7 @@ describe('Descriptor', () => {
       descriptor.emit('valueRead', mockData);
     });
 
-    it('should return a promise', (done) => {
+    it('should return a promise', done => {
       const mockData = Buffer.alloc(0);
 
       descriptor.readValue().then((data: Buffer) => {
@@ -105,25 +104,27 @@ describe('Descriptor', () => {
     it('should only accept data as a buffer', () => {
       mockData = {} as Buffer;
 
-      (function(){
+      (function() {
         descriptor.writeValue(mockData);
-      }).should.throwError('data must be a Buffer');
+      }.should.throwError('data must be a Buffer'));
     });
 
     it('should delegate to noble', () => {
       descriptor.writeValue(mockData);
 
-      mockNoble.writeValue.calledWithExactly(mockPeripheralId, mockServiceUuid, mockCharacteristicUuid, mockUuid, mockData).should.equal(true);
+      mockNoble.writeValue
+        .calledWithExactly(mockPeripheralId, mockServiceUuid, mockCharacteristicUuid, mockUuid, mockData)
+        .should.equal(true);
     });
 
-    it('should callback', (done) => {
+    it('should callback', done => {
       descriptor.writeValue(mockData, () => {
         done();
       });
       descriptor.emit('valueWrite');
     });
 
-    it('should not call callback twice', (done) => {
+    it('should not call callback twice', done => {
       let calledback = 0;
 
       descriptor.writeValue(mockData, () => {
@@ -138,7 +139,7 @@ describe('Descriptor', () => {
       }, 100);
     });
 
-    it('should return a promise', (done) => {
+    it('should return a promise', done => {
       descriptor.writeValue(mockData).then(() => {
         done();
       });

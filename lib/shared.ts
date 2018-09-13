@@ -1,12 +1,12 @@
-export type CharacteristicPropertyNames = 'broadcast'
+export type CharacteristicPropertyNames =
+  | 'broadcast'
   | 'read'
   | 'writeWithoutResponse'
   | 'write'
   | 'notify'
   | 'indicate'
   | 'authenticatedSignedWrites'
-  | 'extendedProperties'
-;
+  | 'extendedProperties';
 
 export interface GattCharacteristic {
   startHandle: number;
@@ -47,4 +47,3 @@ export const propertyBitstoPropertyNames = (propertyBits: number): Characteristi
 
   return propertyNames;
 };
-

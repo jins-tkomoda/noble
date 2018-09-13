@@ -4,7 +4,7 @@ import { Peripheral } from './lib/peripheral';
 import { Characteristic } from './lib/characteristic';
 console.log('noble');
 
-noble.on('stateChange', (state) => {
+noble.on('stateChange', state => {
   console.log(`on -> stateChange: ${state}`);
 
   if (state === 'poweredOn') {
@@ -21,8 +21,6 @@ noble.on('scanStart', () => {
 noble.on('scanStop', () => {
   console.log('on -> scanStop');
 });
-
-
 
 noble.on('discover', (peripheral: Peripheral) => {
   console.log(`on -> discover: ${peripheral}`);
@@ -43,7 +41,7 @@ noble.on('discover', (peripheral: Peripheral) => {
     peripheral.discoverServices();
   });
 
-  peripheral.on('servicesDiscover', (services) => {
+  peripheral.on('servicesDiscover', services => {
     console.log(`on -> peripheral services discovered ${services}`);
 
     const serviceIndex = 0;
@@ -83,7 +81,7 @@ noble.on('discover', (peripheral: Peripheral) => {
         peripheral.disconnect();
       });
 
-      characteristics[characteristicIndex].on('descriptorsDiscover', (descriptors) => {
+      characteristics[characteristicIndex].on('descriptorsDiscover', descriptors => {
         console.log(`on -> descriptors discover ${descriptors}`);
 
         const descriptorIndex = 0;
@@ -103,7 +101,6 @@ noble.on('discover', (peripheral: Peripheral) => {
         //descriptors[descriptorIndex].writeValue(Buffer.from([0]));
       });
 
-
       characteristics[characteristicIndex].read();
       //characteristics[characteristicIndex].write(Buffer.from('hello'));
       //characteristics[characteristicIndex].broadcast(true);
@@ -111,10 +108,8 @@ noble.on('discover', (peripheral: Peripheral) => {
       // characteristics[characteristicIndex].discoverDescriptors();
     });
 
-
     services[serviceIndex].discoverIncludedServices();
   });
 
   peripheral.connect();
 });
-

@@ -9,12 +9,12 @@
 */
 const noble = require('../dist/index');
 
-const RSSI_THRESHOLD    = -90;
+const RSSI_THRESHOLD = -90;
 const EXIT_GRACE_PERIOD = 2000; // milliseconds
 
 const inRange = {};
 
-noble.on('discover', (peripheral) => {
+noble.on('discover', peripheral => {
   if (peripheral.rssi < RSSI_THRESHOLD) {
     // ignore
     return;
@@ -25,7 +25,7 @@ noble.on('discover', (peripheral) => {
 
   if (entered) {
     inRange[id] = {
-      peripheral: peripheral
+      peripheral: peripheral,
     };
 
     console.log(`"${peripheral.advertisement.localName}" entered (RSSI ${peripheral.rssi}) ${new Date()}`);
@@ -36,7 +36,7 @@ noble.on('discover', (peripheral) => {
 
 setInterval(() => {
   for (const id in inRange) {
-    if (inRange[id].lastSeen < (Date.now() - EXIT_GRACE_PERIOD)) {
+    if (inRange[id].lastSeen < Date.now() - EXIT_GRACE_PERIOD) {
       const peripheral = inRange[id].peripheral;
 
       console.log(`"${peripheral.advertisement.localName}" exited (RSSI ${peripheral.rssi}) ${new Date()}`);
@@ -46,7 +46,7 @@ setInterval(() => {
   }
 }, EXIT_GRACE_PERIOD / 2);
 
-noble.on('stateChange', (state) => {
+noble.on('stateChange', state => {
   if (state === 'poweredOn') {
     noble.startScanning([], true);
   } else {

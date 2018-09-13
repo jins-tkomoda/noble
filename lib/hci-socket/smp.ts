@@ -31,10 +31,22 @@ export class Smp extends events.EventEmitter {
     super();
     this._aclStream = aclStream;
 
-    this._iat = Buffer.from([(localAddressType === 'random') ? 0x01 : 0x00]);
-    this._ia = Buffer.from(localAddress.split(':').reverse().join(''), 'hex');
-    this._rat = Buffer.from([(remoteAddressType === 'random') ? 0x01 : 0x00]);
-    this._ra = Buffer.from(remoteAddress.split(':').reverse().join(''), 'hex');
+    this._iat = Buffer.from([localAddressType === 'random' ? 0x01 : 0x00]);
+    this._ia = Buffer.from(
+      localAddress
+        .split(':')
+        .reverse()
+        .join(''),
+      'hex'
+    );
+    this._rat = Buffer.from([remoteAddressType === 'random' ? 0x01 : 0x00]);
+    this._ra = Buffer.from(
+      remoteAddress
+        .split(':')
+        .reverse()
+        .join(''),
+      'hex'
+    );
 
     this.onAclStreamDataBinded = this.onAclStreamData.bind(this);
     this.onAclStreamEndBinded = this.onAclStreamEnd.bind(this);
@@ -51,7 +63,7 @@ export class Smp extends events.EventEmitter {
       0x01, // Authentication requirement: Bonding - No MITM
       0x10, // Max encryption key size
       0x00, // Initiator key distribution: <none>
-      0x01  // Responder key distribution: EncKey
+      0x01, // Responder key distribution: EncKey
     ]);
 
     this.write(this._preq);
@@ -92,19 +104,18 @@ export class Smp extends events.EventEmitter {
     this._tk = Buffer.from('00000000000000000000000000000000', 'hex');
     this._r = crypto.r();
 
-    this.write(Buffer.concat([
-      Buffer.from([SMP_PAIRING_CONFIRM]),
-      crypto.c1(this._tk, this._r, this._pres, this._preq, this._iat, this._ia, this._rat, this._ra)
-    ]));
+    this.write(
+      Buffer.concat([
+        Buffer.from([SMP_PAIRING_CONFIRM]),
+        crypto.c1(this._tk, this._r, this._pres, this._preq, this._iat, this._ia, this._rat, this._ra),
+      ])
+    );
   }
 
   handlePairingConfirm(data: Buffer) {
     this._pcnf = data;
 
-    this.write(Buffer.concat([
-      Buffer.from([SMP_PAIRING_RANDOM]),
-      this._r
-    ]));
+    this.write(Buffer.concat([Buffer.from([SMP_PAIRING_RANDOM]), this._r]));
   }
 
   handlePairingRandom(data: Buffer) {
@@ -112,7 +123,7 @@ export class Smp extends events.EventEmitter {
 
     const pcnf = Buffer.concat([
       Buffer.from([SMP_PAIRING_CONFIRM]),
-      crypto.c1(this._tk, r, this._pres, this._preq, this._iat, this._ia, this._rat, this._ra)
+      crypto.c1(this._tk, r, this._pres, this._preq, this._iat, this._ia, this._rat, this._ra),
     ]);
 
     if (this._pcnf.toString('hex') === pcnf.toString('hex')) {
@@ -120,10 +131,7 @@ export class Smp extends events.EventEmitter {
 
       this.emit('stk', stk);
     } else {
-      this.write(Buffer.from([
-        SMP_PAIRING_RANDOM,
-        SMP_PAIRING_CONFIRM
-      ]));
+      this.write(Buffer.from([SMP_PAIRING_RANDOM, SMP_PAIRING_CONFIRM]));
 
       this.emit('fail');
     }

@@ -7,7 +7,7 @@ import { Advertisement } from '../peripheral';
 import { Hci } from './hci';
 
 const debug = debugModule('gap');
-const isChip = (os.platform() === 'linux') && (os.release().includes('-ntc'));
+const isChip = os.platform() === 'linux' && os.release().includes('-ntc');
 
 interface GapDiscoveredDevices {
   address: string;
@@ -17,7 +17,7 @@ interface GapDiscoveredDevices {
   rssi: number;
   count: number;
   hasScanResponse: boolean;
-};
+}
 
 export class Gap extends events.EventEmitter {
   private _hci: Hci;
@@ -67,13 +67,9 @@ export class Gap extends events.EventEmitter {
     this._hci.setScanEnabled(false, true);
   }
 
-  onHciError(error: Error) {
+  onHciError(error: Error) {}
 
-  }
-
-  onHciLeScanParametersSet() {
-
-  }
+  onHciLeScanParametersSet() {}
 
   // Called when receive an event "Command Complete" for "LE Set Scan Enable"
   onHciLeScanEnableSet(status: number) {
@@ -101,7 +97,7 @@ export class Gap extends events.EventEmitter {
     // If we are scanning, then a change happens if the new command stops
     // scanning or if duplicate filtering changes.
     // If we are not scanning, then a change happens if scanning was enabled.
-    if ((this._scanState === 'starting' || this._scanState === 'started')) {
+    if (this._scanState === 'starting' || this._scanState === 'started') {
       if (!enable) {
         this.emit('scanStop');
       } else if (this._scanFilterDuplicates !== filterDuplicates) {
@@ -117,14 +113,16 @@ export class Gap extends events.EventEmitter {
 
   onHciLeAdvertisingReport(status: number, type: number, address: string, addressType: string, eir: Buffer, rssi: number) {
     const previouslyDiscovered = !!this._discoveries[address];
-    const advertisement =  previouslyDiscovered ? this._discoveries[address].advertisement : {
-      localName: '',
-      txPowerLevel: 0,
-      manufacturerData: null,
-      serviceData: [],
-      serviceUuids: [],
-      serviceSolicitationUuids: []
-    };
+    const advertisement = previouslyDiscovered
+      ? this._discoveries[address].advertisement
+      : {
+          localName: '',
+          txPowerLevel: 0,
+          manufacturerData: null,
+          serviceData: [],
+          serviceUuids: [],
+          serviceSolicitationUuids: [],
+        };
 
     let discoveryCount = previouslyDiscovered ? this._discoveries[address].count : 0;
     let hasScanResponse = previouslyDiscovered ? this._discoveries[address].hasScanResponse : false;
@@ -144,7 +142,7 @@ export class Gap extends events.EventEmitter {
     let serviceUuid;
     let serviceSolicitationUuid;
 
-    while ((i + 1) < eir.length) {
+    while (i + 1 < eir.length) {
       const length = eir.readUInt8(i);
 
       if (length < 1) {
@@ -154,7 +152,7 @@ export class Gap extends events.EventEmitter {
 
       const eirType = eir.readUInt8(i + 1); // https://www.bluetooth.org/en-us/specification/assigned-numbers/generic-access-profile
 
-      if ((i + length + 1) > eir.length) {
+      if (i + length + 1 > eir.length) {
         debug('invalid EIR data, out of range of buffer length');
         break;
       }
@@ -163,7 +161,8 @@ export class Gap extends events.EventEmitter {
 
       switch (eirType) {
         case 0x02: // Incomplete List of 16-bit Service Class UUID
-        case 0x03: { // Complete List of 16-bit Service Class UUIDs
+        case 0x03: {
+          // Complete List of 16-bit Service Class UUIDs
           for (let j = 0; j < bytes.length; j += 2) {
             serviceUuid = bytes.readUInt16LE(j).toString(16);
             if (!advertisement.serviceUuids.includes(serviceUuid)) {
@@ -173,9 +172,15 @@ export class Gap extends events.EventEmitter {
           break;
         }
         case 0x06: // Incomplete List of 128-bit Service Class UUIDs
-        case 0x07: { // Complete List of 128-bit Service Class UUIDs
+        case 0x07: {
+          // Complete List of 128-bit Service Class UUIDs
           for (let j = 0; j < bytes.length; j += 16) {
-            serviceUuid = bytes.slice(j, j + 16).toString('hex').match(/.{1,2}/g)!.reverse().join('');
+            serviceUuid = bytes
+              .slice(j, j + 16)
+              .toString('hex')
+              .match(/.{1,2}/g)!
+              .reverse()
+              .join('');
             if (!advertisement.serviceUuids.includes(serviceUuid)) {
               advertisement.serviceUuids.push(serviceUuid);
             }
@@ -191,7 +196,8 @@ export class Gap extends events.EventEmitter {
           advertisement.txPowerLevel = bytes.readInt8(0);
           break;
 
-        case 0x14: { // List of 16 bit solicitation UUIDs
+        case 0x14: {
+          // List of 16 bit solicitation UUIDs
           for (let j = 0; j < bytes.length; j += 2) {
             serviceSolicitationUuid = bytes.readUInt16LE(j).toString(16);
             if (!advertisement.serviceSolicitationUuids!.includes(serviceSolicitationUuid)) {
@@ -200,46 +206,71 @@ export class Gap extends events.EventEmitter {
           }
           break;
         }
-        case 0x15: { // List of 128 bit solicitation UUIDs
+        case 0x15: {
+          // List of 128 bit solicitation UUIDs
           for (let j = 0; j < bytes.length; j += 16) {
-            serviceSolicitationUuid = bytes.slice(j, j + 16).toString('hex').match(/.{1,2}/g)!.reverse().join('');
+            serviceSolicitationUuid = bytes
+              .slice(j, j + 16)
+              .toString('hex')
+              .match(/.{1,2}/g)!
+              .reverse()
+              .join('');
             if (!advertisement.serviceSolicitationUuids!.includes(serviceSolicitationUuid)) {
               advertisement.serviceSolicitationUuids!.push(serviceSolicitationUuid);
             }
           }
           break;
         }
-        case 0x16: { // 16-bit Service Data, there can be multiple occurences
-          const serviceDataUuid = bytes.slice(0, 2).toString('hex').match(/.{1,2}/g)!.reverse().join('');
+        case 0x16: {
+          // 16-bit Service Data, there can be multiple occurences
+          const serviceDataUuid = bytes
+            .slice(0, 2)
+            .toString('hex')
+            .match(/.{1,2}/g)!
+            .reverse()
+            .join('');
           const serviceData = bytes.slice(2, bytes.length);
 
           advertisement.serviceData.push({
             uuid: serviceDataUuid,
-            data: serviceData
+            data: serviceData,
           });
           break;
         }
-        case 0x20: { // 32-bit Service Data, there can be multiple occurences
-          const serviceData32Uuid = bytes.slice(0, 4).toString('hex').match(/.{1,2}/g)!.reverse().join('');
+        case 0x20: {
+          // 32-bit Service Data, there can be multiple occurences
+          const serviceData32Uuid = bytes
+            .slice(0, 4)
+            .toString('hex')
+            .match(/.{1,2}/g)!
+            .reverse()
+            .join('');
           const serviceData32 = bytes.slice(4, bytes.length);
 
           advertisement.serviceData.push({
             uuid: serviceData32Uuid,
-            data: serviceData32
+            data: serviceData32,
           });
           break;
         }
-        case 0x21: { // 128-bit Service Data, there can be multiple occurences
-          const serviceData128Uuid = bytes.slice(0, 16).toString('hex').match(/.{1,2}/g)!.reverse().join('');
+        case 0x21: {
+          // 128-bit Service Data, there can be multiple occurences
+          const serviceData128Uuid = bytes
+            .slice(0, 16)
+            .toString('hex')
+            .match(/.{1,2}/g)!
+            .reverse()
+            .join('');
           const serviceData128 = bytes.slice(16, bytes.length);
 
           advertisement.serviceData.push({
             uuid: serviceData128Uuid,
-            data: serviceData128
+            data: serviceData128,
           });
           break;
         }
-        case 0x1f: { // List of 32 bit solicitation UUIDs
+        case 0x1f: {
+          // List of 32 bit solicitation UUIDs
           for (let j = 0; j < bytes.length; j += 4) {
             serviceSolicitationUuid = bytes.readUInt32LE(j).toString(16);
             if (!advertisement.serviceSolicitationUuids!.includes(serviceSolicitationUuid)) {
@@ -253,12 +284,12 @@ export class Gap extends events.EventEmitter {
           break;
       }
 
-      i += (length + 1);
+      i += length + 1;
     }
 
     debug(`advertisement = ${JSON.stringify(advertisement, null, 0)}`);
 
-    const connectable = (type === 0x04 && previouslyDiscovered) ? this._discoveries[address].connectable : (type !== 0x03);
+    const connectable = type === 0x04 && previouslyDiscovered ? this._discoveries[address].connectable : type !== 0x03;
 
     this._discoveries[address] = {
       address: address,
@@ -267,7 +298,7 @@ export class Gap extends events.EventEmitter {
       advertisement: advertisement,
       rssi: rssi,
       count: discoveryCount,
-      hasScanResponse: hasScanResponse
+      hasScanResponse: hasScanResponse,
     };
 
     // only report after a scan response event or if non-connectable or more than one discovery without a scan response, so more data can be collected

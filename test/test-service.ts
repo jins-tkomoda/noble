@@ -14,14 +14,14 @@ describe('service', () => {
   beforeEach(() => {
     mockNoble = {
       discoverIncludedServices: sinon.spy(),
-      discoverCharacteristics: sinon.spy()
+      discoverCharacteristics: sinon.spy(),
     };
 
     service = new Service(mockNoble, mockPeripheralId, mockUuid);
   });
 
   afterEach(() => {
-    service = null as any as Service;
+    service = (null as any) as Service;
   });
 
   it('should have a uuid', () => {
@@ -56,14 +56,14 @@ describe('service', () => {
       mockNoble.discoverIncludedServices.calledWithExactly(mockPeripheralId, mockUuid, mockUuids).should.equal(true);
     });
 
-    it('should callback', (done) => {
+    it('should callback', done => {
       service.discoverIncludedServices([], () => {
         done();
       });
       service.emit('includedServicesDiscover');
     });
 
-    it('should callback with data', (done) => {
+    it('should callback with data', done => {
       const mockIncludedServiceUuids: string[] = [];
       service.discoverIncludedServices([], (error, includedServiceUuids) => {
         includedServiceUuids!.should.equal(mockIncludedServiceUuids);
@@ -72,9 +72,9 @@ describe('service', () => {
       service.emit('includedServicesDiscover', mockIncludedServiceUuids);
     });
 
-    it('should return a promise', (done) => {
+    it('should return a promise', done => {
       const mockIncludedServiceUuids: string[] = [];
-      (service.discoverIncludedServices([]) as Promise<string[]>).then((includedServiceUuids) => {
+      (service.discoverIncludedServices([]) as Promise<string[]>).then(includedServiceUuids => {
         includedServiceUuids.should.equal(mockIncludedServiceUuids);
         done();
       });
@@ -97,14 +97,14 @@ describe('service', () => {
       mockNoble.discoverCharacteristics.calledWithExactly(mockPeripheralId, mockUuid, mockUuids).should.equal(true);
     });
 
-    it('should callback', (done) => {
+    it('should callback', done => {
       service.discoverCharacteristics([], () => {
         done();
       });
       service.emit('characteristicsDiscover');
     });
 
-    it('should callback with data', (done) => {
+    it('should callback with data', done => {
       const mockCharacteristics: Characteristic[] = [];
 
       service.discoverCharacteristics([], (error, mockCharacteristics) => {
@@ -114,10 +114,10 @@ describe('service', () => {
       service.emit('characteristicsDiscover', mockCharacteristics);
     });
 
-    it('should return a promise', (done) => {
+    it('should return a promise', done => {
       const mockCharacteristics: Characteristic[] = [];
 
-      service.discoverCharacteristics().then((mockCharacteristics) => {
+      service.discoverCharacteristics().then(mockCharacteristics => {
         mockCharacteristics.should.equal(mockCharacteristics);
         done();
       });

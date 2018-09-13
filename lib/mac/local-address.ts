@@ -1,4 +1,4 @@
-import * as childProcess from 'child_process'
+import * as childProcess from 'child_process';
 
 export const localAddress = (callback: (address?: string) => void) => {
   childProcess.exec('system_profiler SPBluetoothDataType', {}, (error, stdout, stderr) => {
@@ -13,4 +13,4 @@ export const localAddress = (callback: (address?: string) => void) => {
 
     callback(address);
   });
-}
+};

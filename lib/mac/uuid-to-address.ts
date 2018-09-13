@@ -1,4 +1,4 @@
-import * as bplist from 'bplist-parser'
+import * as bplist from 'bplist-parser';
 
 export const uuidToAddress = (uuid: string, callback: (error: Error | null, address?: string) => void) => {
   bplist.parseFile('/Library/Preferences/com.apple.Bluetooth.plist', (err, obj) => {
@@ -10,7 +10,10 @@ export const uuidToAddress = (uuid: string, callback: (error: Error | null, addr
 
     uuid = uuid.toUpperCase();
 
-    const formattedUuid = `${uuid.substring(0, 8)}-${uuid.substring(8, 12)}-${uuid.substring(12, 16)}-${uuid.substring(16, 20)}-${uuid.substring(20)}`;
+    const formattedUuid = `${uuid.substring(0, 8)}-${uuid.substring(8, 12)}-${uuid.substring(12, 16)}-${uuid.substring(
+      16,
+      20
+    )}-${uuid.substring(20)}`;
 
     const coreBluetoothCacheEntry = obj[0].CoreBluetoothCache[formattedUuid];
     const address = coreBluetoothCacheEntry ? coreBluetoothCacheEntry.DeviceAddress.replace(/-/g, ':') : undefined;

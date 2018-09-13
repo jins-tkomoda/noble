@@ -7,7 +7,7 @@ import { AclStream } from './acl-stream';
 
 const debug = debugModule('signaling');
 
-const CONNECTION_PARAMETER_UPDATE_REQUEST  = 0x12;
+const CONNECTION_PARAMETER_UPDATE_REQUEST = 0x12;
 const CONNECTION_PARAMETER_UPDATE_RESPONSE = 0x13;
 
 const SIGNALING_CID = 0x0005;

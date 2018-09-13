@@ -1,7 +1,7 @@
 import * as events from 'events';
 
 import { Noble } from './noble';
-import { Characteristic }  from './characteristic';
+import { Characteristic } from './characteristic';
 import { serviceInfo } from './gatt-database';
 
 export class Service extends events.EventEmitter {
@@ -36,21 +36,20 @@ export class Service extends events.EventEmitter {
       uuid: this.uuid,
       name: this.name,
       type: this.type,
-      includedServiceUuids: this.includedServiceUuids
+      includedServiceUuids: this.includedServiceUuids,
     });
   }
 
   discoverIncludedServices(serviceUuids?: string[]): Promise<string[]>;
   discoverIncludedServices(serviceUuids?: string[], callback?: (error: Error | null, includedServiceUuids?: string[]) => void): void;
-  discoverIncludedServices(serviceUuids: string[] = [], callback?: (error: Error | null, includedServiceUuids?: string[]) => void): void | Promise<string[]> {
+  discoverIncludedServices(
+    serviceUuids: string[] = [],
+    callback?: (error: Error | null, includedServiceUuids?: string[]) => void
+  ): void | Promise<string[]> {
     const promise = new Promise<string[]>((resolve, reject) => {
       this.once('includedServicesDiscover', resolve);
 
-      this._noble.discoverIncludedServices(
-        this._peripheralId,
-        this.uuid,
-        serviceUuids
-      );
+      this._noble.discoverIncludedServices(this._peripheralId, this.uuid, serviceUuids);
     });
 
     if (callback && typeof callback === 'function') {
@@ -61,16 +60,18 @@ export class Service extends events.EventEmitter {
   }
 
   discoverCharacteristics(characteristicUuids?: string[]): Promise<Characteristic[]>;
-  discoverCharacteristics(characteristicUuids?: string[], callback?: (error: Error | null, characteristics?: Characteristic[]) => void): void;
-  discoverCharacteristics(characteristicUuids: string[] = [], callback?: (error: Error | null, characteristics?: Characteristic[]) => void): void | Promise<Characteristic[]> {
+  discoverCharacteristics(
+    characteristicUuids?: string[],
+    callback?: (error: Error | null, characteristics?: Characteristic[]) => void
+  ): void;
+  discoverCharacteristics(
+    characteristicUuids: string[] = [],
+    callback?: (error: Error | null, characteristics?: Characteristic[]) => void
+  ): void | Promise<Characteristic[]> {
     const promise = new Promise<Characteristic[]>((resolve, reject) => {
       this.once('characteristicsDiscover', resolve);
 
-      this._noble.discoverCharacteristics(
-        this._peripheralId,
-        this.uuid,
-        characteristicUuids
-      );
+      this._noble.discoverCharacteristics(this._peripheralId, this.uuid, characteristicUuids);
     });
 
     if (callback && typeof callback === 'function') {

@@ -1,6 +1,6 @@
 import * as events from 'events';
 
-import * as debugModule from 'debug'
+import * as debugModule from 'debug';
 import * as XpcConnection from 'xpc-connection';
 
 import * as shared from '../shared';
@@ -13,7 +13,7 @@ const debug = debugModule('highsierra-bindings');
 
 interface MacCharacteristic {
   uuid: string;
-  properties: string[]
+  properties: string[];
 }
 
 /**
@@ -28,8 +28,12 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this._peripherals = {};
 
     this._xpcConnection = new XpcConnection('com.apple.bluetoothd');
-    this._xpcConnection.on('error', (message) => {this.emit('xpcError', message);});
-    this._xpcConnection.on('event', (event) => {this.emit('xpcEvent', event);  });
+    this._xpcConnection.on('error', message => {
+      this.emit('xpcError', message);
+    });
+    this._xpcConnection.on('event', event => {
+      this.emit('xpcEvent', event);
+    });
   }
 
   /**
@@ -47,18 +51,18 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       }
 
       this.sendCBMsg(1, {
-        kCBMsgArgName: `node-${(new Date()).getTime()}`,
+        kCBMsgArgName: `node-${new Date().getTime()}`,
         kCBMsgArgOptions: {
-          kCBInitOptionShowPowerAlert: 0
+          kCBInitOptionShowPowerAlert: 0,
         },
-        kCBMsgArgType: 0
+        kCBMsgArgType: 0,
       });
     });
   }
 
   sendCBMsg(id: number, args: any) {
     debug(`sendCBMsg: ${id}, ${JSON.stringify(args, undefined, 2)}`);
-    this.sendXpcMessage({kCBMsgId: id, kCBMsgArgs: args});
+    this.sendXpcMessage({ kCBMsgId: id, kCBMsgArgs: args });
   }
 
   sendXpcMessage(message: any) {
@@ -75,7 +79,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false) {
     const args = {
       kCBMsgArgOptions: { kCBScanOptionAllowDuplicates: allowDuplicates ? 1 : 0 },
-      kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex'))
+      kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex')),
     };
 
     this.sendCBMsg(44, args);
@@ -101,9 +105,9 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   connect(deviceUuid: string) {
     this.sendCBMsg(46, {
       kCBMsgArgOptions: {
-        kCBConnectOptionNotifyOnDisconnection: 1
+        kCBConnectOptionNotifyOnDisconnection: 1,
       },
-      kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid
+      kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
     });
   }
 
@@ -116,7 +120,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    */
   disconnect(deviceUuid: string) {
     this.sendCBMsg(47, {
-      kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid
+      kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
     });
   }
 
@@ -127,7 +131,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    */
   updateRssi(deviceUuid: string) {
     this.sendCBMsg(61, {
-      kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid
+      kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
     });
   }
 
@@ -142,7 +146,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   discoverServices(deviceUuid: string, serviceUuids: string[] = []) {
     const args = {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
-      kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex'))
+      kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex')),
     };
 
     this.sendCBMsg(62, args);
@@ -162,7 +166,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgServiceStartHandle: this._peripherals[deviceUuid].services[serviceUuid].startHandle,
       kCBMsgArgServiceEndHandle: this._peripherals[deviceUuid].services[serviceUuid].endHandle,
-      kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex'))
+      kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex')),
     };
 
     this.sendCBMsg(74, args);
@@ -182,7 +186,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgServiceStartHandle: this._peripherals[deviceUuid].services[serviceUuid].startHandle,
       kCBMsgArgServiceEndHandle: this._peripherals[deviceUuid].services[serviceUuid].endHandle,
-      kCBMsgArgUUIDs: characteristicUuids.map(uuid => Buffer.from(uuid, 'hex'))
+      kCBMsgArgUUIDs: characteristicUuids.map(uuid => Buffer.from(uuid, 'hex')),
     };
 
     this.sendCBMsg(75, args);
@@ -198,10 +202,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    * @discussion tested
    */
   read(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
-    this.sendCBMsg(78 , {
+    this.sendCBMsg(78, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
-      kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].valueHandle
+      kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid]
+        .valueHandle,
     });
   }
 
@@ -219,9 +224,10 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.sendCBMsg(79, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
-      kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].valueHandle,
+      kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid]
+        .valueHandle,
       kCBMsgArgData: data,
-      kCBMsgArgType: (withoutResponse ? 1 : 0)
+      kCBMsgArgType: withoutResponse ? 1 : 0,
     });
 
     if (withoutResponse) {
@@ -257,8 +263,9 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.sendCBMsg(81, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
-      kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].valueHandle,
-      kCBMsgArgState: (notify ? 1 : 0)
+      kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid]
+        .valueHandle,
+      kCBMsgArgState: notify ? 1 : 0,
     });
   }
 
@@ -275,7 +282,8 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.sendCBMsg(82, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
-      kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].valueHandle
+      kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid]
+        .valueHandle,
     });
   }
 
@@ -292,7 +300,9 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   readValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
     this.sendCBMsg(88, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
-      kCBMsgArgDescriptorHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].descriptors[descriptorUuid].handle
+      kCBMsgArgDescriptorHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].descriptors[
+        descriptorUuid
+      ].handle,
     });
   }
 
@@ -310,8 +320,10 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
     this.sendCBMsg(89, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
-      kCBMsgArgDescriptorHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].descriptors[descriptorUuid].handle,
-      kCBMsgArgData: data
+      kCBMsgArgDescriptorHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].descriptors[
+        descriptorUuid
+      ].handle,
+      kCBMsgArgData: data,
     });
   }
 
@@ -326,7 +338,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   readHandle(deviceUuid: string, handle: number) {
     this.sendCBMsg(88, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
-      kCBMsgArgDescriptorHandle: handle
+      kCBMsgArgDescriptorHandle: handle,
     });
   }
 
@@ -345,13 +357,13 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.sendCBMsg(89, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgDescriptorHandle: handle,
-      kCBMsgArgData: data
+      kCBMsgArgData: data,
     });
   }
 
   setupListeners() {
     // General xpc message handling
-    this.on('xpcEvent', (event) => {
+    this.on('xpcEvent', event => {
       debug(`xpcEvent: ${JSON.stringify(event, undefined, 2)}`);
 
       const kCBMsgId = event.kCBMsgId;
@@ -359,11 +371,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       this.emit(`kCBMsgId${kCBMsgId}`, kCBMsgArgs);
     });
 
-    this.on('xpcError', (message) => {
+    this.on('xpcError', message => {
       console.error(`xpcError: ${message}`); // eslint-disable-line no-console
     });
 
-    this.on('kCBMsgId4', (args) => {
+    this.on('kCBMsgId4', args => {
       const state = ['unknown', 'resetting', 'unsupported', 'unauthorized', 'poweredOff', 'poweredOn'][args.kCBMsgArgState];
       debug(`state change ${state}`);
       this.emit('stateChange', state);
@@ -387,10 +399,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId48', (args) => {
-      if (Object.keys(args.kCBMsgArgAdvertisementData).length === 0 ||
-        (args.kCBMsgArgAdvertisementData.kCBAdvDataIsConnectable !== undefined &&
-          Object.keys(args.kCBMsgArgAdvertisementData).length === 1)) {
+    this.on('kCBMsgId48', args => {
+      if (
+        Object.keys(args.kCBMsgArgAdvertisementData).length === 0 ||
+        (args.kCBMsgArgAdvertisementData.kCBAdvDataIsConnectable !== undefined && Object.keys(args.kCBMsgArgAdvertisementData).length === 1)
+      ) {
         return;
       }
 
@@ -415,7 +428,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
           advertisement.serviceData.push({
             uuid: serviceDataUuid,
-            data: data
+            data: data,
           });
         }
       }
@@ -444,7 +457,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       })(deviceUuid, advertisement, rssi);
     });
 
-    this.on('kCBMsgId49', (args) => {
+    this.on('kCBMsgId49', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
 
       debug(`peripheral ${deviceUuid} connected`);
@@ -457,7 +470,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId50', (args) => {
+    this.on('kCBMsgId50', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
 
       debug(`peripheral ${deviceUuid} disconnected`);
@@ -470,7 +483,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId71', (args) => {
+    this.on('kCBMsgId71', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const rssi = args.kCBMsgArgData;
 
@@ -486,7 +499,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId72', (args) => {
+    this.on('kCBMsgId72', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const serviceUuids: string[] = [];
 
@@ -497,7 +510,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
           const service = {
             uuid: kCBMsgArgService.kCBMsgArgUUID.toString('hex'),
             startHandle: kCBMsgArgService.kCBMsgArgServiceStartHandle,
-            endHandle: kCBMsgArgService.kCBMsgArgServiceEndHandle
+            endHandle: kCBMsgArgService.kCBMsgArgServiceEndHandle,
           };
 
           if (!this._peripherals[deviceUuid].services[service.uuid]) {
@@ -517,7 +530,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @dicussion tested
      */
-    this.on('kCBMsgId76', (args) => {
+    this.on('kCBMsgId76', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const serviceStartHandle = args.kCBMsgArgServiceStartHandle;
       const serviceUuid = this._peripherals[deviceUuid].services[serviceStartHandle].uuid;
@@ -530,12 +543,13 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
         const includedService = {
           uuid: kCBMsgArgService.kCBMsgArgUUID.toString('hex'),
           startHandle: kCBMsgArgService.kCBMsgArgServiceStartHandle,
-          endHandle: kCBMsgArgService.kCBMsgArgServiceEndHandle
+          endHandle: kCBMsgArgService.kCBMsgArgServiceEndHandle,
         };
 
         if (!this._peripherals[deviceUuid].services[serviceStartHandle].includedServices[includedService.uuid]) {
-          this._peripherals[deviceUuid].services[serviceStartHandle].includedServices[includedService.uuid] =
-            this._peripherals[deviceUuid].services[serviceStartHandle].includedServices[includedService.startHandle] = includedService;
+          this._peripherals[deviceUuid].services[serviceStartHandle].includedServices[includedService.uuid] = this._peripherals[
+            deviceUuid
+          ].services[serviceStartHandle].includedServices[includedService.startHandle] = includedService;
         }
 
         includedServiceUuids.push(includedService.uuid);
@@ -549,7 +563,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId77', (args) => {
+    this.on('kCBMsgId77', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const serviceStartHandle = args.kCBMsgArgServiceStartHandle;
       const serviceUuid = this._peripherals[deviceUuid].services[serviceStartHandle].uuid;
@@ -565,16 +579,18 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
           uuid: kCBMsgArgCharacteristic.kCBMsgArgUUID.toString('hex'),
           handle: kCBMsgArgCharacteristic.kCBMsgArgCharacteristicHandle,
           valueHandle: kCBMsgArgCharacteristic.kCBMsgArgCharacteristicValueHandle,
-          properties: properties
+          properties: properties,
         };
 
-        this._peripherals[deviceUuid].services[serviceStartHandle].characteristics[characteristic.uuid] =
-          this._peripherals[deviceUuid].services[serviceStartHandle].characteristics[characteristic.handle] =
-          this._peripherals[deviceUuid].services[serviceStartHandle].characteristics[characteristic.valueHandle] = characteristic;
+        this._peripherals[deviceUuid].services[serviceStartHandle].characteristics[characteristic.uuid] = this._peripherals[
+          deviceUuid
+        ].services[serviceStartHandle].characteristics[characteristic.handle] = this._peripherals[deviceUuid].services[
+          serviceStartHandle
+        ].characteristics[characteristic.valueHandle] = characteristic;
 
         characteristics.push({
           uuid: characteristic.uuid,
-          properties: characteristic.properties
+          properties: characteristic.properties,
         });
       }
 
@@ -586,7 +602,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId83', (args) => {
+    this.on('kCBMsgId83', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const characteristicHandle = args.kCBMsgArgCharacteristicHandle;
       const isNotification = !!args.kCBMsgArgIsNotification;
@@ -596,11 +612,15 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
       if (peripheral) {
         for (const i in peripheral.services) {
-          if (peripheral.services[i].characteristics &&
-            peripheral.services[i].characteristics[characteristicHandle]) {
-
-            this.emit('read', deviceUuid, peripheral.services[i].uuid,
-              peripheral.services[i].characteristics[characteristicHandle].uuid, data, isNotification);
+          if (peripheral.services[i].characteristics && peripheral.services[i].characteristics[characteristicHandle]) {
+            this.emit(
+              'read',
+              deviceUuid,
+              peripheral.services[i].uuid,
+              peripheral.services[i].characteristics[characteristicHandle].uuid,
+              data,
+              isNotification
+            );
             break;
           }
         }
@@ -615,15 +635,21 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId84', (args) => {
+    this.on('kCBMsgId84', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const characteristicHandle = args.kCBMsgArgCharacteristicHandle;
 
       for (const i in this._peripherals[deviceUuid].services) {
-        if (this._peripherals[deviceUuid].services[i].characteristics &&
-            this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle]) {
-          this.emit('write', deviceUuid, this._peripherals[deviceUuid].services[i].uuid,
-            this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle].uuid);
+        if (
+          this._peripherals[deviceUuid].services[i].characteristics &&
+          this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle]
+        ) {
+          this.emit(
+            'write',
+            deviceUuid,
+            this._peripherals[deviceUuid].services[i].uuid,
+            this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle].uuid
+          );
           break;
         }
       }
@@ -634,16 +660,23 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId86', (args) => {
+    this.on('kCBMsgId86', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const characteristicHandle = args.kCBMsgArgCharacteristicHandle;
       const state = !!args.kCBMsgArgState;
 
       for (const i in this._peripherals[deviceUuid].services) {
-        if (this._peripherals[deviceUuid].services[i].characteristics &&
-            this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle]) {
-          this.emit('notify', deviceUuid, this._peripherals[deviceUuid].services[i].uuid,
-            this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle].uuid, state);
+        if (
+          this._peripherals[deviceUuid].services[i].characteristics &&
+          this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle]
+        ) {
+          this.emit(
+            'notify',
+            deviceUuid,
+            this._peripherals[deviceUuid].services[i].uuid,
+            this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle].uuid,
+            state
+          );
           break;
         }
       }
@@ -654,31 +687,38 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId87', (args) => {
+    this.on('kCBMsgId87', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const characteristicHandle = args.kCBMsgArgCharacteristicHandle;
       const descriptors: string[] = []; //args.kCBMsgArgDescriptors;
 
       for (const i in this._peripherals[deviceUuid].services) {
-        if (this._peripherals[deviceUuid].services[i].characteristics &&
-            this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle]) {
-
+        if (
+          this._peripherals[deviceUuid].services[i].characteristics &&
+          this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle]
+        ) {
           this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle].descriptors = {};
 
           for (const kCBMsgArgDescriptor of args.kCBMsgArgDescriptors) {
             const descriptor = {
               uuid: kCBMsgArgDescriptor.kCBMsgArgUUID.toString('hex'),
-              handle: kCBMsgArgDescriptor.kCBMsgArgDescriptorHandle
+              handle: kCBMsgArgDescriptor.kCBMsgArgDescriptorHandle,
             };
 
-            this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle].descriptors[descriptor.uuid] =
-              this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle].descriptors[descriptor.handle] = descriptor;
+            this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle].descriptors[
+              descriptor.uuid
+            ] = this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle].descriptors[descriptor.handle] = descriptor;
 
             descriptors.push(descriptor.uuid);
           }
 
-          this.emit('descriptorsDiscover', deviceUuid, this._peripherals[deviceUuid].services[i].uuid,
-            this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle].uuid, descriptors);
+          this.emit(
+            'descriptorsDiscover',
+            deviceUuid,
+            this._peripherals[deviceUuid].services[i].uuid,
+            this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle].uuid,
+            descriptors
+          );
           break;
         }
       }
@@ -689,7 +729,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId90', (args) => {
+    this.on('kCBMsgId90', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const descriptorHandle = args.kCBMsgArgDescriptorHandle;
       const data = args.kCBMsgArgData;
@@ -698,12 +738,18 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
       for (const i in this._peripherals[deviceUuid].services) {
         for (const j in this._peripherals[deviceUuid].services[i].characteristics) {
-          if (this._peripherals[deviceUuid].services[i].characteristics[j].descriptors &&
-            this._peripherals[deviceUuid].services[i].characteristics[j].descriptors[descriptorHandle]) {
-
-            this.emit('valueRead', deviceUuid, this._peripherals[deviceUuid].services[i].uuid,
+          if (
+            this._peripherals[deviceUuid].services[i].characteristics[j].descriptors &&
+            this._peripherals[deviceUuid].services[i].characteristics[j].descriptors[descriptorHandle]
+          ) {
+            this.emit(
+              'valueRead',
+              deviceUuid,
+              this._peripherals[deviceUuid].services[i].uuid,
               this._peripherals[deviceUuid].services[i].characteristics[j].uuid,
-              this._peripherals[deviceUuid].services[i].characteristics[j].descriptors[descriptorHandle].uuid, data);
+              this._peripherals[deviceUuid].services[i].characteristics[j].descriptors[descriptorHandle].uuid,
+              data
+            );
             return; // break;
           }
         }
@@ -715,7 +761,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId91', (args) => {
+    this.on('kCBMsgId91', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const descriptorHandle = args.kCBMsgArgDescriptorHandle;
 
@@ -723,12 +769,17 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
       for (const i in this._peripherals[deviceUuid].services) {
         for (const j in this._peripherals[deviceUuid].services[i].characteristics) {
-          if (this._peripherals[deviceUuid].services[i].characteristics[j].descriptors &&
-            this._peripherals[deviceUuid].services[i].characteristics[j].descriptors[descriptorHandle]) {
-
-            this.emit('valueWrite', deviceUuid, this._peripherals[deviceUuid].services[i].uuid,
+          if (
+            this._peripherals[deviceUuid].services[i].characteristics[j].descriptors &&
+            this._peripherals[deviceUuid].services[i].characteristics[j].descriptors[descriptorHandle]
+          ) {
+            this.emit(
+              'valueWrite',
+              deviceUuid,
+              this._peripherals[deviceUuid].services[i].uuid,
               this._peripherals[deviceUuid].services[i].characteristics[j].uuid,
-              this._peripherals[deviceUuid].services[i].characteristics[j].descriptors[descriptorHandle].uuid);
+              this._peripherals[deviceUuid].services[i].characteristics[j].descriptors[descriptorHandle].uuid
+            );
             return; // break;
           }
         }

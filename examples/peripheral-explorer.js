@@ -4,7 +4,7 @@ const noble = require('../dist/index');
 
 const peripheralIdOrAddress = process.argv[2].toLowerCase();
 
-noble.on('stateChange', (state) => {
+noble.on('stateChange', state => {
   if (state === 'poweredOn') {
     noble.startScanning();
   } else {
@@ -12,7 +12,7 @@ noble.on('stateChange', (state) => {
   }
 });
 
-noble.on('discover', (peripheral) => {
+noble.on('discover', peripheral => {
   if (peripheral.id === peripheralIdOrAddress || peripheral.address === peripheralIdOrAddress) {
     noble.stopScanning();
 
@@ -58,15 +58,15 @@ function explore(peripheral) {
     process.exit(0);
   });
 
-  peripheral.connect((error) => {
+  peripheral.connect(error => {
     peripheral.discoverServices([], (error, services) => {
       let serviceIndex = 0;
 
       async.whilst(
         () => {
-          return (serviceIndex < services.length);
+          return serviceIndex < services.length;
         },
-        (callback) => {
+        callback => {
           const service = services[serviceIndex];
           let serviceInfo = service.uuid;
 
@@ -80,9 +80,9 @@ function explore(peripheral) {
 
             async.whilst(
               () => {
-                return (characteristicIndex < characteristics.length);
+                return characteristicIndex < characteristics.length;
               },
-              (callback) => {
+              callback => {
                 const characteristic = characteristics[characteristicIndex];
                 let characteristicInfo = `  ${characteristic.uuid}`;
 
@@ -91,7 +91,7 @@ function explore(peripheral) {
                 }
 
                 async.series([
-                  (callback) => {
+                  callback => {
                     characteristic.discoverDescriptors((error, descriptors) => {
                       async.detect(
                         descriptors,
@@ -102,7 +102,7 @@ function explore(peripheral) {
                             return callback();
                           }
                         },
-                        (userDescriptionDescriptor) => {
+                        userDescriptionDescriptor => {
                           if (userDescriptionDescriptor) {
                             userDescriptionDescriptor.readValue((error, data) => {
                               if (data) {
@@ -117,7 +117,7 @@ function explore(peripheral) {
                       );
                     });
                   },
-                  (callback) => {
+                  callback => {
                     characteristicInfo += `\n    properties  ${characteristic.properties.join(', ')}`;
 
                     if (characteristic.properties.includes('read')) {
@@ -137,21 +137,20 @@ function explore(peripheral) {
                     console.log(characteristicInfo);
                     characteristicIndex++;
                     callback();
-                  }
+                  },
                 ]);
               },
-              (error) => {
+              error => {
                 serviceIndex++;
                 callback();
               }
             );
           });
         },
-        (err) => {
+        err => {
           peripheral.disconnect();
         }
       );
     });
   });
 }
-

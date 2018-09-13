@@ -12,7 +12,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   constructor() {
     super();
     this._wss = new ws.Server({
-      port: 0xB1e,
+      port: 0xb1e,
       clientTracking: true,
     });
 
@@ -79,8 +79,8 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
         localName: advertisement.localName,
         txPowerLevel: advertisement.txPowerLevel,
         serviceUuids: advertisement.serviceUuids,
-        manufacturerData: (advertisement.manufacturerData ? Buffer.from(advertisement.manufacturerData, 'hex') : null),
-        serviceData: (advertisement.serviceData ? Buffer.from(advertisement.serviceData, 'hex') : null)
+        manufacturerData: advertisement.manufacturerData ? Buffer.from(advertisement.manufacturerData, 'hex') : null,
+        serviceData: advertisement.serviceData ? Buffer.from(advertisement.serviceData, 'hex') : null,
       };
 
       // TODO: handle duplicate peripheralUuid's
@@ -89,7 +89,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
         address: address,
         advertisement: advertisement,
         rssi: rssi,
-        ws: ws
+        ws: ws,
       };
 
       this.emit('discover', peripheralUuid, address, addressType, connectable, advertisement, rssi);
@@ -140,7 +140,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this._startScanCommand = {
       action: 'startScanning',
       serviceUuids: serviceUuids,
-      allowDuplicates: allowDuplicates
+      allowDuplicates: allowDuplicates,
     };
 
     this._sendCommand(null, this._startScanCommand);
@@ -152,7 +152,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this._startScanCommand = null;
 
     this._sendCommand(null, {
-      action: 'stopScanning'
+      action: 'stopScanning',
     });
 
     this.emit('scanStop');
@@ -163,7 +163,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
     this._sendCommand(peripheral.ws, {
       action: 'connect',
-      peripheralUuid: peripheral.uuid
+      peripheralUuid: peripheral.uuid,
     });
   }
 
@@ -172,7 +172,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
     this._sendCommand(peripheral.ws, {
       action: 'disconnect',
-      peripheralUuid: peripheral.uuid
+      peripheralUuid: peripheral.uuid,
     });
   }
 
@@ -181,7 +181,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
     this._sendCommand(peripheral.ws, {
       action: 'updateRssi',
-      peripheralUuid: peripheral.uuid
+      peripheralUuid: peripheral.uuid,
     });
   }
 
@@ -191,7 +191,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this._sendCommand(peripheral.ws, {
       action: 'discoverServices',
       peripheralUuid: peripheral.uuid,
-      uuids: serviceUuids
+      uuids: serviceUuids,
     });
   }
 
@@ -202,7 +202,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       action: 'discoverIncludedServices',
       peripheralUuid: peripheral.uuid,
       serviceUuid: serviceUuid,
-      serviceUuids: serviceUuids
+      serviceUuids: serviceUuids,
     });
   }
 
@@ -213,7 +213,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       action: 'discoverCharacteristics',
       peripheralUuid: peripheral.uuid,
       serviceUuid: serviceUuid,
-      characteristicUuids: characteristicUuids
+      characteristicUuids: characteristicUuids,
     });
   }
 
@@ -224,7 +224,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       action: 'read',
       peripheralUuid: peripheral.uuid,
       serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid
+      characteristicUuid: characteristicUuid,
     });
   }
 
@@ -237,7 +237,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       serviceUuid: serviceUuid,
       characteristicUuid: characteristicUuid,
       data: data.toString('hex'),
-      withoutResponse: withoutResponse
+      withoutResponse: withoutResponse,
     });
   }
 
@@ -249,7 +249,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       peripheralUuid: peripheral.uuid,
       serviceUuid: serviceUuid,
       characteristicUuid: characteristicUuid,
-      broadcast: broadcast
+      broadcast: broadcast,
     });
   }
 
@@ -261,7 +261,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       peripheralUuid: peripheral.uuid,
       serviceUuid: serviceUuid,
       characteristicUuid: characteristicUuid,
-      notify: notify
+      notify: notify,
     });
   }
 
@@ -272,7 +272,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       action: 'discoverDescriptors',
       peripheralUuid: peripheral.uuid,
       serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid
+      characteristicUuid: characteristicUuid,
     });
   }
 
@@ -284,7 +284,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       peripheralUuid: peripheral.uuid,
       serviceUuid: serviceUuid,
       characteristicUuid: characteristicUuid,
-      descriptorUuid: descriptorUuid
+      descriptorUuid: descriptorUuid,
     });
   }
 
@@ -297,7 +297,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       serviceUuid: serviceUuid,
       characteristicUuid: characteristicUuid,
       descriptorUuid: descriptorUuid,
-      data: data.toString('hex')
+      data: data.toString('hex'),
     });
   }
 
@@ -307,7 +307,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this._sendCommand(peripheral.ws, {
       action: 'readHandle',
       peripheralUuid: peripheral.uuid,
-      handle: handle
+      handle: handle,
     });
   }
 
@@ -319,7 +319,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       peripheralUuid: peripheral.uuid,
       handle: handle,
       data: data.toString('hex'),
-      withoutResponse: withoutResponse
+      withoutResponse: withoutResponse,
     });
   }
 }

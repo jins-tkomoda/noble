@@ -17,13 +17,6 @@
     "allowJs": true,
     "resolveJsonModule": true
   },
-  "include": [
-    "lib/**/*",
-    "test/**/*",
-    "./*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["lib/**/*", "test/**/*", "./*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

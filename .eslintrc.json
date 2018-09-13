@@ -10,7 +10,7 @@
   },
   "extends": "eslint:recommended",
   "rules": {
-    "no-unused-vars": ["error", {"args": "none"}],
+    "no-unused-vars": ["error", { "args": "none" }],
     "no-buffer-constructor": "error",
     "no-const-assign": "error",
     "no-unneeded-ternary": "error",
@@ -22,10 +22,14 @@
     "eqeqeq": "error",
     "no-bitwise": "off",
     "curly": "error",
-    "indent": ["error", 2, {
-      "flatTernaryExpressions": true,
-      "SwitchCase": 1
-    }],
+    "indent": [
+      "error",
+      2,
+      {
+        "flatTernaryExpressions": true,
+        "SwitchCase": 1
+      }
+    ],
     "linebreak-style": ["error", "unix"],
     "quotes": ["error", "single"],
     "semi": ["error", "always"]

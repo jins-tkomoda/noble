@@ -4,7 +4,6 @@ import { Noble } from './noble';
 import { Descriptor } from './descriptor';
 import { characteristicInfo } from './gatt-database';
 
-
 export class Characteristic extends events.EventEmitter {
   private _noble: Noble;
   private _peripheralId: string;
@@ -40,7 +39,7 @@ export class Characteristic extends events.EventEmitter {
       uuid: this.uuid,
       name: this.name,
       type: this.type,
-      properties: this.properties
+      properties: this.properties,
     });
   }
 
@@ -62,11 +61,7 @@ export class Characteristic extends events.EventEmitter {
 
       this.on('read', onRead);
 
-      this._noble.read(
-        this._peripheralId,
-        this._serviceUuid,
-        this.uuid
-      );
+      this._noble.read(this._peripheralId, this._serviceUuid, this.uuid);
     });
 
     if (callback && typeof callback === 'function') {
@@ -86,13 +81,7 @@ export class Characteristic extends events.EventEmitter {
     const promise = new Promise<void>((resolve, reject) => {
       this.once('write', resolve);
 
-      this._noble.write(
-        this._peripheralId,
-        this._serviceUuid,
-        this.uuid,
-        data,
-        withoutResponse
-      );
+      this._noble.write(this._peripheralId, this._serviceUuid, this.uuid, data, withoutResponse);
     });
 
     if (callback && typeof callback === 'function') {
@@ -108,12 +97,7 @@ export class Characteristic extends events.EventEmitter {
     const promise = new Promise<void>((resolve, reject) => {
       this.once('broadcast', resolve);
 
-      this._noble.broadcast(
-        this._peripheralId,
-        this._serviceUuid,
-        this.uuid,
-        broadcast
-      );
+      this._noble.broadcast(this._peripheralId, this._serviceUuid, this.uuid, broadcast);
     });
 
     if (callback && typeof callback === 'function') {
@@ -130,12 +114,7 @@ export class Characteristic extends events.EventEmitter {
     const promise = new Promise<void>((resolve, reject) => {
       this.once('notify', resolve);
 
-      this._noble.notify(
-        this._peripheralId,
-        this._serviceUuid,
-        this.uuid,
-        notify
-      );
+      this._noble.notify(this._peripheralId, this._serviceUuid, this.uuid, notify);
     });
 
     if (callback && typeof callback === 'function') {
@@ -163,11 +142,7 @@ export class Characteristic extends events.EventEmitter {
     const promise = new Promise<Descriptor[]>((resolve, reject) => {
       this.once('descriptorsDiscover', resolve);
 
-      this._noble.discoverDescriptors(
-        this._peripheralId,
-        this._serviceUuid,
-        this.uuid
-      );
+      this._noble.discoverDescriptors(this._peripheralId, this._serviceUuid, this.uuid);
     });
 
     if (callback && typeof callback === 'function') {

@@ -19,14 +19,14 @@ describe('Characteristic', () => {
       write: sinon.spy(),
       broadcast: sinon.spy(),
       notify: sinon.spy(),
-      discoverDescriptors: sinon.spy()
+      discoverDescriptors: sinon.spy(),
     };
 
     characteristic = new Characteristic(mockNoble, mockPeripheralId, mockServiceUuid, mockUuid, mockProperties);
   });
 
   afterEach(() => {
-    characteristic = null as any as Characteristic;
+    characteristic = (null as any) as Characteristic;
   });
 
   it('should have a uuid', () => {
@@ -46,7 +46,9 @@ describe('Characteristic', () => {
 
   describe('toString', () => {
     it('should be uuid, name, type, properties', () => {
-      characteristic.toString().should.equal('{"uuid":"mock-uuid","name":null,"type":null,"properties":["mock-property-1","mock-property-2"]}');
+      characteristic
+        .toString()
+        .should.equal('{"uuid":"mock-uuid","name":null,"type":null,"properties":["mock-property-1","mock-property-2"]}');
     });
   });
 
@@ -57,14 +59,14 @@ describe('Characteristic', () => {
       mockNoble.read.calledWithExactly(mockPeripheralId, mockServiceUuid, mockUuid).should.equal(true);
     });
 
-    it('should callback', (done) => {
+    it('should callback', done => {
       characteristic.read(() => {
         done();
       });
       characteristic.emit('read');
     });
 
-    it('should callback with data', (done) => {
+    it('should callback with data', done => {
       const mockData = Buffer.alloc(0);
       characteristic.read((error, data) => {
         data!.should.equal(mockData);
@@ -73,9 +75,9 @@ describe('Characteristic', () => {
       characteristic.emit('read', mockData);
     });
 
-    it('should return a promise', (done) => {
+    it('should return a promise', done => {
       const mockData = Buffer.alloc(0);
-      characteristic.read().then((data) => {
+      characteristic.read().then(data => {
         data.should.equal(mockData);
         done();
       });
@@ -94,9 +96,9 @@ describe('Characteristic', () => {
     it('should only accept data as a buffer', () => {
       mockData = {} as Buffer;
 
-      (function(){
+      (function() {
         characteristic.write(mockData);
-      }).should.throwError('data must be a Buffer');
+      }.should.throwError('data must be a Buffer'));
     });
 
     it('should delegate to noble, withoutResponse false', () => {
@@ -111,14 +113,14 @@ describe('Characteristic', () => {
       mockNoble.write.calledWithExactly(mockPeripheralId, mockServiceUuid, mockUuid, mockData, true).should.equal(true);
     });
 
-    it('should callback', (done) => {
+    it('should callback', done => {
       characteristic.write(mockData, true, () => {
         done();
       });
       characteristic.emit('write');
     });
 
-    it('should return a promise', (done) => {
+    it('should return a promise', done => {
       characteristic.write(mockData, true).then(() => done());
       characteristic.emit('write');
     });
@@ -137,14 +139,14 @@ describe('Characteristic', () => {
       mockNoble.broadcast.calledWithExactly(mockPeripheralId, mockServiceUuid, mockUuid, false).should.equal(true);
     });
 
-    it('should callback', (done) => {
+    it('should callback', done => {
       characteristic.broadcast(true, () => {
         done();
       });
       characteristic.emit('broadcast');
     });
 
-    it('should return a promise', (done) => {
+    it('should return a promise', done => {
       characteristic.broadcast(true).then(() => done());
       characteristic.emit('broadcast');
     });
@@ -163,14 +165,14 @@ describe('Characteristic', () => {
       mockNoble.notify.calledWithExactly(mockPeripheralId, mockServiceUuid, mockUuid, false).should.equal(true);
     });
 
-    it('should callback', (done) => {
+    it('should callback', done => {
       characteristic.notify(true, () => {
         done();
       });
       characteristic.emit('notify');
     });
 
-    it('should return a promise', (done) => {
+    it('should return a promise', done => {
       characteristic.notify(true).then(() => done());
       characteristic.emit('notify');
     });
@@ -183,14 +185,14 @@ describe('Characteristic', () => {
       mockNoble.notify.calledWithExactly(mockPeripheralId, mockServiceUuid, mockUuid, true).should.equal(true);
     });
 
-    it('should callback', (done) => {
+    it('should callback', done => {
       characteristic.subscribe(() => {
         done();
       });
       characteristic.emit('notify');
     });
 
-    it('should return a promise', (done) => {
+    it('should return a promise', done => {
       characteristic.subscribe().then(() => done());
       characteristic.emit('notify');
     });
@@ -203,14 +205,14 @@ describe('Characteristic', () => {
       mockNoble.notify.calledWithExactly(mockPeripheralId, mockServiceUuid, mockUuid, false).should.equal(true);
     });
 
-    it('should callback', (done) => {
+    it('should callback', done => {
       characteristic.unsubscribe(() => {
         done();
       });
       characteristic.emit('notify');
     });
 
-    it('should return a promise', (done) => {
+    it('should return a promise', done => {
       characteristic.unsubscribe().then(() => done());
       characteristic.emit('notify');
     });
@@ -223,14 +225,14 @@ describe('Characteristic', () => {
       mockNoble.discoverDescriptors.calledWithExactly(mockPeripheralId, mockServiceUuid, mockUuid).should.equal(true);
     });
 
-    it('should callback', (done) => {
+    it('should callback', done => {
       characteristic.discoverDescriptors(() => {
         done();
       });
       characteristic.emit('descriptorsDiscover');
     });
 
-    it('should callback with descriptors', (done) => {
+    it('should callback with descriptors', done => {
       const mockDescriptors: Descriptor[] = [];
       characteristic.discoverDescriptors((error, descriptors) => {
         descriptors!.should.equal(mockDescriptors);
@@ -239,9 +241,9 @@ describe('Characteristic', () => {
       characteristic.emit('descriptorsDiscover', mockDescriptors);
     });
 
-    it('should return a promise', (done) => {
+    it('should return a promise', done => {
       const mockDescriptors: Descriptor[] = [];
-      characteristic.discoverDescriptors().then((descriptors) => {
+      characteristic.discoverDescriptors().then(descriptors => {
         descriptors.should.equal(mockDescriptors);
         done();
       });

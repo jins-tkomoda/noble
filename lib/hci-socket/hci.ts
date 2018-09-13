@@ -14,7 +14,7 @@ const HCI_ACLDATA_PKT = 0x02;
 const HCI_EVENT_PKT = 0x04;
 
 const ACL_START_NO_FLUSH = 0x00;
-const ACL_CONT  = 0x01;
+const ACL_CONT = 0x01;
 const ACL_START = 0x02;
 
 const EVT_DISCONN_COMPLETE = 0x05;
@@ -34,8 +34,8 @@ const OCF_DISCONNECT = 0x0006;
 const OGF_HOST_CTL = 0x03;
 const OCF_SET_EVENT_MASK = 0x0001;
 const OCF_RESET = 0x0003;
-const OCF_READ_LE_HOST_SUPPORTED = 0x006C;
-const OCF_WRITE_LE_HOST_SUPPORTED = 0x006D;
+const OCF_READ_LE_HOST_SUPPORTED = 0x006c;
+const OCF_WRITE_LE_HOST_SUPPORTED = 0x006d;
 
 const OGF_INFO_PARAM = 0x04;
 const OCF_READ_LOCAL_VERSION = 0x0001;
@@ -54,32 +54,32 @@ const OCF_LE_CREATE_CONN = 0x000d;
 const OCF_LE_CONN_UPDATE = 0x0013;
 const OCF_LE_START_ENCRYPTION = 0x0019;
 
-const DISCONNECT_CMD = OCF_DISCONNECT | OGF_LINK_CTL << 10;
+const DISCONNECT_CMD = OCF_DISCONNECT | (OGF_LINK_CTL << 10);
 
-const SET_EVENT_MASK_CMD = OCF_SET_EVENT_MASK | OGF_HOST_CTL << 10;
-const RESET_CMD = OCF_RESET | OGF_HOST_CTL << 10;
-const READ_LE_HOST_SUPPORTED_CMD = OCF_READ_LE_HOST_SUPPORTED | OGF_HOST_CTL << 10;
-const WRITE_LE_HOST_SUPPORTED_CMD = OCF_WRITE_LE_HOST_SUPPORTED | OGF_HOST_CTL << 10;
+const SET_EVENT_MASK_CMD = OCF_SET_EVENT_MASK | (OGF_HOST_CTL << 10);
+const RESET_CMD = OCF_RESET | (OGF_HOST_CTL << 10);
+const READ_LE_HOST_SUPPORTED_CMD = OCF_READ_LE_HOST_SUPPORTED | (OGF_HOST_CTL << 10);
+const WRITE_LE_HOST_SUPPORTED_CMD = OCF_WRITE_LE_HOST_SUPPORTED | (OGF_HOST_CTL << 10);
 
 const READ_LOCAL_VERSION_CMD = OCF_READ_LOCAL_VERSION | (OGF_INFO_PARAM << 10);
 const READ_BUFFER_SIZE_CMD = OCF_READ_BUFFER_SIZE | (OGF_INFO_PARAM << 10);
 const READ_BD_ADDR_CMD = OCF_READ_BD_ADDR | (OGF_INFO_PARAM << 10);
 
-const READ_RSSI_CMD = OCF_READ_RSSI | OGF_STATUS_PARAM << 10;
+const READ_RSSI_CMD = OCF_READ_RSSI | (OGF_STATUS_PARAM << 10);
 
-const LE_SET_EVENT_MASK_CMD = OCF_LE_SET_EVENT_MASK | OGF_LE_CTL << 10;
-const LE_READ_BUFFER_SIZE_CMD = OCF_LE_READ_BUFFER_SIZE | OGF_LE_CTL << 10;
-const LE_SET_SCAN_PARAMETERS_CMD = OCF_LE_SET_SCAN_PARAMETERS | OGF_LE_CTL << 10;
-const LE_SET_SCAN_ENABLE_CMD = OCF_LE_SET_SCAN_ENABLE | OGF_LE_CTL << 10;
-const LE_CREATE_CONN_CMD = OCF_LE_CREATE_CONN | OGF_LE_CTL << 10;
-const LE_CONN_UPDATE_CMD = OCF_LE_CONN_UPDATE | OGF_LE_CTL << 10;
-const LE_START_ENCRYPTION_CMD = OCF_LE_START_ENCRYPTION | OGF_LE_CTL << 10;
+const LE_SET_EVENT_MASK_CMD = OCF_LE_SET_EVENT_MASK | (OGF_LE_CTL << 10);
+const LE_READ_BUFFER_SIZE_CMD = OCF_LE_READ_BUFFER_SIZE | (OGF_LE_CTL << 10);
+const LE_SET_SCAN_PARAMETERS_CMD = OCF_LE_SET_SCAN_PARAMETERS | (OGF_LE_CTL << 10);
+const LE_SET_SCAN_ENABLE_CMD = OCF_LE_SET_SCAN_ENABLE | (OGF_LE_CTL << 10);
+const LE_CREATE_CONN_CMD = OCF_LE_CREATE_CONN | (OGF_LE_CTL << 10);
+const LE_CONN_UPDATE_CMD = OCF_LE_CONN_UPDATE | (OGF_LE_CTL << 10);
+const LE_START_ENCRYPTION_CMD = OCF_LE_START_ENCRYPTION | (OGF_LE_CTL << 10);
 
 const HCI_OE_USER_ENDED_CONNECTION = 0x13;
 
 interface BufferHandle {
-  length: number,
-  cid: number,
+  length: number;
+  cid: number;
   data: Buffer;
 }
 
@@ -97,9 +97,9 @@ export class Hci extends events.EventEmitter {
   private _useUserChannel: boolean;
   private _aclMtu: number;
   private _aclMaxInProgress: number;
-  private _handleAclsInProgress!: { [handle: number] : number; }
+  private _handleAclsInProgress!: { [handle: number]: number };
   private _aclOutQueue: AclOutQueueEntry[];
-  private _handleBuffers!: {[handle: number]: BufferHandle };
+  private _handleBuffers!: { [handle: number]: BufferHandle };
 
   public address!: string;
   public addressType: string;
@@ -177,8 +177,13 @@ export class Hci extends events.EventEmitter {
   setSocketFilter() {
     const filter = Buffer.alloc(14);
     const typeMask = (1 << HCI_COMMAND_PKT) | (1 << HCI_EVENT_PKT) | (1 << HCI_ACLDATA_PKT);
-    const eventMask1 = (1 << EVT_DISCONN_COMPLETE) | (1 << EVT_ENCRYPT_CHANGE) | (1 << EVT_CMD_COMPLETE) | (1 << EVT_CMD_STATUS) | ( 1 << EVT_NUMBER_OF_COMPLETED_PACKETS);
-    const eventMask2 = (1 << (EVT_LE_META_EVENT - 32));
+    const eventMask1 =
+      (1 << EVT_DISCONN_COMPLETE) |
+      (1 << EVT_ENCRYPT_CHANGE) |
+      (1 << EVT_CMD_COMPLETE) |
+      (1 << EVT_CMD_STATUS) |
+      (1 << EVT_NUMBER_OF_COMPLETED_PACKETS);
+    const eventMask2 = 1 << (EVT_LE_META_EVENT - 32);
     const opcode = 0;
 
     filter.writeUInt32LE(typeMask, 0);
@@ -212,7 +217,7 @@ export class Hci extends events.EventEmitter {
 
     // header
     cmd.writeUInt8(HCI_COMMAND_PKT, 0);
-    cmd.writeUInt16LE(OCF_RESET | OGF_HOST_CTL << 10, 1);
+    cmd.writeUInt16LE(OCF_RESET | (OGF_HOST_CTL << 10), 1);
 
     // length
     cmd.writeUInt8(0x00, 3);
@@ -310,8 +315,8 @@ export class Hci extends events.EventEmitter {
 
     // data
     cmd.writeUInt8(0x01, 4); // type: 0 -> passive, 1 -> active
-    cmd.writeUInt16LE(0x00A0, 5); // scan interval, in units of 0.625 ms
-    cmd.writeUInt16LE(0x00A0, 7); // scan window, in units of 0.625 ms
+    cmd.writeUInt16LE(0x00a0, 5); // scan interval, in units of 0.625 ms
+    cmd.writeUInt16LE(0x00a0, 7); // scan window, in units of 0.625 ms
     cmd.writeUInt8(0x00, 9); // own address type: 0 -> public, 1 -> random
     cmd.writeUInt8(0x00, 10); // filter: 0 -> all event types
 
@@ -353,7 +358,13 @@ export class Hci extends events.EventEmitter {
     cmd.writeUInt8(0x00, 8); // initiator filter
 
     cmd.writeUInt8(addressType === 'random' ? 0x01 : 0x00, 9); // peer address type
-    Buffer.from(address.split(':').reverse().join(''), 'hex').copy(cmd, 10); // peer address
+    Buffer.from(
+      address
+        .split(':')
+        .reverse()
+        .join(''),
+      'hex'
+    ).copy(cmd, 10); // peer address
 
     cmd.writeUInt8(0x00, 16); // own address type
 
@@ -475,7 +486,7 @@ export class Hci extends events.EventEmitter {
   }
 
   queueAclDataPkt(handle: number, cid: number, data: Buffer) {
-    let hf = handle | ACL_START_NO_FLUSH << 12;
+    let hf = handle | (ACL_START_NO_FLUSH << 12);
     // l2cap pdu may be fragmented on hci level
     let l2capPdu = Buffer.alloc(4 + data.length);
     l2capPdu.writeUInt16LE(data.length, 0);
@@ -499,7 +510,7 @@ export class Hci extends events.EventEmitter {
       this._aclOutQueue.push({
         handle: handle,
         pkt: pkt,
-        fragId: fragId++
+        fragId: fragId++,
       });
     }
 
@@ -546,7 +557,7 @@ export class Hci extends events.EventEmitter {
       debug(`\tsub event type = ${subEventType}`);
 
       if (subEventType === EVT_DISCONN_COMPLETE) {
-        const handle =  data.readUInt16LE(4);
+        const handle = data.readUInt16LE(4);
         const reason = data.readUInt8(6);
 
         debug(`\t\thandle = ${handle}`);
@@ -575,7 +586,7 @@ export class Hci extends events.EventEmitter {
         this.pushAclOutQueue();
         this.emit('disconnComplete', handle, reason);
       } else if (subEventType === EVT_ENCRYPT_CHANGE) {
-        const handle =  data.readUInt16LE(4);
+        const handle = data.readUInt16LE(4);
         const encrypt = data.readUInt8(6);
 
         debug(`\t\thandle = ${handle}`);
@@ -654,7 +665,7 @@ export class Hci extends events.EventEmitter {
           this._handleBuffers[handle] = {
             length: length,
             cid: cid,
-            data: pktData
+            data: pktData,
           };
         }
       } else if (ACL_CONT === flags) {
@@ -662,10 +673,7 @@ export class Hci extends events.EventEmitter {
           return;
         }
 
-        this._handleBuffers[handle].data = Buffer.concat([
-          this._handleBuffers[handle].data,
-          data.slice(5)
-        ]);
+        this._handleBuffers[handle].data = Buffer.concat([this._handleBuffers[handle].data, data.slice(5)]);
 
         if (this._handleBuffers[handle].data.length === this._handleBuffers[handle].length) {
           this.emit('aclDataPkt', handle, this._handleBuffers[handle].cid, this._handleBuffers[handle].data);
@@ -681,8 +689,8 @@ export class Hci extends events.EventEmitter {
       debug(`\t\tdata len = ${len}`);
 
       if (cmd === LE_SET_SCAN_ENABLE_CMD) {
-        const enable = (data.readUInt8(4) === 0x1);
-        const filterDuplicates = (data.readUInt8(5) === 0x1);
+        const enable = data.readUInt8(4) === 0x1;
+        const filterDuplicates = data.readUInt8(5) === 0x1;
 
         debug('\t\t\tLE enable scan command');
         debug(`\t\t\tenable scanning = ${enable}`);
@@ -738,7 +746,11 @@ export class Hci extends events.EventEmitter {
       this.emit('readLocalVersion', hciVer, hciRev, lmpVer, manufacturer, lmpSubVer);
     } else if (cmd === READ_BD_ADDR_CMD) {
       this.addressType = 'public';
-      this.address = result.toString('hex').match(/.{1,2}/g)!.reverse().join(':');
+      this.address = result
+        .toString('hex')
+        .match(/.{1,2}/g)!
+        .reverse()
+        .join(':');
 
       debug(`address = ${this.address}`);
 
@@ -804,8 +816,13 @@ export class Hci extends events.EventEmitter {
   processLeConnComplete(status: number, data: Buffer) {
     const handle = data.readUInt16LE(0);
     const role = data.readUInt8(2);
-    const addressType = data.readUInt8(3) === 0x01 ? 'random': 'public';
-    const address = data.slice(4, 10).toString('hex').match(/.{1,2}/g)!.reverse().join(':');
+    const addressType = data.readUInt8(3) === 0x01 ? 'random' : 'public';
+    const address = data
+      .slice(4, 10)
+      .toString('hex')
+      .match(/.{1,2}/g)!
+      .reverse()
+      .join(':');
     const interval = data.readUInt16LE(10) * 1.25;
     const latency = data.readUInt16LE(12); // TODO: multiplier?
     const supervisionTimeout = data.readUInt16LE(14) * 10;
@@ -829,7 +846,12 @@ export class Hci extends events.EventEmitter {
     for (let i = 0; i < count; i++) {
       const type = data.readUInt8(0);
       const addressType = data.readUInt8(1) === 0x01 ? 'random' : 'public';
-      const address = data.slice(2, 8).toString('hex').match(/.{1,2}/g)!.reverse().join(':');
+      const address = data
+        .slice(2, 8)
+        .toString('hex')
+        .match(/.{1,2}/g)!
+        .reverse()
+        .join(':');
       const eirLength = data.readUInt8(8);
       const eir = data.slice(9, eirLength + 9);
       const rssi = data.readInt8(eirLength + 9);

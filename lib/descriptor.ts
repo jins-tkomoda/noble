@@ -35,7 +35,7 @@ export class Descriptor extends events.EventEmitter {
     return JSON.stringify({
       uuid: this.uuid,
       name: this.name,
-      type: this.type
+      type: this.type,
     });
   }
 
@@ -45,12 +45,7 @@ export class Descriptor extends events.EventEmitter {
     const promise = new Promise<Buffer>((resolve, reject) => {
       this.once('valueRead', resolve);
 
-      this._noble.readValue(
-        this._peripheralId,
-        this._serviceUuid,
-        this._characteristicUuid,
-        this.uuid
-      );
+      this._noble.readValue(this._peripheralId, this._serviceUuid, this._characteristicUuid, this.uuid);
     });
 
     if (callback && typeof callback === 'function') {
@@ -70,13 +65,7 @@ export class Descriptor extends events.EventEmitter {
     const promise = new Promise<void>((resolve, reject) => {
       this.once('valueWrite', resolve);
 
-      this._noble.writeValue(
-        this._peripheralId,
-        this._serviceUuid,
-        this._characteristicUuid,
-        this.uuid,
-        data
-      );
+      this._noble.writeValue(this._peripheralId, this._serviceUuid, this._characteristicUuid, this.uuid, data);
     });
 
     if (callback && typeof callback === 'function') {

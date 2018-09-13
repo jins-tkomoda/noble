@@ -6,30 +6,29 @@ const debug = debugModule('att');
 import { GattCharacteristic, propertyBitstoPropertyNames } from '../shared';
 import { AclStream } from './acl-stream';
 
-const ATT_OP_ERROR                    = 0x01;
-const ATT_OP_MTU_REQ                  = 0x02;
-const ATT_OP_MTU_RESP                 = 0x03;
-const ATT_OP_FIND_INFO_REQ            = 0x04;
-const ATT_OP_FIND_INFO_RESP           = 0x05;
-const ATT_OP_READ_BY_TYPE_REQ         = 0x08;
-const ATT_OP_READ_BY_TYPE_RESP        = 0x09;
-const ATT_OP_READ_REQ                 = 0x0a;
-const ATT_OP_READ_RESP                = 0x0b;
-const ATT_OP_READ_BLOB_REQ            = 0x0c;
-const ATT_OP_READ_BLOB_RESP           = 0x0d;
-const ATT_OP_READ_BY_GROUP_REQ        = 0x10;
-const ATT_OP_READ_BY_GROUP_RESP       = 0x11;
-const ATT_OP_WRITE_REQ                = 0x12;
-const ATT_OP_WRITE_RESP               = 0x13;
-const ATT_OP_PREPARE_WRITE_REQ        = 0x16;
-const ATT_OP_PREPARE_WRITE_RESP       = 0x17;
-const ATT_OP_EXECUTE_WRITE_REQ        = 0x18;
-const ATT_OP_EXECUTE_WRITE_RESP       = 0x19;
-const ATT_OP_HANDLE_NOTIFY            = 0x1b;
-const ATT_OP_HANDLE_IND               = 0x1d;
-const ATT_OP_HANDLE_CNF               = 0x1e;
-const ATT_OP_WRITE_CMD                = 0x52;
-
+const ATT_OP_ERROR = 0x01;
+const ATT_OP_MTU_REQ = 0x02;
+const ATT_OP_MTU_RESP = 0x03;
+const ATT_OP_FIND_INFO_REQ = 0x04;
+const ATT_OP_FIND_INFO_RESP = 0x05;
+const ATT_OP_READ_BY_TYPE_REQ = 0x08;
+const ATT_OP_READ_BY_TYPE_RESP = 0x09;
+const ATT_OP_READ_REQ = 0x0a;
+const ATT_OP_READ_RESP = 0x0b;
+const ATT_OP_READ_BLOB_REQ = 0x0c;
+const ATT_OP_READ_BLOB_RESP = 0x0d;
+const ATT_OP_READ_BY_GROUP_REQ = 0x10;
+const ATT_OP_READ_BY_GROUP_RESP = 0x11;
+const ATT_OP_WRITE_REQ = 0x12;
+const ATT_OP_WRITE_RESP = 0x13;
+const ATT_OP_PREPARE_WRITE_REQ = 0x16;
+const ATT_OP_PREPARE_WRITE_RESP = 0x17;
+const ATT_OP_EXECUTE_WRITE_REQ = 0x18;
+const ATT_OP_EXECUTE_WRITE_RESP = 0x19;
+const ATT_OP_HANDLE_NOTIFY = 0x1b;
+const ATT_OP_HANDLE_IND = 0x1d;
+const ATT_OP_HANDLE_CNF = 0x1e;
+const ATT_OP_WRITE_CMD = 0x52;
 
 /*
 var ATT_ECODE_SUCCESS               = 0x00;
@@ -38,12 +37,12 @@ var ATT_ECODE_READ_NOT_PERM         = 0x02;
 var ATT_ECODE_WRITE_NOT_PERM        = 0x03;
 var ATT_ECODE_INVALID_PDU           = 0x04;
 */
-const ATT_ECODE_AUTHENTICATION        = 0x05;
-const ATT_ECODE_REQ_NOT_SUPP          = 0x06;
+const ATT_ECODE_AUTHENTICATION = 0x05;
+const ATT_ECODE_REQ_NOT_SUPP = 0x06;
 /*
 var ATT_ECODE_INVALID_OFFSET        = 0x07;
 */
-const ATT_ECODE_AUTHORIZATION         = 0x08;
+const ATT_ECODE_AUTHORIZATION = 0x08;
 /*
 var ATT_ECODE_PREP_QUEUE_FULL       = 0x09;
 var ATT_ECODE_ATTR_NOT_FOUND        = 0x0a;
@@ -52,17 +51,17 @@ var ATT_ECODE_INSUFF_ENCR_KEY_SIZE  = 0x0c;
 var ATT_ECODE_INVAL_ATTR_VALUE_LEN  = 0x0d;
 var ATT_ECODE_UNLIKELY              = 0x0e;
 */
-const ATT_ECODE_INSUFF_ENC            = 0x0f;
+const ATT_ECODE_INSUFF_ENC = 0x0f;
 /*
 var ATT_ECODE_UNSUPP_GRP_TYPE       = 0x10;
 var ATT_ECODE_INSUFF_RESOURCES      = 0x11;
 */
-const GATT_PRIM_SVC_UUID              = 0x2800;
-const GATT_INCLUDE_UUID               = 0x2802;
-const GATT_CHARAC_UUID                = 0x2803;
+const GATT_PRIM_SVC_UUID = 0x2800;
+const GATT_INCLUDE_UUID = 0x2802;
+const GATT_CHARAC_UUID = 0x2803;
 
-const GATT_CLIENT_CHARAC_CFG_UUID     = 0x2902;
-const GATT_SERVER_CHARAC_CFG_UUID     = 0x2903;
+const GATT_CLIENT_CHARAC_CFG_UUID = 0x2902;
+const GATT_SERVER_CHARAC_CFG_UUID = 0x2903;
 
 const ATT_CID = 0x0004;
 
@@ -163,10 +162,11 @@ export class Gatt extends events.EventEmitter {
     } else if (!this._currentCommand) {
       debug(`${this._address}: uh oh, no current command`);
     } else {
-      if (data[0] === ATT_OP_ERROR &&
-          (data[4] === ATT_ECODE_AUTHENTICATION || data[4] === ATT_ECODE_AUTHORIZATION || data[4] === ATT_ECODE_INSUFF_ENC) &&
-          this._security !== 'medium') {
-
+      if (
+        data[0] === ATT_OP_ERROR &&
+        (data[4] === ATT_ECODE_AUTHENTICATION || data[4] === ATT_ECODE_AUTHORIZATION || data[4] === ATT_ECODE_INSUFF_ENC) &&
+        this._security !== 'medium'
+      ) {
         this._aclStream.encrypt();
         return;
       }
@@ -179,7 +179,7 @@ export class Gatt extends events.EventEmitter {
 
       this._currentCommand = null;
 
-      while(this._commandQueue.length) {
+      while (this._commandQueue.length) {
         this._currentCommand = this._commandQueue.shift() || null;
         if (!this._currentCommand) {
           continue;
@@ -206,9 +206,7 @@ export class Gatt extends events.EventEmitter {
     }
   }
 
-  onAclStreamEncryptFail() {
-
-  }
+  onAclStreamEncryptFail() {}
 
   onAclStreamEnd() {
     this._aclStream.removeListener('data', this.onAclStreamDataBinded);
@@ -238,7 +236,7 @@ export class Gatt extends events.EventEmitter {
     this._commandQueue.push({
       buffer: buffer,
       callback: callback,
-      writeCallback: writeCallback
+      writeCallback: writeCallback,
     });
 
     if (this._currentCommand === null) {
@@ -324,7 +322,7 @@ export class Gatt extends events.EventEmitter {
   writeRequest(handle: number, data: Buffer, withoutResponse: boolean = false) {
     const buf = Buffer.alloc(3 + data.length);
 
-    buf.writeUInt8(withoutResponse ? ATT_OP_WRITE_CMD : ATT_OP_WRITE_REQ , 0);
+    buf.writeUInt8(withoutResponse ? ATT_OP_WRITE_CMD : ATT_OP_WRITE_REQ, 0);
     buf.writeUInt16LE(handle, 1);
 
     for (let i = 0; i < data.length; i++) {
@@ -366,7 +364,7 @@ export class Gatt extends events.EventEmitter {
   }
 
   exchangeMtu(mtu: number) {
-    this._queueCommand(this.mtuRequest(mtu), (data) => {
+    this._queueCommand(this.mtuRequest(mtu), data => {
       const opcode = data[0];
 
       if (opcode === ATT_OP_MTU_RESP) {
@@ -395,7 +393,16 @@ export class Gatt extends events.EventEmitter {
           services.push({
             startHandle: data.readUInt16LE(2 + i * type + 0),
             endHandle: data.readUInt16LE(2 + i * type + 2),
-            uuid: (type === 6) ? data.readUInt16LE(2 + i * type + 4).toString(16) : data.slice(2 + i * type + 4).slice(0, 16).toString('hex').match(/.{1,2}/g)!.reverse().join('')
+            uuid:
+              type === 6
+                ? data.readUInt16LE(2 + i * type + 4).toString(16)
+                : data
+                    .slice(2 + i * type + 4)
+                    .slice(0, 16)
+                    .toString('hex')
+                    .match(/.{1,2}/g)!
+                    .reverse()
+                    .join(''),
           });
         }
       }
@@ -434,7 +441,16 @@ export class Gatt extends events.EventEmitter {
           includedServices.push({
             endHandle: data.readUInt16LE(2 + i * type + 0),
             startHandle: data.readUInt16LE(2 + i * type + 2),
-            uuid: (type === 8) ? data.readUInt16LE(2 + i * type + 6).toString(16) : data.slice(2 + i * type + 6).slice(0, 16).toString('hex').match(/.{1,2}/g)!.reverse().join('')
+            uuid:
+              type === 8
+                ? data.readUInt16LE(2 + i * type + 6).toString(16)
+                : data
+                    .slice(2 + i * type + 6)
+                    .slice(0, 16)
+                    .toString('hex')
+                    .match(/.{1,2}/g)!
+                    .reverse()
+                    .join(''),
           });
         }
       }
@@ -450,7 +466,10 @@ export class Gatt extends events.EventEmitter {
 
         this.emit('includedServicesDiscover', this._address, service.uuid, includedServiceUuids);
       } else {
-        this._queueCommand(this.readByTypeRequest(includedServices[includedServices.length - 1].endHandle + 1, service.endHandle, GATT_INCLUDE_UUID), callback);
+        this._queueCommand(
+          this.readByTypeRequest(includedServices[includedServices.length - 1].endHandle + 1, service.endHandle, GATT_INCLUDE_UUID),
+          callback
+        );
       }
     };
 
@@ -472,32 +491,39 @@ export class Gatt extends events.EventEmitter {
         const num = (data.length - 2) / type;
 
         for (let i = 0; i < num; i++) {
-          const properties = data.readUInt8(2 + i * type + 2)
+          const properties = data.readUInt8(2 + i * type + 2);
           characteristics.push({
             startHandle: data.readUInt16LE(2 + i * type + 0),
             endHandle: 0,
             properties: propertyBitstoPropertyNames(properties),
             propertiesRaw: properties,
             valueHandle: data.readUInt16LE(2 + i * type + 3),
-            uuid: (type === 7) ? data.readUInt16LE(2 + i * type + 5).toString(16) : data.slice(2 + i * type + 5).slice(0, 16).toString('hex').match(/.{1,2}/g)!.reverse().join('')
+            uuid:
+              type === 7
+                ? data.readUInt16LE(2 + i * type + 5).toString(16)
+                : data
+                    .slice(2 + i * type + 5)
+                    .slice(0, 16)
+                    .toString('hex')
+                    .match(/.{1,2}/g)!
+                    .reverse()
+                    .join(''),
           });
         }
       }
 
       if (opcode !== ATT_OP_READ_BY_TYPE_RESP || characteristics[characteristics.length - 1].valueHandle === service.endHandle) {
-
         const characteristicsDiscovered: Partial<GattCharacteristic>[] = [];
         for (let i = 0; i < characteristics.length; i++) {
-
           const characteristic = {
-            uuid: characteristics[i].uuid
+            uuid: characteristics[i].uuid,
           };
 
           if (i !== 0) {
             characteristics[i - 1].endHandle = characteristics[i].startHandle - 1;
           }
 
-          if (i === (characteristics.length - 1)) {
+          if (i === characteristics.length - 1) {
             characteristics[i].endHandle = service.endHandle;
           }
 
@@ -510,7 +536,10 @@ export class Gatt extends events.EventEmitter {
 
         this.emit('characteristicsDiscover', this._address, serviceUuid, characteristicsDiscovered);
       } else {
-        this._queueCommand(this.readByTypeRequest(characteristics[characteristics.length - 1].valueHandle + 1, service.endHandle, GATT_CHARAC_UUID), callback);
+        this._queueCommand(
+          this.readByTypeRequest(characteristics[characteristics.length - 1].valueHandle + 1, service.endHandle, GATT_CHARAC_UUID),
+          callback
+        );
       }
     };
 
@@ -551,7 +580,7 @@ export class Gatt extends events.EventEmitter {
     } else if (data.length + 3 > this._mtu) {
       return this.longWrite(serviceUuid, characteristicUuid, data, withoutResponse);
     } else {
-      this._queueCommand(this.writeRequest(characteristic.valueHandle, data, false), (data) => {
+      this._queueCommand(this.writeRequest(characteristic.valueHandle, data, false), data => {
         const opcode = data[0];
 
         if (opcode === ATT_OP_WRITE_RESP) {
@@ -587,14 +616,14 @@ export class Gatt extends events.EventEmitter {
     let offset = 0;
 
     while (offset < data.length) {
-      const end = offset+limit;
+      const end = offset + limit;
       const chunk = data.slice(offset, end);
       this._queueCommand(this.prepareWriteRequest(characteristic.valueHandle, offset, chunk), prepareWriteCallback(chunk));
       offset = end;
     }
 
     /* queue the execute command with a callback to emit the write signal when done */
-    this._queueCommand(this.executeWriteRequest(characteristic.valueHandle), (resp) => {
+    this._queueCommand(this.executeWriteRequest(characteristic.valueHandle), resp => {
       const opcode = resp[0];
 
       if (opcode === ATT_OP_EXECUTE_WRITE_RESP && !withoutResponse) {
@@ -606,7 +635,7 @@ export class Gatt extends events.EventEmitter {
   broadcast(serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
     const characteristic = this._characteristics[serviceUuid][characteristicUuid];
 
-    this._queueCommand(this.readByTypeRequest(characteristic.startHandle, characteristic.endHandle, GATT_SERVER_CHARAC_CFG_UUID), (data) => {
+    this._queueCommand(this.readByTypeRequest(characteristic.startHandle, characteristic.endHandle, GATT_SERVER_CHARAC_CFG_UUID), data => {
       const opcode = data[0];
       if (opcode === ATT_OP_READ_BY_TYPE_RESP) {
         const handle = data.readUInt16LE(2);
@@ -621,7 +650,7 @@ export class Gatt extends events.EventEmitter {
         const valueBuffer = Buffer.alloc(2);
         valueBuffer.writeUInt16LE(value, 0);
 
-        this._queueCommand(this.writeRequest(handle, valueBuffer, false), (data) => {
+        this._queueCommand(this.writeRequest(handle, valueBuffer, false), data => {
           const opcode = data[0];
 
           if (opcode === ATT_OP_WRITE_RESP) {
@@ -635,7 +664,7 @@ export class Gatt extends events.EventEmitter {
   notify(serviceUuid: string, characteristicUuid: string, notify: boolean) {
     const characteristic = this._characteristics[serviceUuid][characteristicUuid];
 
-    this._queueCommand(this.readByTypeRequest(characteristic.startHandle, characteristic.endHandle, GATT_CLIENT_CHARAC_CFG_UUID), (data) => {
+    this._queueCommand(this.readByTypeRequest(characteristic.startHandle, characteristic.endHandle, GATT_CLIENT_CHARAC_CFG_UUID), data => {
       const opcode = data[0];
       if (opcode === ATT_OP_READ_BY_TYPE_RESP) {
         const handle = data.readUInt16LE(2);
@@ -661,7 +690,7 @@ export class Gatt extends events.EventEmitter {
         const valueBuffer = Buffer.alloc(2);
         valueBuffer.writeUInt16LE(value, 0);
 
-        this._queueCommand(this.writeRequest(handle, valueBuffer, false), (data) => {
+        this._queueCommand(this.writeRequest(handle, valueBuffer, false), data => {
           const opcode = data[0];
 
           if (opcode === ATT_OP_WRITE_RESP) {
@@ -687,7 +716,7 @@ export class Gatt extends events.EventEmitter {
         for (let i = 0; i < num; i++) {
           descriptors.push({
             handle: data.readUInt16LE(2 + i * 4 + 0),
-            uuid: data.readUInt16LE(2 + i * 4 + 2).toString(16)
+            uuid: data.readUInt16LE(2 + i * 4 + 2).toString(16),
           });
         }
       }
@@ -712,7 +741,7 @@ export class Gatt extends events.EventEmitter {
   readValue(serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
     const descriptor = this._descriptors[serviceUuid][characteristicUuid][descriptorUuid];
 
-    this._queueCommand(this.readRequest(descriptor.handle), (data) => {
+    this._queueCommand(this.readRequest(descriptor.handle), data => {
       const opcode = data[0];
 
       if (opcode === ATT_OP_READ_RESP) {
@@ -724,7 +753,7 @@ export class Gatt extends events.EventEmitter {
   writeValue(serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
     const descriptor = this._descriptors[serviceUuid][characteristicUuid][descriptorUuid];
 
-    this._queueCommand(this.writeRequest(descriptor.handle, data, false), (data) => {
+    this._queueCommand(this.writeRequest(descriptor.handle, data, false), data => {
       const opcode = data[0];
 
       if (opcode === ATT_OP_WRITE_RESP) {
@@ -734,7 +763,7 @@ export class Gatt extends events.EventEmitter {
   }
 
   readHandle(handle: number) {
-    this._queueCommand(this.readRequest(handle), (data) => {
+    this._queueCommand(this.readRequest(handle), data => {
       const opcode = data[0];
 
       if (opcode === ATT_OP_READ_RESP) {
@@ -749,7 +778,7 @@ export class Gatt extends events.EventEmitter {
         this.emit('handleWrite', this._address, handle);
       });
     } else {
-      this._queueCommand(this.writeRequest(handle, data, false), (data) => {
+      this._queueCommand(this.writeRequest(handle, data, false), data => {
         const opcode = data[0];
 
         if (opcode === ATT_OP_WRITE_RESP) {

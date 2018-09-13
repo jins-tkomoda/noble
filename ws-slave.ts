@@ -10,9 +10,8 @@ import { Service } from './lib/service';
 const debug = debugModule('slave');
 
 const serverMode = !process.argv[2];
-const port = 0xB1e;
+const port = 0xb1e;
 const host = process.argv[2];
-
 
 let ws: WebSocket;
 let wss: WebSocket.Server;
@@ -25,7 +24,7 @@ interface WsSlaveCharacteristic {
 if (serverMode) {
   debug('noble - ws slave - server mode');
   wss = new WebSocket.Server({
-    port: 0xB1e
+    port: 0xb1e,
   });
 
   wss.on('connection', (ws_: WebSocket) => {
@@ -40,10 +39,10 @@ if (serverMode) {
       noble.stopScanning();
     });
 
-    noble.on('stateChange', (state) => {
+    noble.on('stateChange', state => {
       sendEvent({
         type: 'stateChange',
-        state: state
+        state: state,
       });
     });
 
@@ -51,11 +50,9 @@ if (serverMode) {
     if (noble._state === 'poweredOn') {
       sendEvent({
         type: 'stateChange',
-        state: 'poweredOn'
+        state: 'poweredOn',
       });
     }
-
-
   });
 } else {
   ws = new WebSocket(`ws://${host}:${port}`);
@@ -64,7 +61,7 @@ if (serverMode) {
     debug('ws -> open');
   });
 
-  ws.on('message', (message) => {
+  ws.on('message', message => {
     onMessage(message);
   });
 
@@ -111,7 +108,6 @@ const onMessage = function(message: any) {
   let service;
   let characteristic;
   let descriptor;
-
 
   if (peripheral && serviceUuid) {
     const services = peripheral.services;
@@ -183,20 +179,20 @@ const onMessage = function(message: any) {
   }
 };
 
-noble.on('discover', (peripheral) => {
+noble.on('discover', peripheral => {
   peripherals[peripheral.uuid] = peripheral;
 
   peripheral.on('connect', function() {
     sendEvent({
       type: 'connect',
-      peripheralUuid: peripheral.uuid
+      peripheralUuid: peripheral.uuid,
     });
   });
 
   peripheral.on('disconnect', function() {
     sendEvent({
       type: 'disconnect',
-      peripheralUuid: peripheral.uuid
+      peripheralUuid: peripheral.uuid,
     });
 
     for (const i in peripheral.services) {
@@ -217,7 +213,7 @@ noble.on('discover', (peripheral) => {
     sendEvent({
       type: 'rssiUpdate',
       peripheralUuid: peripheral.uuid,
-      rssi: rssi
+      rssi: rssi,
     });
   });
 
@@ -230,7 +226,7 @@ noble.on('discover', (peripheral) => {
         type: 'includedServicesDiscover',
         peripheralUuid: peripheral.uuid,
         serviceUuid: this.uuid,
-        includedServiceUuids: includedServiceUuids
+        includedServiceUuids: includedServiceUuids,
       });
     };
 
@@ -247,7 +243,7 @@ noble.on('discover', (peripheral) => {
           serviceUuid: service.uuid,
           characteristicUuid: characteristic.uuid,
           data: data.toString('hex'),
-          isNotification: isNotification
+          isNotification: isNotification,
         });
       };
 
@@ -258,7 +254,7 @@ noble.on('discover', (peripheral) => {
           type: 'write',
           peripheralUuid: peripheral.uuid,
           serviceUuid: service.uuid,
-          characteristicUuid: characteristic.uuid
+          characteristicUuid: characteristic.uuid,
         });
       };
 
@@ -270,7 +266,7 @@ noble.on('discover', (peripheral) => {
           peripheralUuid: peripheral.uuid,
           serviceUuid: service.uuid,
           characteristicUuid: characteristic.uuid,
-          state: state
+          state: state,
         });
       };
 
@@ -282,7 +278,7 @@ noble.on('discover', (peripheral) => {
           peripheralUuid: peripheral.uuid,
           serviceUuid: service.uuid,
           characteristicUuid: characteristic.uuid,
-          state: state
+          state: state,
         });
       };
 
@@ -300,7 +296,7 @@ noble.on('discover', (peripheral) => {
             serviceUuid: service.uuid,
             characteristicUuid: characteristic.uuid,
             descriptorUuid: descriptor.uuid,
-            data: data.toString('hex')
+            data: data.toString('hex'),
           });
         };
 
@@ -312,7 +308,7 @@ noble.on('discover', (peripheral) => {
             peripheralUuid: peripheral.uuid,
             serviceUuid: service.uuid,
             characteristicUuid: characteristic.uuid,
-            descriptorUuid: descriptor.uuid
+            descriptorUuid: descriptor.uuid,
           });
         };
 
@@ -329,7 +325,7 @@ noble.on('discover', (peripheral) => {
           peripheralUuid: peripheral.uuid,
           serviceUuid: service.uuid,
           characteristicUuid: this.uuid,
-          descriptors: discoveredDescriptors
+          descriptors: discoveredDescriptors,
         });
       };
 
@@ -346,7 +342,7 @@ noble.on('discover', (peripheral) => {
 
         discoveredCharacteristics.push({
           uuid: characteristic.uuid,
-          properties: characteristic.properties
+          properties: characteristic.properties,
         });
       }
 
@@ -354,7 +350,7 @@ noble.on('discover', (peripheral) => {
         type: 'characteristicsDiscover',
         peripheralUuid: peripheral.uuid,
         serviceUuid: this.uuid,
-        characteristics: discoveredCharacteristics
+        characteristics: discoveredCharacteristics,
       });
     };
 
@@ -369,7 +365,7 @@ noble.on('discover', (peripheral) => {
     sendEvent({
       type: 'servicesDiscover',
       peripheralUuid: peripheral.uuid,
-      serviceUuids: serviceUuids
+      serviceUuids: serviceUuids,
     });
   });
 
@@ -378,7 +374,7 @@ noble.on('discover', (peripheral) => {
       type: 'handleRead',
       peripheralUuid: peripheral.uuid,
       handle: handle,
-      data: data.toString('hex')
+      data: data.toString('hex'),
     });
   });
 
@@ -386,7 +382,7 @@ noble.on('discover', (peripheral) => {
     sendEvent({
       type: 'handleWrite',
       peripheralUuid: peripheral.uuid,
-      handle: handle
+      handle: handle,
     });
   });
 
@@ -395,7 +391,7 @@ noble.on('discover', (peripheral) => {
       type: 'handleNotify',
       peripheralUuid: peripheral.uuid,
       handle: handle,
-      data: data.toString('hex')
+      data: data.toString('hex'),
     });
   });
 
@@ -409,9 +405,9 @@ noble.on('discover', (peripheral) => {
       localName: peripheral.advertisement.localName,
       txPowerLevel: peripheral.advertisement.txPowerLevel,
       serviceUuids: peripheral.advertisement.serviceUuids,
-      manufacturerData: (peripheral.advertisement.manufacturerData ? peripheral.advertisement.manufacturerData.toString('hex') : null),
-      serviceData: (peripheral.advertisement.serviceData ? Buffer.from(peripheral.advertisement.serviceData).toString('hex') : null)
+      manufacturerData: peripheral.advertisement.manufacturerData ? peripheral.advertisement.manufacturerData.toString('hex') : null,
+      serviceData: peripheral.advertisement.serviceData ? Buffer.from(peripheral.advertisement.serviceData).toString('hex') : null,
     },
-    rssi: peripheral.rssi
+    rssi: peripheral.rssi,
   });
 });
