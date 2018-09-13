@@ -1,5 +1,15 @@
-export const propertyBitstoPropertyNames = (propertyBits: number): string[] => {
-  const propertyNames: string[] = [];
+export type CharacteristicPropertyNames = 'broadcast'
+  | 'read'
+  | 'writeWithoutResponse'
+  | 'write'
+  | 'notify'
+  | 'indicate'
+  | 'authenticatedSignedWrites'
+  | 'extendedProperties'
+;
+
+export const propertyBitstoPropertyNames = (propertyBits: number): CharacteristicPropertyNames[] => {
+  const propertyNames: CharacteristicPropertyNames[] = [];
 
   if (propertyBits & 0x01) {
     propertyNames.push('broadcast');
