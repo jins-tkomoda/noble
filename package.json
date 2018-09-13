@@ -53,6 +53,7 @@
     "@types/ws": "^6.0.0",
     "async": "^2.6.1",
     "eslint": "^5.4.0",
+    "husky": "^0.14.3",
     "mocha": "^5.2.0",
     "prettier": "^1.14.2",
     "should": "^13.2.3",
@@ -61,6 +62,9 @@
     "ws": "^6.0.0"
   },
   "scripts": {
+    "format:check": "prettier --list-different 'examples/**/*'  'lib/**/*' 'test/**/*' './*.{json,ts}'",
+    "format:write": "prettier --write 'examples/**/*'  'lib/**/*' 'test/**/*' './*.{json,ts}'",
+    "precommit": "npm run format:write",
     "build": "tsc --project .",
     "pretest": "eslint examples/",
     "test": "mocha -r ts-node/register -R spec test/*.ts"
