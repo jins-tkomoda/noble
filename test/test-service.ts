@@ -117,7 +117,7 @@ describe('service', () => {
     it('should return a promise', (done) => {
       const mockCharacteristics: Characteristic[] = [];
 
-      service.discoverCharacteristics(null).then((mockCharacteristics) => {
+      service.discoverCharacteristics().then((mockCharacteristics) => {
         mockCharacteristics.should.equal(mockCharacteristics);
         done();
       });

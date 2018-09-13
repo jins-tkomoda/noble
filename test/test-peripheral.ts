@@ -140,7 +140,7 @@ describe('Peripheral', () => {
     });
 
     it('should callback with rssi', (done) => {
-      peripheral.updateRssi((error: Error, rssi: number) => {
+      peripheral.updateRssi((error, rssi) => {
         rssi!.should.equal(mockRssi);
         done();
       });
