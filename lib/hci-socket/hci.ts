@@ -77,6 +77,12 @@ const LE_START_ENCRYPTION_CMD = OCF_LE_START_ENCRYPTION | OGF_LE_CTL << 10;
 
 const HCI_OE_USER_ENDED_CONNECTION = 0x13;
 
+interface BufferHandle {
+  length: number,
+  cid: number,
+  data: Buffer;
+}
+
 interface AclOutQueueEntry {
   handle: number;
   pkt: Buffer;
@@ -93,7 +99,7 @@ export class Hci extends events.EventEmitter {
   private _aclMaxInProgress: number;
   private _handleAclsInProgress!: { [handle: number] : number; }
   private _aclOutQueue: AclOutQueueEntry[];
-  private _handleBuffers;
+  private _handleBuffers!: {[handle: number]: BufferHandle };
 
   public address!: string;
   public addressType: string;
