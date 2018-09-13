@@ -22,8 +22,8 @@
     "bluetooth smart",
     "central"
   ],
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "engines": {
     "node": ">=6.0"
   },
@@ -60,10 +60,11 @@
     "ws": "^6.0.0"
   },
   "scripts": {
-    "pretest": "eslint *.js lib/ test/ examples/",
-    "test": "mocha -R spec test/*.js"
+    "build": "tsc --project .",
+    "pretest": "eslint examples/",
+    "test": "mocha -r ts-node/register -R spec test/*.ts"
   },
   "browser": {
-    "./lib/resolve-bindings.js": "./lib/resolve-bindings-web.js"
+    "./dist/lib/resolve-bindings.js": "./dist/lib/resolve-bindings-web.js"
   }
 }
