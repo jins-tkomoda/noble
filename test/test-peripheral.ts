@@ -222,13 +222,13 @@ describe('Peripheral', () => {
     it('should call discoverServices', () => {
       peripheral.discoverSomeServicesAndCharacteristics(mockServiceUuids, []);
 
-      peripheral.discoverServices.calledWith(mockServiceUuids).should.equal(true);
+      (peripheral.discoverServices as any).calledWith(mockServiceUuids).should.equal(true);
     });
 
     it('should call discoverCharacteristics on each service discovered', () => {
       peripheral.discoverSomeServicesAndCharacteristics(mockServiceUuids, mockCharacteristicUuids);
 
-      const discoverServicesCallback = peripheral.discoverServices.getCall(0).args[1];
+      const discoverServicesCallback = (peripheral.discoverServices as any).getCall(0).args[1];
 
       discoverServicesCallback(null, mockServices);
 
@@ -241,7 +241,7 @@ describe('Peripheral', () => {
         done();
       });
 
-      const discoverServicesCallback = peripheral.discoverServices.getCall(0).args[1];
+      const discoverServicesCallback = (peripheral.discoverServices as any).getCall(0).args[1];
 
       discoverServicesCallback(null, mockServices);
 
@@ -256,7 +256,7 @@ describe('Peripheral', () => {
         done();
       });
 
-      const discoverServicesCallback = peripheral.discoverServices.getCall(0).args[1];
+      const discoverServicesCallback = (peripheral.discoverServices as any).getCall(0).args[1];
 
       discoverServicesCallback(null, mockServices);
 
@@ -275,7 +275,7 @@ describe('Peripheral', () => {
         done();
       });
 
-      const discoverServicesCallback = peripheral.discoverServices.getCall(0).args[1];
+      const discoverServicesCallback = (peripheral.discoverServices as any).getCall(0).args[1];
 
       discoverServicesCallback(null, mockServices);
 
