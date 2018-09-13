@@ -44,6 +44,8 @@ export class Characteristic extends events.EventEmitter {
     });
   }
 
+  read(): Promise<Buffer>;
+  read(callback?: (error: Error | null, data?: Buffer) => void): void;
   read(callback?: (error: Error | null, data?: Buffer) => void): void | Promise<Buffer> {
     const promise = new Promise<Buffer>((resolve, reject) => {
       const onRead = (data: Buffer, isNotificaton: boolean) => {
@@ -74,6 +76,8 @@ export class Characteristic extends events.EventEmitter {
     return promise;
   }
 
+  write(data: Buffer, withoutResponse?: boolean): Promise<void>;
+  write(data: Buffer, withoutResponse?: boolean, callback?: (error?: Error) => void): void;
   write(data: Buffer, withoutResponse: boolean = false, callback?: (error?: Error) => void): void | Promise<void> {
     if (process.title !== 'browser' && !(data instanceof Buffer)) {
       throw new Error('data must be a Buffer');
@@ -98,6 +102,8 @@ export class Characteristic extends events.EventEmitter {
     return promise;
   }
 
+  broadcast(broadcast: boolean): Promise<void>;
+  broadcast(broadcast: boolean, callback?: (error?: Error) => void): void;
   broadcast(broadcast: boolean, callback?: (error?: Error) => void): void | Promise<void> {
     const promise = new Promise<void>((resolve, reject) => {
       this.once('broadcast', resolve);
@@ -118,7 +124,9 @@ export class Characteristic extends events.EventEmitter {
   }
 
   // deprecated in favour of subscribe/unsubscribe
-  notify(notify: boolean, callback?: (error?: Error | null | undefined) => void): void | Promise<void> {
+  notify(notify: boolean): Promise<void>;
+  notify(notify: boolean, callback?: (error?: Error) => void): void;
+  notify(notify: boolean, callback?: (error?: Error) => void): void | Promise<void> {
     const promise = new Promise<void>((resolve, reject) => {
       this.once('notify', resolve);
 
@@ -137,14 +145,20 @@ export class Characteristic extends events.EventEmitter {
     return promise;
   }
 
-  subscribe(callback?: (error?: Error | null) => void) {
+  subscribe(): Promise<void>;
+  subscribe(callback?: (error?: Error) => void): void;
+  subscribe(callback?: (error?: Error) => void): void | Promise<void> {
     return this.notify(true, callback);
   }
 
-  unsubscribe(callback?: (error?: Error | null) => void) {
+  unsubscribe(): Promise<void>;
+  unsubscribe(callback?: (error?: Error) => void): void;
+  unsubscribe(callback?: (error?: Error) => void): void | Promise<void> {
     return this.notify(false, callback);
   }
 
+  discoverDescriptors(): Promise<Descriptor[]>;
+  discoverDescriptors(callback?: (error: Error | null, descriptors?: Descriptor[]) => void): void;
   discoverDescriptors(callback?: (error: Error | null, descriptors?: Descriptor[]) => void): void | Promise<Descriptor[]> {
     const promise = new Promise<Descriptor[]>((resolve, reject) => {
       this.once('descriptorsDiscover', resolve);

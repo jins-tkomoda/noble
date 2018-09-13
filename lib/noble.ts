@@ -106,6 +106,8 @@ export class Noble extends events.EventEmitter {
     this.address = address;
   }
 
+  startScanning(serviceUuids?: string[], allowDuplicates?: boolean): Promise<void>;
+  startScanning(serviceUuids?: string[], allowDuplicates?: boolean, callback?: (error?: Error) => void): void;
   startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false, callback?: (error?: Error) => void): void | Promise<void> {
     const promise = new Promise<void>((resolve, reject) => {
       const scan = (state: string) => {
@@ -145,6 +147,9 @@ export class Noble extends events.EventEmitter {
     this.emit('scanStart', filterDuplicates);
   }
 
+
+  stopScanning(): Promise<void>;
+  stopScanning(callback?: () => void): void;
   stopScanning(callback?: () => void): void | Promise<void> {
     const promise = new Promise<void>((resolve, reject) => {
       this.once('scanStop', resolve);

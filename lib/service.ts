@@ -40,6 +40,8 @@ export class Service extends events.EventEmitter {
     });
   }
 
+  discoverIncludedServices(serviceUuids?: string[]): Promise<string[]>;
+  discoverIncludedServices(serviceUuids?: string[], callback?: (error: Error | null, includedServiceUuids?: string[]) => void): void;
   discoverIncludedServices(serviceUuids: string[] = [], callback?: (error: Error | null, includedServiceUuids?: string[]) => void): void | Promise<string[]> {
     const promise = new Promise<string[]>((resolve, reject) => {
       this.once('includedServicesDiscover', resolve);
@@ -58,6 +60,8 @@ export class Service extends events.EventEmitter {
     return promise;
   }
 
+  discoverCharacteristics(characteristicUuids?: string[]): Promise<Characteristic[]>;
+  discoverCharacteristics(characteristicUuids?: string[], callback?: (error: Error | null, characteristics?: Characteristic[]) => void): void;
   discoverCharacteristics(characteristicUuids: string[] = [], callback?: (error: Error | null, characteristics?: Characteristic[]) => void): void | Promise<Characteristic[]> {
     const promise = new Promise<Characteristic[]>((resolve, reject) => {
       this.once('characteristicsDiscover', resolve);

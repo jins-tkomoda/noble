@@ -39,7 +39,9 @@ export class Descriptor extends events.EventEmitter {
     });
   }
 
-  readValue(callback?: (error: Error | null, data?: Buffer) => void): void | Promise<Buffer> {
+  readValue(): Promise<Buffer>;
+  readValue(callback?: (error?: Error | null, data?: Buffer) => void): void;
+  readValue(callback?: (error?: Error | null, data?: Buffer) => void): void | Promise<Buffer> {
     const promise = new Promise<Buffer>((resolve, reject) => {
       this.once('valueRead', resolve);
 
@@ -58,6 +60,8 @@ export class Descriptor extends events.EventEmitter {
     return promise;
   }
 
+  writeValue(data: Buffer): Promise<void>;
+  writeValue(data: Buffer, callback?: (error?: Error) => void): void;
   writeValue(data: Buffer, callback?: (error?: Error) => void): void | Promise<void> {
     if (!(data instanceof Buffer)) {
       throw new Error('data must be a Buffer');
