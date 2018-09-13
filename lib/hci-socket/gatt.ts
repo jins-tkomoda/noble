@@ -85,6 +85,12 @@ interface GattService {
   uuid: string;
 }
 
+interface GattCommand {
+  buffer: Buffer;
+  callback: ((data: Buffer) => void) | null;
+  writeCallback?: (() => void) | null;
+}
+
 export class Gatt extends events.EventEmitter {
   private _address: string;
   private _aclStream: AclStream;
@@ -92,8 +98,8 @@ export class Gatt extends events.EventEmitter {
   private _services: { [serviceUuid: string]: GattService };
   private _characteristics: { [serviceUuid: string]: { [characteristicUuid: string]: GattCharacteristic } };
   private _descriptors: { [serviceUuid: string]: { [characteristicUuid: string]: { [descriptorUuid: string]: GattDescriptor } } };
-  private _currentCommand;
-  private _commandQueue;
+  private _currentCommand: GattCommand | null;
+  private _commandQueue: GattCommand[];
   private _mtu: number;
   private _security: string;
   private onAclStreamDataBinded: (cid: number, data: Buffer) => void;
@@ -175,12 +181,17 @@ export class Gatt extends events.EventEmitter {
 
       debug(`${this._address}: read: ${data.toString('hex')}`);
 
-      this._currentCommand.callback(data);
+      if (this._currentCommand.callback) {
+        this._currentCommand.callback(data);
+      }
 
       this._currentCommand = null;
 
       while(this._commandQueue.length) {
-        this._currentCommand = this._commandQueue.shift();
+        this._currentCommand = this._commandQueue.shift() || null;
+        if (!this._currentCommand) {
+          continue;
+        }
 
         this.writeAtt(this._currentCommand.buffer);
 
@@ -240,7 +251,10 @@ export class Gatt extends events.EventEmitter {
 
     if (this._currentCommand === null) {
       while (this._commandQueue.length) {
-        this._currentCommand = this._commandQueue.shift();
+        this._currentCommand = this._commandQueue.shift() || null;
+        if (!this._currentCommand) {
+          continue;
+        }
 
         this.writeAtt(this._currentCommand.buffer);
 
