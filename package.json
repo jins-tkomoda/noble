@@ -36,7 +36,8 @@
   "dependencies": {
     "bluetooth-hci-socket": "git://github.com/jrobeson/node-bluetooth-hci-socket.git#refactor",
     "debug": "^3.1.0",
-    "isomorphic-ws": "^4.0.1"
+    "isomorphic-ws": "^4.0.1",
+    "ts-node": "^7.0.1"
   },
   "optionalDependencies": {
     "bplist-parser": "0.1.1",
