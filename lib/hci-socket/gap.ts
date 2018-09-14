@@ -43,7 +43,7 @@ export class Gap extends events.EventEmitter {
     this._hci.on('leScanEnableSetCmd', this.onLeScanEnableSetCmd.bind(this));
   }
 
-  startScanning(allowDuplicates: boolean) {
+  public startScanning(allowDuplicates: boolean) {
     this._scanState = 'starting';
     this._scanFilterDuplicates = !allowDuplicates;
 
@@ -61,18 +61,18 @@ export class Gap extends events.EventEmitter {
     this._hci.setScanEnabled(true, this._scanFilterDuplicates);
   }
 
-  stopScanning() {
+  public stopScanning() {
     this._scanState = 'stopping';
 
     this._hci.setScanEnabled(false, true);
   }
 
-  onHciError(error: Error) {}
+  private onHciError(error: Error) {}
 
-  onHciLeScanParametersSet() {}
+  private onHciLeScanParametersSet() {}
 
   // Called when receive an event "Command Complete" for "LE Set Scan Enable"
-  onHciLeScanEnableSet(status: number) {
+  private onHciLeScanEnableSet(status: number) {
     // Check the status we got from the command complete function.
     if (status !== 0) {
       // If it is non-zero there was an error, and we should not change
@@ -92,7 +92,7 @@ export class Gap extends events.EventEmitter {
   }
 
   // Called when we see the actual command "LE Set Scan Enable"
-  onLeScanEnableSetCmd(enable: boolean, filterDuplicates: boolean) {
+  private onLeScanEnableSetCmd(enable: boolean, filterDuplicates: boolean) {
     // Check to see if the new settings differ from what we expect.
     // If we are scanning, then a change happens if the new command stops
     // scanning or if duplicate filtering changes.
@@ -111,7 +111,7 @@ export class Gap extends events.EventEmitter {
     }
   }
 
-  onHciLeAdvertisingReport(status: number, type: number, address: string, addressType: string, eir: Buffer, rssi: number) {
+  private onHciLeAdvertisingReport(status: number, type: number, address: string, addressType: string, eir: Buffer, rssi: number) {
     const previouslyDiscovered = !!this._discoveries[address];
     const advertisement = previouslyDiscovered
       ? this._discoveries[address].advertisement

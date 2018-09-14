@@ -122,7 +122,7 @@ export class Hci extends events.EventEmitter {
     this.on('stateChange', this.onStateChange.bind(this));
   }
 
-  init() {
+  public init() {
     this._socket.on('data', this.onSocketData.bind(this));
     this._socket.on('error', this.onSocketError.bind(this));
 
@@ -139,170 +139,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  resetBuffers() {
-    this._handleAclsInProgress = {};
-    this._handleBuffers = {};
-    this._aclOutQueue = [];
-  }
-
-  pollIsDevUp() {
-    const isDevUp = this._socket.isDevUp();
-
-    if (this._isDevUp !== isDevUp) {
-      if (isDevUp) {
-        this.setSocketFilter();
-        this.initDev();
-      } else {
-        this.emit('stateChange', 'poweredOff');
-      }
-
-      this._isDevUp = isDevUp;
-    }
-
-    setTimeout(this.pollIsDevUp.bind(this), 1000);
-  }
-
-  initDev() {
-    this.resetBuffers();
-    this.setEventMask();
-    this.setLeEventMask();
-    this.readLocalVersion();
-    this.writeLeHostSupported();
-    this.readLeHostSupported();
-    this.readBdAddr();
-    this.leReadBufferSize();
-  }
-
-  setSocketFilter() {
-    const filter = Buffer.alloc(14);
-    const typeMask = (1 << HCI_COMMAND_PKT) | (1 << HCI_EVENT_PKT) | (1 << HCI_ACLDATA_PKT);
-    const eventMask1 =
-      (1 << EVT_DISCONN_COMPLETE) |
-      (1 << EVT_ENCRYPT_CHANGE) |
-      (1 << EVT_CMD_COMPLETE) |
-      (1 << EVT_CMD_STATUS) |
-      (1 << EVT_NUMBER_OF_COMPLETED_PACKETS);
-    const eventMask2 = 1 << (EVT_LE_META_EVENT - 32);
-    const opcode = 0;
-
-    filter.writeUInt32LE(typeMask, 0);
-    filter.writeUInt32LE(eventMask1, 4);
-    filter.writeUInt32LE(eventMask2, 8);
-    filter.writeUInt16LE(opcode, 12);
-
-    debug(`setting filter to: ${filter.toString('hex')}`);
-    this._socket.setFilter(filter);
-  }
-
-  setEventMask() {
-    const cmd = Buffer.alloc(12);
-    const eventMask = Buffer.from('fffffbff07f8bf3d', 'hex');
-
-    // header
-    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
-    cmd.writeUInt16LE(SET_EVENT_MASK_CMD, 1);
-
-    // length
-    cmd.writeUInt8(eventMask.length, 3);
-
-    eventMask.copy(cmd, 4);
-
-    debug(`set event mask - writing: ${cmd.toString('hex')}`);
-    this._socket.write(cmd);
-  }
-
-  reset() {
-    const cmd = Buffer.alloc(4);
-
-    // header
-    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
-    cmd.writeUInt16LE(OCF_RESET | (OGF_HOST_CTL << 10), 1);
-
-    // length
-    cmd.writeUInt8(0x00, 3);
-
-    debug(`reset - writing: ${cmd.toString('hex')}`);
-    this._socket.write(cmd);
-  }
-
-  readLocalVersion() {
-    const cmd = Buffer.alloc(4);
-
-    // header
-    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
-    cmd.writeUInt16LE(READ_LOCAL_VERSION_CMD, 1);
-
-    // length
-    cmd.writeUInt8(0x0, 3);
-
-    debug(`read local version - writing: ${cmd.toString('hex')}`);
-    this._socket.write(cmd);
-  }
-
-  readBdAddr() {
-    const cmd = Buffer.alloc(4);
-
-    // header
-    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
-    cmd.writeUInt16LE(READ_BD_ADDR_CMD, 1);
-
-    // length
-    cmd.writeUInt8(0x0, 3);
-
-    debug(`read bd addr - writing: ${cmd.toString('hex')}`);
-    this._socket.write(cmd);
-  }
-
-  setLeEventMask() {
-    const cmd = Buffer.alloc(12);
-    const leEventMask = Buffer.from('1f00000000000000', 'hex');
-
-    // header
-    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
-    cmd.writeUInt16LE(LE_SET_EVENT_MASK_CMD, 1);
-
-    // length
-    cmd.writeUInt8(leEventMask.length, 3);
-
-    leEventMask.copy(cmd, 4);
-
-    debug(`set le event mask - writing: ${cmd.toString('hex')}`);
-    this._socket.write(cmd);
-  }
-
-  readLeHostSupported() {
-    const cmd = Buffer.alloc(4);
-
-    // header
-    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
-    cmd.writeUInt16LE(READ_LE_HOST_SUPPORTED_CMD, 1);
-
-    // length
-    cmd.writeUInt8(0x00, 3);
-
-    debug(`read LE host supported - writing: ${cmd.toString('hex')}`);
-    this._socket.write(cmd);
-  }
-
-  writeLeHostSupported() {
-    const cmd = Buffer.alloc(6);
-
-    // header
-    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
-    cmd.writeUInt16LE(WRITE_LE_HOST_SUPPORTED_CMD, 1);
-
-    // length
-    cmd.writeUInt8(0x02, 3);
-
-    // data
-    cmd.writeUInt8(0x01, 4); // le
-    cmd.writeUInt8(0x00, 5); // simul
-
-    debug(`write LE host supported - writing: ${cmd.toString('hex')}`);
-    this._socket.write(cmd);
-  }
-
-  setScanParameters() {
+  public setScanParameters() {
     const cmd = Buffer.alloc(11);
 
     // header
@@ -323,7 +160,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  setScanEnabled(enabled: boolean, filterDuplicates: boolean) {
+  public setScanEnabled(enabled: boolean, filterDuplicates: boolean) {
     const cmd = Buffer.alloc(6);
 
     // header
@@ -341,7 +178,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  createLeConn(address: string, addressType: string) {
+  public createLeConn(address: string, addressType: string) {
     const cmd = Buffer.alloc(29);
 
     // header
@@ -378,7 +215,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  connUpdateLe(handle: number, minInterval: number, maxInterval: number, latency: number, supervisionTimeout: number) {
+  public connUpdateLe(handle: number, minInterval: number, maxInterval: number, latency: number, supervisionTimeout: number) {
     const cmd = Buffer.alloc(18);
 
     // header
@@ -401,7 +238,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  startLeEncryption(handle: number, random: Buffer, diversifier: Buffer, key: Buffer) {
+  public startLeEncryption(handle: number, random: Buffer, diversifier: Buffer, key: Buffer) {
     const cmd = Buffer.alloc(32);
 
     // header
@@ -421,7 +258,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  disconnect(handle: number, reason: number = HCI_OE_USER_ENDED_CONNECTION) {
+  public disconnect(handle: number, reason: number = HCI_OE_USER_ENDED_CONNECTION) {
     const cmd = Buffer.alloc(7);
 
     // header
@@ -439,7 +276,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  readRssi(handle: number) {
+  public readRssi(handle: number) {
     const cmd = Buffer.alloc(6);
 
     // header
@@ -456,35 +293,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(cmd);
   }
 
-  leReadBufferSize() {
-    const cmd = Buffer.alloc(4);
-
-    // header
-    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
-    cmd.writeUInt16LE(LE_READ_BUFFER_SIZE_CMD, 1);
-
-    // length
-    cmd.writeUInt8(0x0, 3);
-
-    debug(`le read buffer size - writing: ${cmd.toString('hex')}`);
-    this._socket.write(cmd);
-  }
-
-  readBufferSize() {
-    const cmd = Buffer.alloc(4);
-
-    // header
-    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
-    cmd.writeUInt16LE(READ_BUFFER_SIZE_CMD, 1);
-
-    // length
-    cmd.writeUInt8(0x0, 3);
-
-    debug(`read buffer size - writing: ${cmd.toString('hex')}`);
-    this._socket.write(cmd);
-  }
-
-  queueAclDataPkt(handle: number, cid: number, data: Buffer) {
+  public queueAclDataPkt(handle: number, cid: number, data: Buffer) {
     let hf = handle | (ACL_START_NO_FLUSH << 12);
     // l2cap pdu may be fragmented on hci level
     let l2capPdu = Buffer.alloc(4 + data.length);
@@ -516,7 +325,198 @@ export class Hci extends events.EventEmitter {
     this.pushAclOutQueue();
   }
 
-  pushAclOutQueue() {
+  private resetBuffers() {
+    this._handleAclsInProgress = {};
+    this._handleBuffers = {};
+    this._aclOutQueue = [];
+  }
+
+  private pollIsDevUp() {
+    const isDevUp = this._socket.isDevUp();
+
+    if (this._isDevUp !== isDevUp) {
+      if (isDevUp) {
+        this.setSocketFilter();
+        this.initDev();
+      } else {
+        this.emit('stateChange', 'poweredOff');
+      }
+
+      this._isDevUp = isDevUp;
+    }
+
+    setTimeout(this.pollIsDevUp.bind(this), 1000);
+  }
+
+  private initDev() {
+    this.resetBuffers();
+    this.setEventMask();
+    this.setLeEventMask();
+    this.readLocalVersion();
+    this.writeLeHostSupported();
+    this.readLeHostSupported();
+    this.readBdAddr();
+    this.leReadBufferSize();
+  }
+
+  private setSocketFilter() {
+    const filter = Buffer.alloc(14);
+    const typeMask = (1 << HCI_COMMAND_PKT) | (1 << HCI_EVENT_PKT) | (1 << HCI_ACLDATA_PKT);
+    const eventMask1 =
+      (1 << EVT_DISCONN_COMPLETE) |
+      (1 << EVT_ENCRYPT_CHANGE) |
+      (1 << EVT_CMD_COMPLETE) |
+      (1 << EVT_CMD_STATUS) |
+      (1 << EVT_NUMBER_OF_COMPLETED_PACKETS);
+    const eventMask2 = 1 << (EVT_LE_META_EVENT - 32);
+    const opcode = 0;
+
+    filter.writeUInt32LE(typeMask, 0);
+    filter.writeUInt32LE(eventMask1, 4);
+    filter.writeUInt32LE(eventMask2, 8);
+    filter.writeUInt16LE(opcode, 12);
+
+    debug(`setting filter to: ${filter.toString('hex')}`);
+    this._socket.setFilter(filter);
+  }
+
+  private setEventMask() {
+    const cmd = Buffer.alloc(12);
+    const eventMask = Buffer.from('fffffbff07f8bf3d', 'hex');
+
+    // header
+    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
+    cmd.writeUInt16LE(SET_EVENT_MASK_CMD, 1);
+
+    // length
+    cmd.writeUInt8(eventMask.length, 3);
+
+    eventMask.copy(cmd, 4);
+
+    debug(`set event mask - writing: ${cmd.toString('hex')}`);
+    this._socket.write(cmd);
+  }
+
+  private reset() {
+    const cmd = Buffer.alloc(4);
+
+    // header
+    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
+    cmd.writeUInt16LE(OCF_RESET | (OGF_HOST_CTL << 10), 1);
+
+    // length
+    cmd.writeUInt8(0x00, 3);
+
+    debug(`reset - writing: ${cmd.toString('hex')}`);
+    this._socket.write(cmd);
+  }
+
+  private readLocalVersion() {
+    const cmd = Buffer.alloc(4);
+
+    // header
+    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
+    cmd.writeUInt16LE(READ_LOCAL_VERSION_CMD, 1);
+
+    // length
+    cmd.writeUInt8(0x0, 3);
+
+    debug(`read local version - writing: ${cmd.toString('hex')}`);
+    this._socket.write(cmd);
+  }
+
+  private readBdAddr() {
+    const cmd = Buffer.alloc(4);
+
+    // header
+    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
+    cmd.writeUInt16LE(READ_BD_ADDR_CMD, 1);
+
+    // length
+    cmd.writeUInt8(0x0, 3);
+
+    debug(`read bd addr - writing: ${cmd.toString('hex')}`);
+    this._socket.write(cmd);
+  }
+
+  private setLeEventMask() {
+    const cmd = Buffer.alloc(12);
+    const leEventMask = Buffer.from('1f00000000000000', 'hex');
+
+    // header
+    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
+    cmd.writeUInt16LE(LE_SET_EVENT_MASK_CMD, 1);
+
+    // length
+    cmd.writeUInt8(leEventMask.length, 3);
+
+    leEventMask.copy(cmd, 4);
+
+    debug(`set le event mask - writing: ${cmd.toString('hex')}`);
+    this._socket.write(cmd);
+  }
+
+  private readLeHostSupported() {
+    const cmd = Buffer.alloc(4);
+
+    // header
+    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
+    cmd.writeUInt16LE(READ_LE_HOST_SUPPORTED_CMD, 1);
+
+    // length
+    cmd.writeUInt8(0x00, 3);
+
+    debug(`read LE host supported - writing: ${cmd.toString('hex')}`);
+    this._socket.write(cmd);
+  }
+
+  private writeLeHostSupported() {
+    const cmd = Buffer.alloc(6);
+
+    // header
+    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
+    cmd.writeUInt16LE(WRITE_LE_HOST_SUPPORTED_CMD, 1);
+
+    // length
+    cmd.writeUInt8(0x02, 3);
+
+    // data
+    cmd.writeUInt8(0x01, 4); // le
+    cmd.writeUInt8(0x00, 5); // simul
+
+    debug(`write LE host supported - writing: ${cmd.toString('hex')}`);
+    this._socket.write(cmd);
+  }
+
+  private leReadBufferSize() {
+    const cmd = Buffer.alloc(4);
+
+    // header
+    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
+    cmd.writeUInt16LE(LE_READ_BUFFER_SIZE_CMD, 1);
+
+    // length
+    cmd.writeUInt8(0x0, 3);
+
+    debug(`le read buffer size - writing: ${cmd.toString('hex')}`);
+    this._socket.write(cmd);
+  }
+
+  private readBufferSize() {
+    const cmd = Buffer.alloc(4);
+
+    // header
+    cmd.writeUInt8(HCI_COMMAND_PKT, 0);
+    cmd.writeUInt16LE(READ_BUFFER_SIZE_CMD, 1);
+
+    // length
+    cmd.writeUInt8(0x0, 3);
+
+    debug(`read buffer size - writing: ${cmd.toString('hex')}`);
+    this._socket.write(cmd);
+  }
+
+  private pushAclOutQueue() {
     let inProgress = 0;
     for (const handle in this._handleAclsInProgress) {
       inProgress += this._handleAclsInProgress[handle];
@@ -533,7 +533,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  writeOneAclDataPkt() {
+  private writeOneAclDataPkt() {
     const pkt = this._aclOutQueue.shift();
     if (!pkt) {
       return;
@@ -543,7 +543,7 @@ export class Hci extends events.EventEmitter {
     this._socket.write(pkt.pkt);
   }
 
-  onSocketData(data: Buffer) {
+  private onSocketData(data: Buffer) {
     debug(`onSocketData: ${data.toString('hex')}`);
 
     const eventType = data.readUInt8(0);
@@ -700,7 +700,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  onSocketError(error: Error) {
+  private onSocketError(error: Error) {
     debug(`onSocketError: ${error.message}`);
 
     if (error.message === 'Operation not permitted') {
@@ -710,7 +710,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  processCmdCompleteEvent(cmd: number, status: number, result: Buffer) {
+  private processCmdCompleteEvent(cmd: number, status: number, result: Buffer) {
     if (cmd === RESET_CMD) {
       /*
       * @todo this.initDev does more than this, but bleno has it.
@@ -787,7 +787,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  processLeReadBufferSize(result: Buffer) {
+  private processLeReadBufferSize(result: Buffer) {
     const aclMtu = result.readUInt16LE(0);
     const aclMaxInProgress = result.readUInt8(2);
     if (!aclMtu) {
@@ -802,7 +802,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  processLeMetaEvent(eventType: number, status: number, data: Buffer) {
+  private processLeMetaEvent(eventType: number, status: number, data: Buffer) {
     if (eventType === EVT_LE_CONN_COMPLETE) {
       this.processLeConnComplete(status, data);
     } else if (eventType === EVT_LE_ADVERTISING_REPORT) {
@@ -812,7 +812,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  processLeConnComplete(status: number, data: Buffer) {
+  private processLeConnComplete(status: number, data: Buffer) {
     const handle = data.readUInt16LE(0);
     const role = data.readUInt8(2);
     const addressType = data.readUInt8(3) === 0x01 ? 'random' : 'public';
@@ -841,7 +841,7 @@ export class Hci extends events.EventEmitter {
     this.emit('leConnComplete', status, handle, role, addressType, address, interval, latency, supervisionTimeout, masterClockAccuracy);
   }
 
-  processLeAdvertisingReport(count: number, data: Buffer) {
+  private processLeAdvertisingReport(count: number, data: Buffer) {
     for (let i = 0; i < count; i++) {
       const type = data.readUInt8(0);
       const addressType = data.readUInt8(1) === 0x01 ? 'random' : 'public';
@@ -867,7 +867,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  processLeConnUpdateComplete(status: number, data: Buffer) {
+  private processLeConnUpdateComplete(status: number, data: Buffer) {
     const handle = data.readUInt16LE(0);
     const interval = data.readUInt16LE(2) * 1.25;
     const latency = data.readUInt16LE(4); // TODO: multiplier?
@@ -881,7 +881,7 @@ export class Hci extends events.EventEmitter {
     this.emit('leConnUpdateComplete', status, handle, interval, latency, supervisionTimeout);
   }
 
-  processCmdStatusEvent(cmd: number, status: number) {
+  private processCmdStatusEvent(cmd: number, status: number) {
     if (cmd === LE_CREATE_CONN_CMD) {
       if (status !== 0) {
         this.emit('leConnComplete', status);
@@ -889,7 +889,7 @@ export class Hci extends events.EventEmitter {
     }
   }
 
-  onStateChange(state: string) {
+  private onStateChange(state: string) {
     this._state = state;
   }
 }

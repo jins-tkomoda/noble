@@ -28,11 +28,198 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  init() {
+  public init() {
     // no-op
   }
 
-  _onConnection(ws: ws) {
+  public startScanning(serviceUuids: string[] = [], allowDuplicates: boolean) {
+    this._startScanCommand = {
+      action: 'startScanning',
+      serviceUuids: serviceUuids,
+      allowDuplicates: allowDuplicates,
+    };
+
+    this._sendCommand(null, this._startScanCommand);
+
+    this.emit('scanStart');
+  }
+
+  public stopScanning() {
+    this._startScanCommand = null;
+
+    this._sendCommand(null, {
+      action: 'stopScanning',
+    });
+
+    this.emit('scanStop');
+  }
+
+  public connect(deviceUuid: string) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'connect',
+      peripheralUuid: peripheral.uuid,
+    });
+  }
+
+  public disconnect(deviceUuid: string) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'disconnect',
+      peripheralUuid: peripheral.uuid,
+    });
+  }
+
+  public updateRssi(deviceUuid: string) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'updateRssi',
+      peripheralUuid: peripheral.uuid,
+    });
+  }
+
+  public discoverServices(deviceUuid: string, serviceUuids: string[] = []) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'discoverServices',
+      peripheralUuid: peripheral.uuid,
+      uuids: serviceUuids,
+    });
+  }
+
+  public discoverIncludedServices(deviceUuid: string, serviceUuid: string, serviceUuids: string[]) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'discoverIncludedServices',
+      peripheralUuid: peripheral.uuid,
+      serviceUuid: serviceUuid,
+      serviceUuids: serviceUuids,
+    });
+  }
+
+  public discoverCharacteristics(deviceUuid: string, serviceUuid: string, characteristicUuids: string[]) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'discoverCharacteristics',
+      peripheralUuid: peripheral.uuid,
+      serviceUuid: serviceUuid,
+      characteristicUuids: characteristicUuids,
+    });
+  }
+
+  public read(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'read',
+      peripheralUuid: peripheral.uuid,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+    });
+  }
+
+  public write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean = false) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'write',
+      peripheralUuid: peripheral.uuid,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      data: data.toString('hex'),
+      withoutResponse: withoutResponse,
+    });
+  }
+
+  public broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'broadcast',
+      peripheralUuid: peripheral.uuid,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      broadcast: broadcast,
+    });
+  }
+
+  public notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'notify',
+      peripheralUuid: peripheral.uuid,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      notify: notify,
+    });
+  }
+
+  public discoverDescriptors(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'discoverDescriptors',
+      peripheralUuid: peripheral.uuid,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+    });
+  }
+
+  public readValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'readValue',
+      peripheralUuid: peripheral.uuid,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      descriptorUuid: descriptorUuid,
+    });
+  }
+
+  public writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'writeValue',
+      peripheralUuid: peripheral.uuid,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      descriptorUuid: descriptorUuid,
+      data: data.toString('hex'),
+    });
+  }
+
+  public readHandle(deviceUuid: string, handle: number) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'readHandle',
+      peripheralUuid: peripheral.uuid,
+      handle: handle,
+    });
+  }
+
+  public writeHandle(deviceUuid: string, handle: number, data: Buffer, withoutResponse: boolean) {
+    const peripheral = this._peripherals[deviceUuid];
+
+    this._sendCommand(peripheral.ws, {
+      action: 'readHandle',
+      peripheralUuid: peripheral.uuid,
+      handle: handle,
+      data: data.toString('hex'),
+      withoutResponse: withoutResponse,
+    });
+  }
+
+  private _onConnection(ws: ws) {
     if (this._wss.clients.size === 1) {
       this.emit('stateChange', 'poweredOn');
     } else if (this._startScanCommand) {
@@ -48,13 +235,13 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  _onClose(ws: ws) {
+  private _onClose(ws: ws) {
     if (this._wss.clients.size === 0) {
       this.emit('stateChange', 'poweredOff');
     }
   }
 
-  _onMessage(ws: ws, event: any) {
+  private _onMessage(ws: ws, event: any) {
     const type = event.type;
     const peripheralUuid = event.peripheralUuid;
     const address = event.address;
@@ -128,198 +315,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  _sendCommand(ws: ws | null, command: any) {
+  private _sendCommand(ws: ws | null, command: any) {
     const clients = ws ? new Set([ws]) : this._wss.clients;
 
     const message = JSON.stringify(command);
 
     clients.forEach(client => client.send(message));
-  }
-
-  startScanning(serviceUuids: string[] = [], allowDuplicates: boolean) {
-    this._startScanCommand = {
-      action: 'startScanning',
-      serviceUuids: serviceUuids,
-      allowDuplicates: allowDuplicates,
-    };
-
-    this._sendCommand(null, this._startScanCommand);
-
-    this.emit('scanStart');
-  }
-
-  stopScanning() {
-    this._startScanCommand = null;
-
-    this._sendCommand(null, {
-      action: 'stopScanning',
-    });
-
-    this.emit('scanStop');
-  }
-
-  connect(deviceUuid: string) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'connect',
-      peripheralUuid: peripheral.uuid,
-    });
-  }
-
-  disconnect(deviceUuid: string) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'disconnect',
-      peripheralUuid: peripheral.uuid,
-    });
-  }
-
-  updateRssi(deviceUuid: string) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'updateRssi',
-      peripheralUuid: peripheral.uuid,
-    });
-  }
-
-  discoverServices(deviceUuid: string, serviceUuids: string[] = []) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'discoverServices',
-      peripheralUuid: peripheral.uuid,
-      uuids: serviceUuids,
-    });
-  }
-
-  discoverIncludedServices(deviceUuid: string, serviceUuid: string, serviceUuids: string[]) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'discoverIncludedServices',
-      peripheralUuid: peripheral.uuid,
-      serviceUuid: serviceUuid,
-      serviceUuids: serviceUuids,
-    });
-  }
-
-  discoverCharacteristics(deviceUuid: string, serviceUuid: string, characteristicUuids: string[]) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'discoverCharacteristics',
-      peripheralUuid: peripheral.uuid,
-      serviceUuid: serviceUuid,
-      characteristicUuids: characteristicUuids,
-    });
-  }
-
-  read(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'read',
-      peripheralUuid: peripheral.uuid,
-      serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid,
-    });
-  }
-
-  write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean = false) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'write',
-      peripheralUuid: peripheral.uuid,
-      serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid,
-      data: data.toString('hex'),
-      withoutResponse: withoutResponse,
-    });
-  }
-
-  broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'broadcast',
-      peripheralUuid: peripheral.uuid,
-      serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid,
-      broadcast: broadcast,
-    });
-  }
-
-  notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'notify',
-      peripheralUuid: peripheral.uuid,
-      serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid,
-      notify: notify,
-    });
-  }
-
-  discoverDescriptors(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'discoverDescriptors',
-      peripheralUuid: peripheral.uuid,
-      serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid,
-    });
-  }
-
-  readValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'readValue',
-      peripheralUuid: peripheral.uuid,
-      serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid,
-      descriptorUuid: descriptorUuid,
-    });
-  }
-
-  writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'writeValue',
-      peripheralUuid: peripheral.uuid,
-      serviceUuid: serviceUuid,
-      characteristicUuid: characteristicUuid,
-      descriptorUuid: descriptorUuid,
-      data: data.toString('hex'),
-    });
-  }
-
-  readHandle(deviceUuid: string, handle: number) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'readHandle',
-      peripheralUuid: peripheral.uuid,
-      handle: handle,
-    });
-  }
-
-  writeHandle(deviceUuid: string, handle: number, data: Buffer, withoutResponse: boolean) {
-    const peripheral = this._peripherals[deviceUuid];
-
-    this._sendCommand(peripheral.ws, {
-      action: 'readHandle',
-      peripheralUuid: peripheral.uuid,
-      handle: handle,
-      data: data.toString('hex'),
-      withoutResponse: withoutResponse,
-    });
   }
 }

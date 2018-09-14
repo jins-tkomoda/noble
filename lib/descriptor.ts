@@ -30,7 +30,7 @@ export class Descriptor extends events.EventEmitter {
     }
   }
 
-  toString() {
+  public toString() {
     return JSON.stringify({
       uuid: this.uuid,
       name: this.name,
@@ -38,9 +38,9 @@ export class Descriptor extends events.EventEmitter {
     });
   }
 
-  readValue(): Promise<Buffer>;
-  readValue(callback?: (error?: Error | null, data?: Buffer) => void): void;
-  readValue(callback?: (error?: Error | null, data?: Buffer) => void): void | Promise<Buffer> {
+  public readValue(): Promise<Buffer>;
+  public readValue(callback?: (error?: Error | null, data?: Buffer) => void): void;
+  public readValue(callback?: (error?: Error | null, data?: Buffer) => void): void | Promise<Buffer> {
     const promise = new Promise<Buffer>((resolve, reject) => {
       this.once('valueRead', resolve);
 
@@ -54,9 +54,9 @@ export class Descriptor extends events.EventEmitter {
     return promise;
   }
 
-  writeValue(data: Buffer): Promise<void>;
-  writeValue(data: Buffer, callback?: (error?: Error) => void): void;
-  writeValue(data: Buffer, callback?: (error?: Error) => void): void | Promise<void> {
+  public writeValue(data: Buffer): Promise<void>;
+  public writeValue(data: Buffer, callback?: (error?: Error) => void): void;
+  public writeValue(data: Buffer, callback?: (error?: Error) => void): void | Promise<void> {
     if (!(data instanceof Buffer)) {
       throw new Error('data must be a Buffer');
     }

@@ -65,17 +65,17 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this._gap = new Gap(this._hci, this.options.hciReportAllEvents);
   }
 
-  startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false) {
+  public startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false) {
     this._scanServiceUuids = serviceUuids;
 
     this._gap.startScanning(allowDuplicates);
   }
 
-  stopScanning() {
+  public stopScanning() {
     this._gap.stopScanning();
   }
 
-  connect(peripheralUuid: string) {
+  public connect(peripheralUuid: string) {
     const address = this._addresses[peripheralUuid];
     const addressType = this._addresseTypes[peripheralUuid];
 
@@ -88,15 +88,15 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  disconnect(peripheralUuid: string) {
+  public disconnect(peripheralUuid: string) {
     this._hci.disconnect(this._uuidsToHandles[peripheralUuid]);
   }
 
-  updateRssi(peripheralUuid: string) {
+  public updateRssi(peripheralUuid: string) {
     this._hci.readRssi(this._uuidsToHandles[peripheralUuid]);
   }
 
-  init() {
+  public init() {
     this.onSigIntBinded = this.onSigInt.bind(this);
 
     this._gap.on('scanStart', this.onScanStart.bind(this));
@@ -121,7 +121,139 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     process.on('exit', this.onExit.bind(this));
   }
 
-  onSigInt() {
+  public discoverServices(peripheralUuid: string, serviceUuids: string[] = []) {
+    const handle = this._uuidsToHandles[peripheralUuid];
+    const gatt = this._gatts[handle];
+
+    if (gatt) {
+      gatt.discoverServices(serviceUuids);
+    } else {
+      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
+    }
+  }
+
+  public discoverIncludedServices(peripheralUuid: string, serviceUuid: string, serviceUuids: string[] = []) {
+    const handle = this._uuidsToHandles[peripheralUuid];
+    const gatt = this._gatts[handle];
+
+    if (gatt) {
+      gatt.discoverIncludedServices(serviceUuid, serviceUuids);
+    } else {
+      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
+    }
+  }
+
+  public discoverCharacteristics(peripheralUuid: string, serviceUuid: string, characteristicUuids: string[] = []) {
+    const handle = this._uuidsToHandles[peripheralUuid];
+    const gatt = this._gatts[handle];
+
+    if (gatt) {
+      gatt.discoverCharacteristics(serviceUuid, characteristicUuids);
+    } else {
+      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
+    }
+  }
+
+  public read(peripheralUuid: string, serviceUuid: string, characteristicUuid: string) {
+    const handle = this._uuidsToHandles[peripheralUuid];
+    const gatt = this._gatts[handle];
+
+    if (gatt) {
+      gatt.read(serviceUuid, characteristicUuid);
+    } else {
+      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
+    }
+  }
+
+  public write(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean) {
+    const handle = this._uuidsToHandles[peripheralUuid];
+    const gatt = this._gatts[handle];
+
+    if (gatt) {
+      gatt.write(serviceUuid, characteristicUuid, data, withoutResponse);
+    } else {
+      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
+    }
+  }
+
+  public broadcast(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
+    const handle = this._uuidsToHandles[peripheralUuid];
+    const gatt = this._gatts[handle];
+
+    if (gatt) {
+      gatt.broadcast(serviceUuid, characteristicUuid, broadcast);
+    } else {
+      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
+    }
+  }
+
+  public notify(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
+    const handle = this._uuidsToHandles[peripheralUuid];
+    const gatt = this._gatts[handle];
+
+    if (gatt) {
+      gatt.notify(serviceUuid, characteristicUuid, notify);
+    } else {
+      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
+    }
+  }
+
+  public discoverDescriptors(peripheralUuid: string, serviceUuid: string, characteristicUuid: string) {
+    const handle = this._uuidsToHandles[peripheralUuid];
+    const gatt = this._gatts[handle];
+
+    if (gatt) {
+      gatt.discoverDescriptors(serviceUuid, characteristicUuid);
+    } else {
+      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
+    }
+  }
+
+  public readValue(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
+    const handle = this._uuidsToHandles[peripheralUuid];
+    const gatt = this._gatts[handle];
+
+    if (gatt) {
+      gatt.readValue(serviceUuid, characteristicUuid, descriptorUuid);
+    } else {
+      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
+    }
+  }
+
+  public writeValue(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
+    const handle = this._uuidsToHandles[peripheralUuid];
+    const gatt = this._gatts[handle];
+
+    if (gatt) {
+      gatt.writeValue(serviceUuid, characteristicUuid, descriptorUuid, data);
+    } else {
+      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
+    }
+  }
+
+  public readHandle(peripheralUuid: string, attHandle: number) {
+    const handle = this._uuidsToHandles[peripheralUuid];
+    const gatt = this._gatts[handle];
+
+    if (gatt) {
+      gatt.readHandle(attHandle);
+    } else {
+      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
+    }
+  }
+
+  public writeHandle(peripheralUuid: string, attHandle: number, data: Buffer, withoutResponse: boolean) {
+    const handle = this._uuidsToHandles[peripheralUuid];
+    const gatt = this._gatts[handle];
+
+    if (gatt) {
+      gatt.writeHandle(attHandle, data, withoutResponse);
+    } else {
+      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
+    }
+  }
+
+  private onSigInt() {
     const sigIntListeners = process.listeners('SIGINT');
 
     if (sigIntListeners[sigIntListeners.length - 1] === this.onSigIntBinded) {
@@ -131,7 +263,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onExit() {
+  private onExit() {
     this.stopScanning();
 
     for (const handle in this._aclStreams) {
@@ -139,7 +271,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onStateChange(state: string) {
+  private onStateChange(state: string) {
     if (this._state === state) {
       return;
     }
@@ -158,19 +290,26 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('stateChange', state);
   }
 
-  onAddressChange(address: string) {
+  private onAddressChange(address: string) {
     this.emit('addressChange', address);
   }
 
-  onScanStart(filterDuplicates: boolean) {
+  private onScanStart(filterDuplicates: boolean) {
     this.emit('scanStart', filterDuplicates);
   }
 
-  onScanStop() {
+  private onScanStop() {
     this.emit('scanStop');
   }
 
-  onDiscover(status: number, address: string, addressType: string, connectable: boolean, advertisement: Advertisement, rssi: number) {
+  private onDiscover(
+    status: number,
+    address: string,
+    addressType: string,
+    connectable: boolean,
+    advertisement: Advertisement,
+    rssi: number
+  ) {
     if (this._scanServiceUuids === undefined) {
       return;
     }
@@ -207,7 +346,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onLeConnComplete(
+  private onLeConnComplete(
     status: number,
     handle: number,
     role: number,
@@ -281,11 +420,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onLeConnUpdateComplete(handle: number, interval: number, latency: number, supervisionTimeout: number) {
+  private onLeConnUpdateComplete(handle: number, interval: number, latency: number, supervisionTimeout: number) {
     // no-op
   }
 
-  onDisconnComplete(handle: number, reason: number) {
+  private onDisconnComplete(handle: number, reason: number) {
     const uuid = this._handlesToUuids[handle];
 
     if (uuid) {
@@ -307,7 +446,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onEncryptChange(handle: number, encrypt: boolean) {
+  private onEncryptChange(handle: number, encrypt: boolean) {
     const aclStream = this._aclStreams[handle];
 
     if (aclStream) {
@@ -315,13 +454,13 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  onMtu(address: string, mtu: number) {}
+  private onMtu(address: string, mtu: number) {}
 
-  onRssiRead(handle: number, rssi: number) {
+  private onRssiRead(handle: number, rssi: number) {
     this.emit('rssiUpdate', this._handlesToUuids[handle], rssi);
   }
 
-  onAclDataPkt(handle: number, cid: number, data: Buffer) {
+  private onAclDataPkt(handle: number, cid: number, data: Buffer) {
     const aclStream = this._aclStreams[handle];
 
     if (aclStream) {
@@ -329,195 +468,62 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  discoverServices(peripheralUuid: string, serviceUuids: string[] = []) {
-    const handle = this._uuidsToHandles[peripheralUuid];
-    const gatt = this._gatts[handle];
-
-    if (gatt) {
-      gatt.discoverServices(serviceUuids);
-    } else {
-      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
-    }
-  }
-
-  onServicesDiscovered(address: string, serviceUuids: string[]) {
+  private onServicesDiscovered(address: string, serviceUuids: string[]) {
     this.emit('servicesDiscover', this.addressToUuid(address), serviceUuids);
   }
 
-  discoverIncludedServices(peripheralUuid: string, serviceUuid: string, serviceUuids: string[] = []) {
-    const handle = this._uuidsToHandles[peripheralUuid];
-    const gatt = this._gatts[handle];
-
-    if (gatt) {
-      gatt.discoverIncludedServices(serviceUuid, serviceUuids);
-    } else {
-      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
-    }
-  }
-
-  onIncludedServicesDiscovered(address: string, serviceUuid: string, includedServiceUuids: string[]) {
+  private onIncludedServicesDiscovered(address: string, serviceUuid: string, includedServiceUuids: string[]) {
     this.emit('includedServicesDiscover', this.addressToUuid(address), serviceUuid, includedServiceUuids);
   }
 
-  discoverCharacteristics(peripheralUuid: string, serviceUuid: string, characteristicUuids: string[] = []) {
-    const handle = this._uuidsToHandles[peripheralUuid];
-    const gatt = this._gatts[handle];
-
-    if (gatt) {
-      gatt.discoverCharacteristics(serviceUuid, characteristicUuids);
-    } else {
-      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
-    }
-  }
-
-  onCharacteristicsDiscovered(address: string, serviceUuid: string, characteristics: GattCharacteristic) {
+  private onCharacteristicsDiscovered(address: string, serviceUuid: string, characteristics: GattCharacteristic) {
     this.emit('characteristicsDiscover', this.addressToUuid(address), serviceUuid, characteristics);
   }
 
-  read(peripheralUuid: string, serviceUuid: string, characteristicUuid: string) {
-    const handle = this._uuidsToHandles[peripheralUuid];
-    const gatt = this._gatts[handle];
-
-    if (gatt) {
-      gatt.read(serviceUuid, characteristicUuid);
-    } else {
-      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
-    }
-  }
-
-  onRead(address: string, serviceUuid: string, characteristicUuid: string, data: Buffer) {
+  private onRead(address: string, serviceUuid: string, characteristicUuid: string, data: Buffer) {
     this.emit('read', this.addressToUuid(address), serviceUuid, characteristicUuid, data, false);
   }
 
-  write(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean) {
-    const handle = this._uuidsToHandles[peripheralUuid];
-    const gatt = this._gatts[handle];
-
-    if (gatt) {
-      gatt.write(serviceUuid, characteristicUuid, data, withoutResponse);
-    } else {
-      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
-    }
-  }
-
-  onWrite(address: string, serviceUuid: string, characteristicUuid: string) {
+  private onWrite(address: string, serviceUuid: string, characteristicUuid: string) {
     this.emit('write', this.addressToUuid(address), serviceUuid, characteristicUuid);
   }
 
-  broadcast(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
-    const handle = this._uuidsToHandles[peripheralUuid];
-    const gatt = this._gatts[handle];
-
-    if (gatt) {
-      gatt.broadcast(serviceUuid, characteristicUuid, broadcast);
-    } else {
-      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
-    }
-  }
-
-  onBroadcast(address: string, serviceUuid: string, characteristicUuid: string, state: string) {
+  private onBroadcast(address: string, serviceUuid: string, characteristicUuid: string, state: string) {
     this.emit('broadcast', this.addressToUuid(address), serviceUuid, characteristicUuid, state);
   }
 
-  notify(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
-    const handle = this._uuidsToHandles[peripheralUuid];
-    const gatt = this._gatts[handle];
-
-    if (gatt) {
-      gatt.notify(serviceUuid, characteristicUuid, notify);
-    } else {
-      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
-    }
-  }
-
-  onNotify(address: string, serviceUuid: string, characteristicUuid: string, state: string) {
+  private onNotify(address: string, serviceUuid: string, characteristicUuid: string, state: string) {
     this.emit('notify', this.addressToUuid(address), serviceUuid, characteristicUuid, state);
   }
 
-  onNotification(address: string, serviceUuid: string, characteristicUuid: string, data: Buffer) {
+  private onNotification(address: string, serviceUuid: string, characteristicUuid: string, data: Buffer) {
     this.emit('read', this.addressToUuid(address), serviceUuid, characteristicUuid, data, true);
   }
 
-  discoverDescriptors(peripheralUuid: string, serviceUuid: string, characteristicUuid: string) {
-    const handle = this._uuidsToHandles[peripheralUuid];
-    const gatt = this._gatts[handle];
-
-    if (gatt) {
-      gatt.discoverDescriptors(serviceUuid, characteristicUuid);
-    } else {
-      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
-    }
-  }
-
-  onDescriptorsDiscovered(address: string, serviceUuid: string, characteristicUuid: string, descriptorUuids: string[]) {
+  private onDescriptorsDiscovered(address: string, serviceUuid: string, characteristicUuid: string, descriptorUuids: string[]) {
     this.emit('descriptorsDiscover', this.addressToUuid(address), serviceUuid, characteristicUuid, descriptorUuids);
   }
 
-  readValue(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
-    const handle = this._uuidsToHandles[peripheralUuid];
-    const gatt = this._gatts[handle];
-
-    if (gatt) {
-      gatt.readValue(serviceUuid, characteristicUuid, descriptorUuid);
-    } else {
-      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
-    }
-  }
-
-  onValueRead(address: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
+  private onValueRead(address: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
     this.emit('valueRead', this.addressToUuid(address), serviceUuid, characteristicUuid, descriptorUuid, data);
   }
 
-  writeValue(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
-    const handle = this._uuidsToHandles[peripheralUuid];
-    const gatt = this._gatts[handle];
-
-    if (gatt) {
-      gatt.writeValue(serviceUuid, characteristicUuid, descriptorUuid, data);
-    } else {
-      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
-    }
-  }
-
-  onValueWrite(address: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
+  private onValueWrite(address: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
     this.emit('valueWrite', this.addressToUuid(address), serviceUuid, characteristicUuid, descriptorUuid);
   }
-
-  readHandle(peripheralUuid: string, attHandle: number) {
-    const handle = this._uuidsToHandles[peripheralUuid];
-    const gatt = this._gatts[handle];
-
-    if (gatt) {
-      gatt.readHandle(attHandle);
-    } else {
-      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
-    }
-  }
-
-  onHandleRead(address: string, handle: number, data: Buffer) {
+  private onHandleRead(address: string, handle: number, data: Buffer) {
     this.emit('handleRead', this.addressToUuid(address), handle, data);
   }
 
-  writeHandle(peripheralUuid: string, attHandle: number, data: Buffer, withoutResponse: boolean) {
-    const handle = this._uuidsToHandles[peripheralUuid];
-    const gatt = this._gatts[handle];
-
-    if (gatt) {
-      gatt.writeHandle(attHandle, data, withoutResponse);
-    } else {
-      console.warn(`noble warning: unknown peripheral ${peripheralUuid}`);
-    }
-  }
-
-  onHandleWrite(address: string, handle: number) {
+  private onHandleWrite(address: string, handle: number) {
     this.emit('handleWrite', this.addressToUuid(address), handle);
   }
 
-  onHandleNotify(address: string, handle: number, data: Buffer) {
+  private onHandleNotify(address: string, handle: number, data: Buffer) {
     this.emit('handleNotify', this.addressToUuid(address), handle, data);
   }
 
-  onConnectionParameterUpdateRequest(
+  private onConnectionParameterUpdateRequest(
     handle: number,
     minInterval: number,
     maxInterval: number,

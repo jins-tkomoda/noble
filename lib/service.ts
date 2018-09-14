@@ -31,7 +31,7 @@ export class Service extends events.EventEmitter {
     }
   }
 
-  toString() {
+  public toString() {
     return JSON.stringify({
       uuid: this.uuid,
       name: this.name,
@@ -40,9 +40,9 @@ export class Service extends events.EventEmitter {
     });
   }
 
-  discoverIncludedServices(serviceUuids?: string[]): Promise<string[]>;
-  discoverIncludedServices(serviceUuids?: string[], callback?: (error: Error | null, includedServiceUuids?: string[]) => void): void;
-  discoverIncludedServices(
+  public discoverIncludedServices(serviceUuids?: string[]): Promise<string[]>;
+  public discoverIncludedServices(serviceUuids?: string[], callback?: (error: Error | null, includedServiceUuids?: string[]) => void): void;
+  public discoverIncludedServices(
     serviceUuids: string[] = [],
     callback?: (error: Error | null, includedServiceUuids?: string[]) => void
   ): void | Promise<string[]> {
@@ -59,12 +59,12 @@ export class Service extends events.EventEmitter {
     return promise;
   }
 
-  discoverCharacteristics(characteristicUuids?: string[]): Promise<Characteristic[]>;
-  discoverCharacteristics(
+  public discoverCharacteristics(characteristicUuids?: string[]): Promise<Characteristic[]>;
+  public discoverCharacteristics(
     characteristicUuids?: string[],
     callback?: (error: Error | null, characteristics?: Characteristic[]) => void
   ): void;
-  discoverCharacteristics(
+  public discoverCharacteristics(
     characteristicUuids: string[] = [],
     callback?: (error: Error | null, characteristics?: Characteristic[]) => void
   ): void | Promise<Characteristic[]> {

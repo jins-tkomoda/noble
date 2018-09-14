@@ -58,7 +58,7 @@ export class Peripheral extends events.EventEmitter {
     this.state = 'disconnected';
   }
 
-  toString() {
+  public toString() {
     return JSON.stringify({
       id: this.id,
       address: this.address,
@@ -70,9 +70,9 @@ export class Peripheral extends events.EventEmitter {
     });
   }
 
-  connect(): Promise<void>;
-  connect(callback?: (error?: Error) => void): void;
-  connect(callback?: (error?: Error) => void): void | Promise<void> {
+  public connect(): Promise<void>;
+  public connect(callback?: (error?: Error) => void): void;
+  public connect(callback?: (error?: Error) => void): void | Promise<void> {
     const promise = new Promise<void>((resolve, reject) => {
       this.once('connect', error => {
         if (error) {
@@ -97,9 +97,9 @@ export class Peripheral extends events.EventEmitter {
     return promise;
   }
 
-  disconnect(): Promise<void>;
-  disconnect(callback?: () => void): void;
-  disconnect(callback?: () => void): void | Promise<void> {
+  public disconnect(): Promise<void>;
+  public disconnect(callback?: () => void): void;
+  public disconnect(callback?: () => void): void | Promise<void> {
     const promise = new Promise<void>((resolve, reject) => {
       this.once('disconnect', () => {
         resolve();
@@ -116,9 +116,9 @@ export class Peripheral extends events.EventEmitter {
     return promise;
   }
 
-  updateRssi(): Promise<number>;
-  updateRssi(callback?: (error: Error | null, rssi?: number) => void): void;
-  updateRssi(callback?: (error: Error | null, rssi?: number) => void): void | Promise<number> {
+  public updateRssi(): Promise<number>;
+  public updateRssi(callback?: (error: Error | null, rssi?: number) => void): void;
+  public updateRssi(callback?: (error: Error | null, rssi?: number) => void): void | Promise<number> {
     const promise = new Promise<number>((resolve, reject) => {
       this.once('rssiUpdate', rssi => {
         resolve(rssi);
@@ -134,9 +134,9 @@ export class Peripheral extends events.EventEmitter {
     return promise;
   }
 
-  discoverServices(uuids?: string[]): Promise<Service[]>;
-  discoverServices(uuids?: string[], callback?: (error: Error | null, services?: Service[]) => void): void;
-  discoverServices(uuids: string[] = [], callback?: (error: Error | null, services?: Service[]) => void): void | Promise<Service[]> {
+  public discoverServices(uuids?: string[]): Promise<Service[]>;
+  public discoverServices(uuids?: string[], callback?: (error: Error | null, services?: Service[]) => void): void;
+  public discoverServices(uuids: string[] = [], callback?: (error: Error | null, services?: Service[]) => void): void | Promise<Service[]> {
     const promise = new Promise<Service[]>((resolve, reject) => {
       this.once('servicesDiscover', services => {
         resolve(services);
@@ -152,13 +152,13 @@ export class Peripheral extends events.EventEmitter {
     return promise;
   }
 
-  discoverSomeServicesAndCharacteristics(serviceUuids: string[], characteristicUuids: string[]): Promise<ServicesAndCharacteristics>;
-  discoverSomeServicesAndCharacteristics(
+  public discoverSomeServicesAndCharacteristics(serviceUuids: string[], characteristicUuids: string[]): Promise<ServicesAndCharacteristics>;
+  public discoverSomeServicesAndCharacteristics(
     serviceUuids: string[],
     characteristicUuids: string[],
     callback?: (error: Error | null, services?: Service[], characteristics?: Characteristic[]) => void
   ): void;
-  discoverSomeServicesAndCharacteristics(
+  public discoverSomeServicesAndCharacteristics(
     serviceUuids: string[],
     characteristicUuids: string[],
     callback?: (error: Error | null, services?: Service[], characteristics?: Characteristic[]) => void
@@ -193,19 +193,19 @@ export class Peripheral extends events.EventEmitter {
     return promise;
   }
 
-  discoverAllServicesAndCharacteristics(): Promise<ServicesAndCharacteristics>;
-  discoverAllServicesAndCharacteristics(
+  public discoverAllServicesAndCharacteristics(): Promise<ServicesAndCharacteristics>;
+  public discoverAllServicesAndCharacteristics(
     callback?: (error: Error | null, services?: Service[], characteristics?: Characteristic[]) => void
   ): void;
-  discoverAllServicesAndCharacteristics(
+  public discoverAllServicesAndCharacteristics(
     callback?: (error: Error | null, services?: Service[], characteristics?: Characteristic[]) => void
   ): void | Promise<ServicesAndCharacteristics> {
     return this.discoverSomeServicesAndCharacteristics([], [], callback);
   }
 
-  readHandle(handle: number): Promise<Buffer>;
-  readHandle(handle: number, callback?: (error: Error | null, data?: Buffer) => void): void;
-  readHandle(handle: number, callback?: (error: Error | null, data?: Buffer) => void): void | Promise<Buffer> {
+  public readHandle(handle: number): Promise<Buffer>;
+  public readHandle(handle: number, callback?: (error: Error | null, data?: Buffer) => void): void;
+  public readHandle(handle: number, callback?: (error: Error | null, data?: Buffer) => void): void | Promise<Buffer> {
     const promise = new Promise<Buffer>((resolve, reject) => {
       this.once(`handleRead${handle}`, data => {
         resolve(data);
@@ -220,9 +220,9 @@ export class Peripheral extends events.EventEmitter {
     return promise;
   }
 
-  writeHandle(handle: number, data: Buffer, withoutResponse?: boolean): Promise<void>;
-  writeHandle(handle: number, data: Buffer, withoutResponse?: boolean, callback?: (error?: Error | null) => void): void;
-  writeHandle(
+  public writeHandle(handle: number, data: Buffer, withoutResponse?: boolean): Promise<void>;
+  public writeHandle(handle: number, data: Buffer, withoutResponse?: boolean, callback?: (error?: Error | null) => void): void;
+  public writeHandle(
     handle: number,
     data: Buffer,
     withoutResponse: boolean = false,

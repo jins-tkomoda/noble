@@ -27,15 +27,15 @@ export class AclStream extends events.EventEmitter {
     this._smp.on('end', this.onSmpEndBinded);
   }
 
-  encrypt() {
+  public encrypt() {
     this._smp.sendPairingRequest();
   }
 
-  write(cid: number, data: Buffer) {
+  public write(cid: number, data: Buffer) {
     this._hci.queueAclDataPkt(this._handle, cid, data);
   }
 
-  push(cid: number | null, data?: Buffer) {
+  public push(cid: number | null, data?: Buffer) {
     if (data) {
       this.emit('data', cid, data);
     } else {
@@ -43,22 +43,22 @@ export class AclStream extends events.EventEmitter {
     }
   }
 
-  pushEncrypt(encrypt: boolean) {
+  public pushEncrypt(encrypt: boolean) {
     this.emit('encrypt', encrypt);
   }
 
-  onSmpStk(stk: Buffer) {
+  private onSmpStk(stk: Buffer) {
     const random = Buffer.from('0000000000000000', 'hex');
     const diversifier = Buffer.from('0000', 'hex');
 
     this._hci.startLeEncryption(this._handle, random, diversifier, stk);
   }
 
-  onSmpFail() {
+  private onSmpFail() {
     this.emit('encryptFail');
   }
 
-  onSmpEnd() {
+  private onSmpEnd() {
     this._smp.removeListener('stk', this.onSmpStkBinded);
     this._smp.removeListener('fail', this.onSmpFailBinded);
     this._smp.removeListener('end', this.onSmpEndBinded);

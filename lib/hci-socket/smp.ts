@@ -55,7 +55,7 @@ export class Smp extends events.EventEmitter {
     this._aclStream.on('end', this.onAclStreamEndBinded);
   }
 
-  sendPairingRequest() {
+  public sendPairingRequest() {
     this._preq = Buffer.from([
       SMP_PAIRING_REQUEST,
       0x03, // IO capability: NoInputNoOutput
@@ -69,7 +69,7 @@ export class Smp extends events.EventEmitter {
     this.write(this._preq);
   }
 
-  onAclStreamData(cid: number, data: Buffer) {
+  private onAclStreamData(cid: number, data: Buffer) {
     if (cid !== SMP_CID) {
       return;
     }
@@ -91,14 +91,14 @@ export class Smp extends events.EventEmitter {
     }
   }
 
-  onAclStreamEnd() {
+  private onAclStreamEnd() {
     this._aclStream.removeListener('data', this.onAclStreamDataBinded);
     this._aclStream.removeListener('end', this.onAclStreamEndBinded);
 
     this.emit('end');
   }
 
-  handlePairingResponse(data: Buffer) {
+  private handlePairingResponse(data: Buffer) {
     this._pres = data;
 
     this._tk = Buffer.from('00000000000000000000000000000000', 'hex');
@@ -112,13 +112,13 @@ export class Smp extends events.EventEmitter {
     );
   }
 
-  handlePairingConfirm(data: Buffer) {
+  private handlePairingConfirm(data: Buffer) {
     this._pcnf = data;
 
     this.write(Buffer.concat([Buffer.from([SMP_PAIRING_RANDOM]), this._r]));
   }
 
-  handlePairingRandom(data: Buffer) {
+  private handlePairingRandom(data: Buffer) {
     const r = data.slice(1);
 
     const pcnf = Buffer.concat([
@@ -137,24 +137,24 @@ export class Smp extends events.EventEmitter {
     }
   }
 
-  handlePairingFailed(data: Buffer) {
+  private handlePairingFailed(data: Buffer) {
     this.emit('fail');
   }
 
-  handleEncryptInfo(data: Buffer) {
+  private handleEncryptInfo(data: Buffer) {
     const ltk = data.slice(1);
 
     this.emit('ltk', ltk);
   }
 
-  handleMasterIdent(data: Buffer) {
+  private handleMasterIdent(data: Buffer) {
     const ediv = data.slice(1, 3);
     const rand = data.slice(3);
 
     this.emit('masterIdent', ediv, rand);
   }
 
-  write(data: Buffer) {
+  private write(data: Buffer) {
     this._aclStream.write(SMP_CID, data);
   }
 }

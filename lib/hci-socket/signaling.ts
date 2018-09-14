@@ -32,7 +32,7 @@ export class Signaling extends events.EventEmitter {
     this._aclStream.on('end', this.onAclStreamEndBinded);
   }
 
-  onAclStreamData(cid: number, data: Buffer) {
+  private onAclStreamData(cid: number, data: Buffer) {
     if (cid !== SIGNALING_CID) {
       return;
     }
@@ -53,12 +53,12 @@ export class Signaling extends events.EventEmitter {
     }
   }
 
-  onAclStreamEnd() {
+  private onAclStreamEnd() {
     this._aclStream.removeListener('data', this.onAclStreamDataBinded);
     this._aclStream.removeListener('end', this.onAclStreamEndBinded);
   }
 
-  processConnectionParameterUpdateRequest(identifier: number, data: Buffer) {
+  private processConnectionParameterUpdateRequest(identifier: number, data: Buffer) {
     const minInterval = data.readUInt16LE(0) * 1.25;
     const maxInterval = data.readUInt16LE(2) * 1.25;
     const latency = data.readUInt16LE(4);

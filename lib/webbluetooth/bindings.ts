@@ -40,7 +40,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this._peripherals = {};
   }
 
-  init() {
+  public init() {
     process.nextTick(() => {
       debug('initing');
       if (!this._ble) {
@@ -52,17 +52,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  onOpen() {
-    debug('on -> open');
-  }
-
-  onClose() {
-    debug('on -> close');
-
-    this.emit('stateChange', 'poweredOff');
-  }
-
-  startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false) {
+  public startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false) {
     const uuids = serviceUuids.map((service: string | number) => {
       //web bluetooth requires 4 char hex service names to be passed in as integers
       if (typeof service === 'string' && service.length === 4) {
@@ -131,14 +121,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('scanStart');
   }
 
-  stopScanning() {
+  public stopScanning() {
     this._startScanCommand = null;
 
     //TODO: need web api completed for this to work'=
     this.emit('scanStop');
   }
 
-  connect(deviceUuid: string) {
+  public connect(deviceUuid: string) {
     debug('connect', deviceUuid);
     const peripheral = this._peripherals[deviceUuid];
     //clear any cached services in case this is a reconnect
@@ -164,7 +154,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     );
   }
 
-  disconnect(deviceUuid: string) {
+  public disconnect(deviceUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
     if (peripheral.device.gatt) {
       peripheral.device.gatt.disconnect();
@@ -172,14 +162,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  updateRssi(deviceUuid: string) {
+  public updateRssi(deviceUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO: need web api completed for this to work
     // this.emit('rssiUpdate', deviceUuid, rssi);
   }
 
-  discoverServices(deviceUuid: string, serviceUuids: string[] = []) {
+  public discoverServices(deviceUuid: string, serviceUuids: string[] = []) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO: need web api completed for this to work
@@ -188,14 +178,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  discoverIncludedServices(deviceUuid: string, serviceUuid: string, serviceUuids: string[]) {
+  public discoverIncludedServices(deviceUuid: string, serviceUuid: string, serviceUuids: string[]) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('includedServicesDiscover', deviceUuid, serviceUuid, includedServiceUuids);
   }
 
-  discoverCharacteristics(deviceUuid: string, serviceUuid: string, characteristicUuids: string[]) {
+  public discoverCharacteristics(deviceUuid: string, serviceUuid: string, characteristicUuids: string[]) {
     const peripheral = this._peripherals[deviceUuid];
 
     if (peripheral) {
@@ -232,22 +222,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  getPrimaryService(peripheral: any, serviceUuid: string | number): Promise<BluetoothRemoteGATTService> {
-    serviceUuid = addDashes(serviceUuid);
-
-    if (peripheral.cachedServices[serviceUuid]) {
-      return new Promise((resolve, reject) => {
-        resolve(peripheral.cachedServices[serviceUuid]);
-      });
-    }
-
-    return peripheral.device.gatt.getPrimaryService(serviceUuid).then((service: BluetoothRemoteGATTService) => {
-      peripheral.cachedServices[serviceUuid] = service;
-      return service;
-    });
-  }
-
-  read(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
+  public read(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
     debug('read', deviceUuid, serviceUuid, characteristicUuid);
 
@@ -267,7 +242,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       });
   }
 
-  write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean = false) {
+  public write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean = false) {
     const peripheral = this._peripherals[deviceUuid];
     debug('write', deviceUuid, serviceUuid, characteristicUuid, data, withoutResponse);
 
@@ -287,14 +262,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       });
   }
 
-  broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
+  public broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('broadcast', deviceUuid, serviceUuid, characteristicUuid, state);
   }
 
-  notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
+  public notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
     const peripheral = this._peripherals[deviceUuid];
 
     const charPromise = this.getPrimaryService(peripheral, serviceUuid).then(service => {
@@ -359,38 +334,63 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  discoverDescriptors(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
+  public discoverDescriptors(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('descriptorsDiscover', deviceUuid, serviceUuid, characteristicUuid, descriptors);
   }
 
-  readValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
+  public readValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('valueRead', deviceUuid, serviceUuid, characteristicUuid, descriptorUuid, data);
   }
 
-  writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
+  public writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('valueWrite', deviceUuid, serviceUuid, characteristicUuid, descriptorUuid);
   }
 
-  readHandle(deviceUuid: string, handle: number) {
+  public readHandle(deviceUuid: string, handle: number) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('handleRead', deviceUuid, handle, data);
   }
 
-  writeHandle(deviceUuid: string, handle: number, data: Buffer, withoutResponse: boolean = false) {
+  public writeHandle(deviceUuid: string, handle: number, data: Buffer, withoutResponse: boolean = false) {
     const peripheral = this._peripherals[deviceUuid];
 
     //TODO impelment when web API has functionatility then emit response
     //this.emit('handleWrite', deviceUuid, handle);
+  }
+
+  private onOpen() {
+    debug('on -> open');
+  }
+
+  private onClose() {
+    debug('on -> close');
+
+    this.emit('stateChange', 'poweredOff');
+  }
+
+  private getPrimaryService(peripheral: any, serviceUuid: string | number): Promise<BluetoothRemoteGATTService> {
+    serviceUuid = addDashes(serviceUuid);
+
+    if (peripheral.cachedServices[serviceUuid]) {
+      return new Promise((resolve, reject) => {
+        resolve(peripheral.cachedServices[serviceUuid]);
+      });
+    }
+
+    return peripheral.device.gatt.getPrimaryService(serviceUuid).then((service: BluetoothRemoteGATTService) => {
+      peripheral.cachedServices[serviceUuid] = service;
+      return service;
+    });
   }
 }
