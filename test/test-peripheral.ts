@@ -76,7 +76,6 @@ describe('Peripheral', () => {
       state: 'disconnected',
     });
     it('should be id, address, address type, connectable, advertisement, rssi, state', () => {
-      //peripheral.toString().should.equal('{"id":"mock-id","address":"mock-address","addressType":"mock-address-type","connectable":true,"advertisement":"mock-advertisement","rssi":-1,"state":"disconnected"}');
       peripheral.toString().should.equal(expected);
     });
   });

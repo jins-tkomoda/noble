@@ -98,13 +98,13 @@ noble.on('discover', (peripheral: Peripheral) => {
         });
 
         descriptors[descriptorIndex].readValue();
-        //descriptors[descriptorIndex].writeValue(Buffer.from([0]));
+        // descriptors[descriptorIndex].writeValue(Buffer.from([0]));
       });
 
       characteristics[characteristicIndex].read();
-      //characteristics[characteristicIndex].write(Buffer.from('hello'));
-      //characteristics[characteristicIndex].broadcast(true);
-      //characteristics[characteristicIndex].notify(true);
+      // characteristics[characteristicIndex].write(Buffer.from('hello'));
+      // characteristics[characteristicIndex].broadcast(true);
+      // characteristics[characteristicIndex].notify(true);
       // characteristics[characteristicIndex].discoverDescriptors();
     });
 

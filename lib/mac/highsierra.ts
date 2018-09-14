@@ -690,7 +690,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.on('kCBMsgId87', args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const characteristicHandle = args.kCBMsgArgCharacteristicHandle;
-      const descriptors: string[] = []; //args.kCBMsgArgDescriptors;
+      const descriptors: string[] = []; // args.kCBMsgArgDescriptors;
 
       for (const i in this._peripherals[deviceUuid].services) {
         if (

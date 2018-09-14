@@ -54,7 +54,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
   public startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false) {
     const uuids = serviceUuids.map((service: string | number) => {
-      //web bluetooth requires 4 char hex service names to be passed in as integers
+      // web bluetooth requires 4 char hex service names to be passed in as integers
       if (typeof service === 'string' && service.length === 4) {
         service = parseInt(`0x${service}`);
       } else if (typeof service === 'string' && service.length === 6 && service.indexOf('0x') === 0) {
@@ -86,12 +86,12 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
         this.emit('scanStop', {});
         if (device) {
           const address = device.id;
-          //TODO use device.adData when api is ready
-          //const rssi = device.adData.rssi;
+          // TODO use device.adData when api is ready
+          // const rssi = device.adData.rssi;
           this._peripherals[address] = {
             uuid: address,
             address: address,
-            advertisement: { localName: device.name }, //advertisement,
+            advertisement: { localName: device.name }, // advertisement,
             device: device,
             cachedServices: {} as { [uuid: string]: BluetoothRemoteGATTService[] },
             localName: device.name,
@@ -124,14 +124,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   public stopScanning() {
     this._startScanCommand = null;
 
-    //TODO: need web api completed for this to work'=
+    // TODO: need web api completed for this to work'=
     this.emit('scanStop');
   }
 
   public connect(deviceUuid: string) {
     debug('connect', deviceUuid);
     const peripheral = this._peripherals[deviceUuid];
-    //clear any cached services in case this is a reconnect
+    // clear any cached services in case this is a reconnect
     peripheral.cachedServices = {};
 
     // Attempts to connect to remote GATT Server.
@@ -165,14 +165,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   public updateRssi(deviceUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
-    //TODO: need web api completed for this to work
+    // TODO: need web api completed for this to work
     // this.emit('rssiUpdate', deviceUuid, rssi);
   }
 
   public discoverServices(deviceUuid: string, serviceUuids: string[] = []) {
     const peripheral = this._peripherals[deviceUuid];
 
-    //TODO: need web api completed for this to work
+    // TODO: need web api completed for this to work
     if (peripheral) {
       this.emit('servicesDiscover', deviceUuid, peripheral.serviceUuids);
     }
@@ -181,8 +181,8 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   public discoverIncludedServices(deviceUuid: string, serviceUuid: string, serviceUuids: string[]) {
     const peripheral = this._peripherals[deviceUuid];
 
-    //TODO impelment when web API has functionatility then emit response
-    //this.emit('includedServicesDiscover', deviceUuid, serviceUuid, includedServiceUuids);
+    // TODO impelment when web API has functionatility then emit response
+    // this.emit('includedServicesDiscover', deviceUuid, serviceUuid, includedServiceUuids);
   }
 
   public discoverCharacteristics(deviceUuid: string, serviceUuid: string, characteristicUuids: string[]) {
@@ -265,8 +265,8 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   public broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
     const peripheral = this._peripherals[deviceUuid];
 
-    //TODO impelment when web API has functionatility then emit response
-    //this.emit('broadcast', deviceUuid, serviceUuid, characteristicUuid, state);
+    // TODO impelment when web API has functionatility then emit response
+    // this.emit('broadcast', deviceUuid, serviceUuid, characteristicUuid, state);
   }
 
   public notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
@@ -337,36 +337,36 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   public discoverDescriptors(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
-    //TODO impelment when web API has functionatility then emit response
-    //this.emit('descriptorsDiscover', deviceUuid, serviceUuid, characteristicUuid, descriptors);
+    // TODO impelment when web API has functionatility then emit response
+    // this.emit('descriptorsDiscover', deviceUuid, serviceUuid, characteristicUuid, descriptors);
   }
 
   public readValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
     const peripheral = this._peripherals[deviceUuid];
 
-    //TODO impelment when web API has functionatility then emit response
-    //this.emit('valueRead', deviceUuid, serviceUuid, characteristicUuid, descriptorUuid, data);
+    // TODO impelment when web API has functionatility then emit response
+    // this.emit('valueRead', deviceUuid, serviceUuid, characteristicUuid, descriptorUuid, data);
   }
 
   public writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
     const peripheral = this._peripherals[deviceUuid];
 
-    //TODO impelment when web API has functionatility then emit response
-    //this.emit('valueWrite', deviceUuid, serviceUuid, characteristicUuid, descriptorUuid);
+    // TODO impelment when web API has functionatility then emit response
+    // this.emit('valueWrite', deviceUuid, serviceUuid, characteristicUuid, descriptorUuid);
   }
 
   public readHandle(deviceUuid: string, handle: number) {
     const peripheral = this._peripherals[deviceUuid];
 
-    //TODO impelment when web API has functionatility then emit response
-    //this.emit('handleRead', deviceUuid, handle, data);
+    // TODO impelment when web API has functionatility then emit response
+    // this.emit('handleRead', deviceUuid, handle, data);
   }
 
   public writeHandle(deviceUuid: string, handle: number, data: Buffer, withoutResponse: boolean = false) {
     const peripheral = this._peripherals[deviceUuid];
 
-    //TODO impelment when web API has functionatility then emit response
-    //this.emit('handleWrite', deviceUuid, handle);
+    // TODO impelment when web API has functionatility then emit response
+    // this.emit('handleWrite', deviceUuid, handle);
   }
 
   private onOpen() {

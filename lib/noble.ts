@@ -66,7 +66,7 @@ export class Noble extends events.EventEmitter {
       }
     });
 
-    //lazy init bindings on first new listener, should be on stateChange
+    // lazy init bindings on first new listener, should be on stateChange
     this.on('newListener', event => {
       if (event === 'stateChange' && !this.initialized) {
         this.initialized = true;
@@ -77,7 +77,7 @@ export class Noble extends events.EventEmitter {
       }
     });
 
-    //or lazy init bindings if someone attempts to get state first
+    // or lazy init bindings if someone attempts to get state first
     Object.defineProperties(this, {
       state: {
         get: function() {
@@ -115,7 +115,7 @@ export class Noble extends events.EventEmitter {
         }
       };
 
-      //if bindings still not init, do it now
+      // if bindings still not init, do it now
       if (!this.initialized) {
         this._bindings.init();
         this.initialized = true;
