@@ -27,10 +27,8 @@ if (serverMode) {
     port: 0xb1e,
   });
 
-  wss.on('connection', (ws_: WebSocket) => {
+  wss.on('connection', (ws: WebSocket) => {
     debug('ws -> connection');
-
-    ws = ws_;
 
     ws.on('message', onMessage);
 

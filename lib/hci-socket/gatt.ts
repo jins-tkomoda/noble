@@ -753,18 +753,18 @@ export class Gatt extends events.EventEmitter {
     const characteristic = this._characteristics[serviceUuid][characteristicUuid];
     const limit = this._mtu - 5;
 
-    const prepareWriteCallback = (data_chunk: Buffer) => {
+    const prepareWriteCallback = (dataChunk: Buffer) => {
       return (resp: Buffer) => {
         const opcode = resp[0];
 
         if (opcode !== ATT_OP_PREPARE_WRITE_RESP) {
           debug(`${this._address}: unexpected reply opcode %d (expecting ATT_OP_PREPARE_WRITE_RESP)`, opcode);
         } else {
-          const expected_length = data_chunk.length + 5;
+          const expectedLength = dataChunk.length + 5;
 
-          if (resp.length !== expected_length) {
+          if (resp.length !== expectedLength) {
             /* the response should contain the data packet echoed back to the caller */
-            debug(`${this._address}: unexpected prepareWriteResponse length %d (expecting %d)`, resp.length, expected_length);
+            debug(`${this._address}: unexpected prepareWriteResponse length %d (expecting %d)`, resp.length, expectedLength);
           }
         }
       };

@@ -337,7 +337,7 @@ export class Noble extends events.EventEmitter {
     const service = this._services[peripheralUuid][serviceUuid];
 
     if (service) {
-      const characteristics_ = [];
+      const newCharacteristics: Characteristic[] = [];
 
       for (const characteristic of characteristics) {
         const characteristicUuid = characteristic.uuid;
@@ -347,12 +347,12 @@ export class Noble extends events.EventEmitter {
         this._characteristics[peripheralUuid][serviceUuid][characteristicUuid] = newCharacteristic;
         this._descriptors[peripheralUuid][serviceUuid][characteristicUuid] = {};
 
-        characteristics_.push(newCharacteristic);
+        newCharacteristics.push(newCharacteristic);
       }
 
-      service.characteristics = characteristics_;
+      service.characteristics = newCharacteristics;
 
-      service.emit('characteristicsDiscover', characteristics_);
+      service.emit('characteristicsDiscover', newCharacteristics);
     } else {
       this.emit('warning', `unknown peripheral ${peripheralUuid}, ${serviceUuid} characteristics discover!`);
     }
@@ -404,19 +404,19 @@ export class Noble extends events.EventEmitter {
     const characteristic = this._characteristics[peripheralUuid][serviceUuid][characteristicUuid];
 
     if (characteristic) {
-      const descriptors_: Descriptor[] = [];
+      const descriptors: Descriptor[] = [];
 
       for (const descriptorUuid of descriptorUuids) {
-        const descriptor = new Descriptor(this, peripheralUuid, serviceUuid, characteristicUuid, descriptorUuid);
+        const newDescriptor = new Descriptor(this, peripheralUuid, serviceUuid, characteristicUuid, descriptorUuid);
 
-        this._descriptors[peripheralUuid][serviceUuid][characteristicUuid][descriptorUuid] = descriptor;
+        this._descriptors[peripheralUuid][serviceUuid][characteristicUuid][descriptorUuid] = newDescriptor;
 
-        descriptors_.push(descriptor);
+        descriptors.push(newDescriptor);
       }
 
-      characteristic.descriptors = descriptors_;
+      characteristic.descriptors = descriptors;
 
-      characteristic.emit('descriptorsDiscover', descriptors_);
+      characteristic.emit('descriptorsDiscover', descriptors);
     } else {
       this.emit('warning', `unknown peripheral ${peripheralUuid}, ${serviceUuid}, ${characteristicUuid} descriptors discover!`);
     }
