@@ -90,6 +90,8 @@ interface AclOutQueueEntry {
 }
 
 export class Hci extends events.EventEmitter {
+  public address!: string;
+  public addressType: string;
   private _socket: BluetoothHciSocket;
   private _isDevUp: boolean | null;
   private _state: string | null;
@@ -100,9 +102,6 @@ export class Hci extends events.EventEmitter {
   private _handleAclsInProgress!: { [handle: number]: number };
   private _aclOutQueue: AclOutQueueEntry[];
   private _handleBuffers!: { [handle: number]: BufferHandle };
-
-  public address!: string;
-  public addressType: string;
 
   constructor(deviceId = 0, useUserChannel = false) {
     super();

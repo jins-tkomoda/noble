@@ -11,6 +11,7 @@ import { Service } from './service';
 const debug = debugModule('noble');
 
 export class Noble extends events.EventEmitter {
+  public _state: string;
   private initialized: boolean;
   private address: string;
   private _bindings: NobleBindingsInterface;
@@ -22,8 +23,6 @@ export class Noble extends events.EventEmitter {
   };
   private _discoveredPeripheralUUids: string[];
   private _allowDuplicates: boolean;
-
-  public _state: string;
 
   constructor(bindings: NobleBindingsInterface) {
     super();

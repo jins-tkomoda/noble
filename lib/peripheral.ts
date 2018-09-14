@@ -24,8 +24,6 @@ interface ServicesAndCharacteristics {
 }
 
 export class Peripheral extends events.EventEmitter {
-  private _noble: Noble;
-
   public addressType: string;
   public connectable: boolean;
   public rssi: number;
@@ -35,6 +33,7 @@ export class Peripheral extends events.EventEmitter {
   public advertisement: Advertisement;
   public services: Service[];
   public state: 'error' | 'connecting' | 'connected' | 'disconnecting' | 'disconnected';
+  private _noble: Noble;
 
   constructor(
     noble: Noble,

@@ -5,15 +5,14 @@ import { Descriptor } from './descriptor';
 import { characteristicInfo } from './gatt-database';
 
 export class Characteristic extends events.EventEmitter {
-  private _noble: Noble;
-  private _peripheralId: string;
-  private _serviceUuid: string;
-
   public name: string | null;
   public type: string | null;
   public uuid: string;
   public properties: string[];
   public descriptors: Descriptor[];
+  private _noble: Noble;
+  private _peripheralId: string;
+  private _serviceUuid: string;
 
   constructor(noble: Noble, peripheralId: string, serviceUuid: string, uuid: string, properties: string[]) {
     super();

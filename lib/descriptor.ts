@@ -4,14 +4,13 @@ import { Noble } from './noble';
 import { descriptorInfo } from './gatt-database';
 
 export class Descriptor extends events.EventEmitter {
+  public name: string | null;
+  public type: string | null;
+  public uuid: string;
   private _noble: Noble;
   private _peripheralId: string;
   private _serviceUuid: string;
   private _characteristicUuid: string;
-
-  public name: string | null;
-  public type: string | null;
-  public uuid: string;
 
   constructor(noble: Noble, peripheralId: string, serviceUuid: string, characteristicUuid: string, uuid: string) {
     super();
