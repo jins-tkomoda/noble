@@ -589,7 +589,9 @@ export class Gatt extends events.EventEmitter {
     }
   }
 
-  private onAclStreamEncryptFail() {}
+  private onAclStreamEncryptFail() {
+    // no op
+  }
 
   private onAclStreamEnd() {
     this._aclStream.removeListener('data', this.onAclStreamDataBinded);

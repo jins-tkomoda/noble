@@ -454,7 +454,9 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     }
   }
 
-  private onMtu(address: string, mtu: number) {}
+  private onMtu(address: string, mtu: number) {
+    // no op
+  }
 
   private onRssiRead(handle: number, rssi: number) {
     this.emit('rssiUpdate', this._handlesToUuids[handle], rssi);

@@ -67,9 +67,13 @@ export class Gap extends events.EventEmitter {
     this._hci.setScanEnabled(false, true);
   }
 
-  private onHciError(error: Error) {}
+  private onHciError(error: Error) {
+    // no op
+  }
 
-  private onHciLeScanParametersSet() {}
+  private onHciLeScanParametersSet() {
+    // no op
+  }
 
   // Called when receive an event "Command Complete" for "LE Set Scan Enable"
   private onHciLeScanEnableSet(status: number) {
