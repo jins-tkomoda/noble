@@ -84,7 +84,7 @@ function sendEvent(event: any) {
   clients.forEach(client => client.send(message));
 }
 
-const onMessage = function(message: any) {
+const onMessage = (message: any) => {
   debug(`ws -> message: ${message}`);
 
   const command = JSON.parse(message);
@@ -180,14 +180,14 @@ const onMessage = function(message: any) {
 noble.on('discover', peripheral => {
   peripherals[peripheral.uuid] = peripheral;
 
-  peripheral.on('connect', function() {
+  peripheral.on('connect', () => {
     sendEvent({
       type: 'connect',
       peripheralUuid: peripheral.uuid,
     });
   });
 
-  peripheral.on('disconnect', function() {
+  peripheral.on('disconnect', () => {
     sendEvent({
       type: 'disconnect',
       peripheralUuid: peripheral.uuid,
@@ -207,7 +207,7 @@ noble.on('discover', peripheral => {
     peripheral.removeAllListeners();
   });
 
-  peripheral.on('rssiUpdate', function(rssi: number) {
+  peripheral.on('rssiUpdate', (rssi: number) => {
     sendEvent({
       type: 'rssiUpdate',
       peripheralUuid: peripheral.uuid,
@@ -367,7 +367,7 @@ noble.on('discover', peripheral => {
     });
   });
 
-  peripheral.on('handleRead', function(handle: number, data: Buffer) {
+  peripheral.on('handleRead', (handle: number, data: Buffer) => {
     sendEvent({
       type: 'handleRead',
       peripheralUuid: peripheral.uuid,
@@ -376,7 +376,7 @@ noble.on('discover', peripheral => {
     });
   });
 
-  peripheral.on('handleWrite', function(handle: number) {
+  peripheral.on('handleWrite', (handle: number) => {
     sendEvent({
       type: 'handleWrite',
       peripheralUuid: peripheral.uuid,
@@ -384,7 +384,7 @@ noble.on('discover', peripheral => {
     });
   });
 
-  peripheral.on('handleNotify', function(handle: number, data: Buffer) {
+  peripheral.on('handleNotify', (handle: number, data: Buffer) => {
     sendEvent({
       type: 'handleNotify',
       peripheralUuid: peripheral.uuid,

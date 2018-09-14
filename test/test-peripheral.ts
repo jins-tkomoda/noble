@@ -338,9 +338,9 @@ describe('Peripheral', () => {
     it('should only accept data as a buffer', () => {
       mockData = {} as Buffer;
 
-      (function() {
+      (() => {
         peripheral.writeHandle(mockHandle, mockData);
-      }.should.throwError('data must be a Buffer'));
+      }).should.throwError('data must be a Buffer');
     });
 
     it('should delegate to noble, withoutResponse false', () => {
