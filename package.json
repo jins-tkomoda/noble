@@ -67,6 +67,7 @@
     "precommit": "npm run format:write",
     "build": "tsc --project .",
     "pretest": "eslint examples/",
+    "prepare": "npm run build",
     "test": "mocha -r ts-node/register -R spec test/*.ts"
   },
   "browser": {
