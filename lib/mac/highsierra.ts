@@ -38,8 +38,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
   /**
    * Init xpc connection to bluetoothd
-   *
-   * @discussion tested
    */
   public init() {
     this._xpcConnection.setup();
@@ -60,13 +58,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  /**
-   * Start scanning
-   * @param  {Array} serviceUuids     Scan for these UUIDs, if undefined then scan for all
-   * @param  {Boolean}  allowDuplicates  Scan can return duplicates
-   *
-   * @discussion tested
-   */
   public startScanning(serviceUuids: string[] = [], allowDuplicates: boolean = false) {
     const args = {
       kCBMsgArgOptions: { kCBScanOptionAllowDuplicates: allowDuplicates ? 1 : 0 },
@@ -77,22 +68,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.emit('scanStart');
   }
 
-  /**
-   * Stop scanning
-   *
-   * @discussion tested
-   */
   public stopScanning() {
     this.sendCBMsg(45, null);
     this.emit('scanStop');
   }
 
-  /**
-   * Connect to peripheral
-   * @param  {String} deviceUuid    Peripheral uuid to connect to
-   *
-   * @discussion tested
-   */
   public connect(deviceUuid: string) {
     this.sendCBMsg(46, {
       kCBMsgArgOptions: {
@@ -102,38 +82,18 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  /**
-   * Disconnect
-   *
-   * @param  {String} deviceUuid    Peripheral uuid to disconnect
-   *
-   * @discussion tested
-   */
   public disconnect(deviceUuid: string) {
     this.sendCBMsg(47, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
     });
   }
 
-  /**
-   * Update RSSI
-   *
-   * @discussion tested
-   */
   public updateRssi(deviceUuid: string) {
     this.sendCBMsg(61, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
     });
   }
 
-  /**
-   * Discover services
-   *
-   * @param  {String} deviceUuid  Device UUID
-   * @param  {Array} uuids        Services to discover, if undefined then all
-   *
-   * @discussion tested
-   */
   public discoverServices(deviceUuid: string, serviceUuids: string[] = []) {
     const args = {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
@@ -143,15 +103,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.sendCBMsg(62, args);
   }
 
-  /**
-   * [discoverIncludedServices description]
-   *
-   * @param  {String} deviceUuid
-   * @param  {String} serviceUuid
-   * @param  {Array} serviceUuids
-   *
-   * @dicussion tested
-   */
   public discoverIncludedServices(deviceUuid: string, serviceUuid: string, serviceUuids: string[] = []) {
     const args = {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
@@ -163,15 +114,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.sendCBMsg(74, args);
   }
 
-  /**
-   * Discover characteristic
-   *
-   * @param  {String} deviceUuid          Peripheral UUID
-   * @param  {String} serviceUuid         Service UUID
-   * @param  {Array} characteristicUuids  Characteristics to discover, all if empty
-   *
-   * @discussion tested
-   */
   public discoverCharacteristics(deviceUuid: string, serviceUuid: string, characteristicUuids: string[] = []) {
     const args = {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
@@ -183,15 +125,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.sendCBMsg(75, args);
   }
 
-  /**
-   * Read value
-   *
-   * @param  {String} deviceUuid         [description]
-   * @param  {String} serviceUuid        [description]
-   * @param  {String} characteristicUuid [description]
-   *
-   * @discussion tested
-   */
   public read(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
     this.sendCBMsg(78, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
@@ -201,16 +134,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  /**
-   * Write value
-   * @param  {String} deviceUuid
-   * @param  {String} serviceUuid
-   * @param  {String} characteristicUuid
-   * @param  {Buffer} data
-   * @param  {Boolean} withoutResponse
-   *
-   * @discussion tested
-   */
   public write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean = false) {
     this.sendCBMsg(79, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
@@ -227,29 +150,12 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   /**
-   * Broadcast
-   *
-   * @param  {String} deviceUuid         [description]
-   * @param  {String} serviceUuid        [description]
-   * @param  {String} characteristicUuid [description]
-   * @param  {Boolean} broadcast         [description]
-   *
    * @discussion The ids were incemented but there seems to be no CoreBluetooth function to call/verify this.
    */
   public broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
     throw new Error('This OS does not support broadcast.');
   }
 
-  /**
-   * Register notification hanlder
-   *
-   * @param  {String} deviceUuid            Peripheral UUID
-   * @param  {String} serviceUuid           Service UUID
-   * @param  {String} characteristicUuid    Charactereistic UUID
-   * @param  {Boolean} notify               If want to get notification
-   *
-   * @discussion tested
-   */
   public notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
     this.sendCBMsg(81, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
@@ -260,15 +166,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  /**
-   * Discover service descriptors
-   *
-   * @param  {String} deviceUuid
-   * @param  {String} serviceUuid
-   * @param  {String} characteristicUuid
-   *
-   * @discussion tested
-   */
   public discoverDescriptors(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
     this.sendCBMsg(82, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
@@ -278,16 +175,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  /**
-   * Read value
-   *
-   * @param  {String} deviceUuid         [description]
-   * @param  {String} serviceUuid        [description]
-   * @param  {String} characteristicUuid [description]
-   * @param  {String} descriptorUuid     [description]
-   *
-   * @discussion tested
-   */
   public readValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
     this.sendCBMsg(88, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
@@ -297,17 +184,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  /**
-   * Write value
-   *
-   * @param  {String} deviceUuid         [description]
-   * @param  {String} serviceUuid        [description]
-   * @param  {String} characteristicUuid [description]
-   * @param  {String} descriptorUuid     [description]
-   * @param  {Buffer} data               [description]
-   *
-   * @discussion tested
-   */
   public writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
     this.sendCBMsg(89, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
@@ -318,14 +194,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  /**
-   * Reade value directly from handle
-   *
-   * @param  {String} deviceUuid [description]
-   * @param  {Buffer} handle     [description]
-   *
-   * @discussion tested
-   */
   public readHandle(deviceUuid: string, handle: number) {
     this.sendCBMsg(88, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
@@ -333,16 +201,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
   }
 
-  /**
-   * Write value directly to handle
-   *
-   * @param  {String} deviceUuid      [description]
-   * @param  {Buffer} handle          [description]
-   * @param  {Buffer} data            [description]
-   * @param  {Boolean} withoutResponse [description]
-   *
-   * @discussion tested
-   */
   public writeHandle(deviceUuid: string, handle: number, data: Buffer, withoutResponse: boolean = false) {
     // TODO: use without response
     this.sendCBMsg(89, {
@@ -396,8 +254,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *     kCBMsgArgName = SensorTag;
      *     kCBMsgArgRssi = "-68";
      * }
-     *
-     * @discussion tested
      */
     this.on('kCBMsgId48', args => {
       if (
