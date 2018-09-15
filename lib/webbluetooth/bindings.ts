@@ -56,9 +56,9 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     const uuids = serviceUuids.map((service: string | number) => {
       // web bluetooth requires 4 char hex service names to be passed in as integers
       if (typeof service === 'string' && service.length === 4) {
-        service = parseInt(`0x${service}`);
+        service = parseInt(`0x${service}`, 10);
       } else if (typeof service === 'string' && service.length === 6 && service.indexOf('0x') === 0) {
-        service = parseInt(service);
+        service = parseInt(service, 10);
       }
       return service;
     });

@@ -267,7 +267,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     this.stopScanning();
 
     for (const handle in this._aclStreams) {
-      this._hci.disconnect(parseInt(handle));
+      this._hci.disconnect(parseInt(handle, 10));
     }
   }
 
