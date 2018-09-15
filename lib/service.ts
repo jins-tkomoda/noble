@@ -52,7 +52,7 @@ export class Service extends events.EventEmitter {
       this._noble.discoverIncludedServices(this._peripheralId, this.uuid, serviceUuids);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
@@ -74,7 +74,7 @@ export class Service extends events.EventEmitter {
       this._noble.discoverCharacteristics(this._peripheralId, this.uuid, characteristicUuids);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 

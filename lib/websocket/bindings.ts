@@ -308,7 +308,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   private _sendCommand(command: any, errorCallback?: (error: Error) => void) {
     const message = JSON.stringify(command);
     this._ws.send(message, error => {
-      if (error != null) {
+      if (error !== undefined) {
         if (typeof errorCallback === 'function') {
           errorCallback(error);
         }

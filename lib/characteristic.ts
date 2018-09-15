@@ -63,7 +63,7 @@ export class Characteristic extends events.EventEmitter {
       this._noble.read(this._peripheralId, this._serviceUuid, this.uuid);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
@@ -83,7 +83,7 @@ export class Characteristic extends events.EventEmitter {
       this._noble.write(this._peripheralId, this._serviceUuid, this.uuid, data, withoutResponse);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
@@ -99,7 +99,7 @@ export class Characteristic extends events.EventEmitter {
       this._noble.broadcast(this._peripheralId, this._serviceUuid, this.uuid, broadcast);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
@@ -116,7 +116,7 @@ export class Characteristic extends events.EventEmitter {
       this._noble.notify(this._peripheralId, this._serviceUuid, this.uuid, notify);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
@@ -144,7 +144,7 @@ export class Characteristic extends events.EventEmitter {
       this._noble.discoverDescriptors(this._peripheralId, this._serviceUuid, this.uuid);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 

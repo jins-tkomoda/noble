@@ -90,7 +90,7 @@ export class Peripheral extends events.EventEmitter {
       }
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
@@ -109,7 +109,7 @@ export class Peripheral extends events.EventEmitter {
       this._noble.disconnect(this.id);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
@@ -127,7 +127,7 @@ export class Peripheral extends events.EventEmitter {
       this._noble.updateRssi(this.id);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
@@ -145,7 +145,7 @@ export class Peripheral extends events.EventEmitter {
       this._noble.discoverServices(this.id, uuids);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
@@ -186,7 +186,7 @@ export class Peripheral extends events.EventEmitter {
       });
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(({ services, characteristics }) => callback(null, services, characteristics), callback);
     }
 
@@ -213,7 +213,7 @@ export class Peripheral extends events.EventEmitter {
       this._noble.readHandle(this.id, handle);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
@@ -238,7 +238,7 @@ export class Peripheral extends events.EventEmitter {
       this._noble.writeHandle(this.id, handle, data, withoutResponse);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 

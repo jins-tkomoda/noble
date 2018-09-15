@@ -125,7 +125,7 @@ export class Noble extends events.EventEmitter {
       }
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
@@ -143,7 +143,7 @@ export class Noble extends events.EventEmitter {
       }
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 

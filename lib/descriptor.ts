@@ -47,7 +47,7 @@ export class Descriptor extends events.EventEmitter {
       this._noble.readValue(this._peripheralId, this._serviceUuid, this._characteristicUuid, this.uuid);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
@@ -67,7 +67,7 @@ export class Descriptor extends events.EventEmitter {
       this._noble.writeValue(this._peripheralId, this._serviceUuid, this._characteristicUuid, this.uuid, data);
     });
 
-    if (callback && typeof callback === 'function') {
+    if (typeof callback === 'function') {
       promise.then(callback.bind(null, null), callback);
     }
 
