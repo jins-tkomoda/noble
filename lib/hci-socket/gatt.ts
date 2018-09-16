@@ -449,10 +449,9 @@ export class Gatt extends events.EventEmitter {
 
       if (opcode !== ATT_OP_FIND_INFO_RESP || descriptors[descriptors.length - 1].handle === characteristic.endHandle) {
         const descriptorUuids: string[] = [];
-        for (let i = 0; i < descriptors.length; i++) {
-          descriptorUuids.push(descriptors[i].uuid);
-
-          this._descriptors[serviceUuid][characteristicUuid][descriptors[i].uuid] = descriptors[i];
+        for (const descriptor of descriptors) {
+          descriptorUuids.push(descriptor.uuid);
+          this._descriptors[serviceUuid][characteristicUuid][descriptor.uuid] = descriptor;
         }
 
         this.emit('descriptorsDiscover', this._address, serviceUuid, characteristicUuid, descriptorUuids);
