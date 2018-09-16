@@ -58,6 +58,9 @@
     "prettier": "^1.14.2",
     "should": "^13.2.3",
     "sinon": "^6.3.1",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "tslint-config-standard": "^8.0.1",
     "typescript": "^3.0.3",
     "ws": "^6.0.0"
   },

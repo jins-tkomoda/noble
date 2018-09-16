@@ -1,0 +1,31 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["tslint:latest", "tslint-config-standard", "tslint-config-prettier"],
+  "rules": {
+    "max-classes-per-file": [false],
+    "object-literal-sort-keys": false,
+    "semicolon": [true, "always"],
+    "no-implicit-dependencies": false,
+    "interface-name": false,
+    "unified-signatures": false,
+    "no-bitwise": false,
+    "array-type": false,
+    "object-literal-shorthand": false,
+    "handle-callback-err": false,
+    "no-var-requires": false,
+    "no-console": false,
+    "ordered-imports": false,
+    "no-floating-promises": false,
+    "no-shadowed-variable": false,
+    "forin": false,
+    "no-this-assignment": false,
+    "no-object-literal-type-assertion": false
+  },
+  "jsRules": {
+    "object-literal-sort-keys": false,
+    "no-console": false
+  },
+  "linterOptions": {
+    "exclude": ["node_modules/**/*", "lib/**/*.json"]
+  }
+}
