@@ -21,7 +21,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   private options: NobleBindingsOptions;
   private _addresses: { [peripheralUuid: string]: string };
   private _addresseTypes: { [uuid: string]: string };
-  private _connectable: { [uuid: string]: boolean };
   private _state: string | null;
   private _pendingConnectionUuid: string | null;
   private _connectionQueue: string[];
@@ -50,7 +49,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
     this._addresses = {};
     this._addresseTypes = {};
-    this._connectable = {};
 
     this._pendingConnectionUuid = null;
     this._connectionQueue = [];
@@ -340,7 +338,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       const uuid = this.addressToUuid(address);
       this._addresses[uuid] = address;
       this._addresseTypes[uuid] = addressType;
-      this._connectable[uuid] = connectable;
 
       this.emit('discover', uuid, address, addressType, connectable, advertisement, rssi);
     }
