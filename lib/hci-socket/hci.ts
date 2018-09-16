@@ -629,7 +629,7 @@ export class Hci extends events.EventEmitter {
           const pkts = data.readUInt16LE(6 + h * 4);
           debug(`\thandle = ${handle}`);
           debug(`\t\tcompleted = ${pkts}`);
-          if (this._handleAclsInProgress[handle] === undefined) {
+          if (!this._handleAclsInProgress[handle]) {
             debug('\t\talready closed');
             continue;
           }
