@@ -82,6 +82,12 @@ interface GattCommand {
   writeCallback?: (() => void) | null;
 }
 
+export interface SimpleGattCache {
+  services: { [serviceUuid: string]: GattService };
+  characteristics: { [serviceUuid: string]: { [characteristicUuid: string]: GattCharacteristic } };
+  descriptors: { [serviceUuid: string]: { [characteristicUuid: string]: { [descriptorUuid: string]: GattDescriptor } } };
+}
+
 export class Gatt extends events.EventEmitter {
   private _address: string;
   private _aclStream: AclStream;
@@ -98,15 +104,15 @@ export class Gatt extends events.EventEmitter {
   private onAclStreamEncryptFailBinded: () => void;
   private onAclStreamEndBinded: () => void;
 
-  constructor(address: string, aclStream: AclStream, isMultiRole: boolean = false) {
+  constructor(address: string, aclStream: AclStream, gattCache: SimpleGattCache, isMultiRole: boolean = false) {
     super();
     this._address = address;
     this._aclStream = aclStream;
     this._isMultiRole = isMultiRole;
 
-    this._services = {};
-    this._characteristics = {};
-    this._descriptors = {};
+    this._services = gattCache.services;
+    this._characteristics = gattCache.characteristics;
+    this._descriptors = gattCache.descriptors;
 
     this._currentCommand = null;
     this._commandQueue = [];

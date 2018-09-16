@@ -6,7 +6,7 @@ import { GattCharacteristic } from '../shared';
 import { Advertisement } from '../peripheral';
 import { AclStream } from './acl-stream';
 import { Gap } from './gap';
-import { Gatt } from './gatt';
+import { Gatt, SimpleGattCache } from './gatt';
 import { Hci, STATUS_MAPPER } from './hci';
 import { Signaling } from './signaling';
 
@@ -27,6 +27,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   private _uuidsToHandles: { [uuids: string]: number };
   private _handlesToUuids: { [handle: number]: string };
   private _gatts: { [uuid: string]: Gatt; [handle: number]: Gatt };
+  private gattCache: { [uuid: string]: SimpleGattCache };
   private _aclStreams: { [handle: number]: AclStream };
   private _signalings: { [uuid: string]: Signaling; [handle: number]: Signaling };
   private _hci: Hci;
@@ -44,7 +45,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       gattMultiRole: false,
     };
     this.options = { ...defaults, ...options };
-
+    this.gattCache = {};
     this._state = null;
 
     this._addresses = {};
@@ -360,8 +361,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     if (status === 0) {
       uuid = this.addressToUuid(address);
 
+      if (!this.gattCache.hasOwnProperty(uuid)) {
+        this.gattCache[uuid] = { services: {}, characteristics: {}, descriptors: {} };
+      }
       const aclStream = new AclStream(this._hci, handle, this._hci.addressType, this._hci.address, addressType, address);
-      const gatt = new Gatt(address, aclStream, this.options.gattMultiRole);
+      const gatt = new Gatt(address, aclStream, this.gattCache[uuid], this.options.gattMultiRole);
       const signaling = new Signaling(handle, aclStream, this.options.useHciUserChannel);
 
       this._gatts[uuid] = this._gatts[handle] = gatt;
