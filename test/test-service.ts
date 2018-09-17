@@ -74,7 +74,7 @@ describe('service', () => {
 
     it('should return a promise', done => {
       const mockIncludedServiceUuids: string[] = [];
-      (service.discoverIncludedServices([]) as Promise<string[]>).then(includedServiceUuids => {
+      service.discoverIncludedServices().then(includedServiceUuids => {
         includedServiceUuids.should.equal(mockIncludedServiceUuids);
         done();
       });
