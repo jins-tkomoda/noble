@@ -67,10 +67,11 @@
   "scripts": {
     "format:check": "prettier --list-different 'examples/**/*'  'lib/**/*' 'test/**/*' './*.{json,ts}'",
     "format:write": "prettier --write 'examples/**/*'  'lib/**/*' 'test/**/*' './*.{json,ts}'",
+    "lint": "tslint --project . && eslint examples/",
     "precommit": "npm run format:write",
-    "build": "tsc --project .",
-    "pretest": "eslint examples/",
-    "prepare": "npm run build",
+    "build": "npm run lint && tsc --project .",
+    "pretest": "npm run lint",
+    "prepare": "tsc --project .",
     "test": "mocha -r ts-node/register -R spec test/*.ts"
   },
   "browser": {
