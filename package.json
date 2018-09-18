@@ -36,8 +36,7 @@
   "dependencies": {
     "bluetooth-hci-socket": "git://github.com/jrobeson/node-bluetooth-hci-socket.git#refactor",
     "debug": "^3.2.5",
-    "isomorphic-ws": "^4.0.1",
-    "ts-node": "^7.0.1"
+    "isomorphic-ws": "^4.0.1"
   },
   "optionalDependencies": {
     "bplist-parser": "0.1.1",
@@ -46,17 +45,18 @@
   "devDependencies": {
     "@types/debug": "0.0.30",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.9.4",
+    "@types/node": "^10.10.1",
     "@types/sinon": "^5.0.2",
     "@types/web-bluetooth": "0.0.4",
     "@types/ws": "^6.0.1",
     "async": "^2.6.1",
-    "eslint": "^5.5.0",
+    "eslint": "^5.6.0",
     "husky": "^0.14.3",
     "mocha": "^5.2.0",
     "prettier": "^1.14.2",
     "should": "^13.2.3",
-    "sinon": "^6.3.1",
+    "sinon": "^6.3.3",
+    "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
     "tslint-config-standard": "^8.0.1",
