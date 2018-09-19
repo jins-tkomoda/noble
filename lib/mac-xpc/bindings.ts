@@ -1,4 +1,5 @@
 import * as events from 'events';
+import * as os from 'os';
 
 import * as debugModule from 'debug';
 import * as XpcConnection from 'xpc-connection';
@@ -8,8 +9,21 @@ import { NobleBindingsInterface } from '../bindings';
 import { Advertisement, AdvertismentServiceData } from '../peripheral';
 import { localAddress } from './local-address';
 import { uuidToAddress } from './uuid-to-address';
+import { xpcCommandToNumber } from './xpc-command-to-number';
 
-const debug = debugModule('yosemite-bindings');
+const debug = debugModule('mac-xpc-bindings');
+
+let cmdToNumber: { [command: string]: string };
+const osRelease = parseFloat(os.release());
+if (osRelease < 14) {
+  throw new Error('Mac OS versions earlier than Yosemite are no longer supported.');
+} else if (osRelease < 15) {
+  cmdToNumber = xpcCommandToNumber.yosemite;
+} else if (osRelease < 18) {
+  cmdToNumber = xpcCommandToNumber.highSierra;
+} else {
+  cmdToNumber = xpcCommandToNumber.mojave;
+}
 
 interface MacCharacteristic {
   uuid: string;
@@ -26,8 +40,9 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   constructor() {
     super();
     this._peripherals = {};
+    const xpcServiceName = osRelease < 15 ? 'com.apple.blued' : 'com.apple.bluetoothd';
+    this._xpcConnection = new XpcConnection(xpcServiceName);
 
-    this._xpcConnection = new XpcConnection('com.apple.blued');
     this._xpcConnection.on('error', message => {
       this.emit('xpcError', message);
     });
@@ -37,7 +52,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   /**
-   * Init xpc connection to blued
+   * Init xpc connection to bluetoothd
    */
   public init() {
     this._xpcConnection.setup();
@@ -48,7 +63,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
         this.emit('addressChange', address);
       }
 
-      this.sendCBMsg(1, {
+      this.sendCBMsg(cmdToNumber.ADDRESS_CHANGE, {
         kCBMsgArgName: `node-${new Date().getTime()}`,
         kCBMsgArgOptions: {
           kCBInitOptionShowPowerAlert: 0,
@@ -64,17 +79,17 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex')),
     };
 
-    this.sendCBMsg(29, args);
+    this.sendCBMsg(cmdToNumber.START_SCANNING, args);
     this.emit('scanStart');
   }
 
   public stopScanning() {
-    this.sendCBMsg(30, null);
+    this.sendCBMsg(cmdToNumber.STOP_SCANNING, null);
     this.emit('scanStop');
   }
 
   public connect(deviceUuid: string) {
-    this.sendCBMsg(31, {
+    this.sendCBMsg(cmdToNumber.CONNECT, {
       kCBMsgArgOptions: {
         kCBConnectOptionNotifyOnDisconnection: 1,
       },
@@ -83,13 +98,13 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   public disconnect(deviceUuid: string) {
-    this.sendCBMsg(32, {
+    this.sendCBMsg(cmdToNumber.DISCONNECT, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
     });
   }
 
   public updateRssi(deviceUuid: string) {
-    this.sendCBMsg(44, {
+    this.sendCBMsg(cmdToNumber.UPDATE_RSSI, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
     });
   }
@@ -100,7 +115,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex')),
     };
 
-    this.sendCBMsg(45, args);
+    this.sendCBMsg(cmdToNumber.DISCOVER_SERVICES, args);
   }
 
   public discoverIncludedServices(deviceUuid: string, serviceUuid: string, serviceUuids: string[] = []) {
@@ -111,7 +126,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       kCBMsgArgUUIDs: serviceUuids.map(uuid => Buffer.from(uuid, 'hex')),
     };
 
-    this.sendCBMsg(61, args);
+    this.sendCBMsg(cmdToNumber.DISCOVER_INCLUDED_SERVICES, args);
   }
 
   public discoverCharacteristics(deviceUuid: string, serviceUuid: string, characteristicUuids: string[] = []) {
@@ -122,11 +137,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       kCBMsgArgUUIDs: characteristicUuids.map(uuid => Buffer.from(uuid, 'hex')),
     };
 
-    this.sendCBMsg(62, args);
+    this.sendCBMsg(cmdToNumber.DISCOVER_CHARACTERISTICS, args);
   }
 
   public read(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
-    this.sendCBMsg(65, {
+    this.sendCBMsg(cmdToNumber.READ, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
       kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid]
@@ -135,7 +150,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   public write(deviceUuid: string, serviceUuid: string, characteristicUuid: string, data: Buffer, withoutResponse: boolean = false) {
-    this.sendCBMsg(66, {
+    this.sendCBMsg(cmdToNumber.WRITE, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
       kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid]
@@ -153,17 +168,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
    * @discussion The ids were incemented but there seems to be no CoreBluetooth function to call/verify this.
    */
   public broadcast(deviceUuid: string, serviceUuid: string, characteristicUuid: string, broadcast: boolean) {
-    this.sendCBMsg(67, {
-      kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
-      kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
-      kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid]
-        .valueHandle,
-      kCBMsgArgState: broadcast ? 1 : 0,
-    });
+    throw new Error('This OS does not support broadcast.');
   }
 
   public notify(deviceUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean) {
-    this.sendCBMsg(68, {
+    this.sendCBMsg(cmdToNumber.NOTIFY, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
       kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid]
@@ -173,7 +182,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   public discoverDescriptors(deviceUuid: string, serviceUuid: string, characteristicUuid: string) {
-    this.sendCBMsg(70, {
+    this.sendCBMsg(cmdToNumber.DISCOVER_DESCRIPTORS, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgCharacteristicHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].handle,
       kCBMsgArgCharacteristicValueHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid]
@@ -182,7 +191,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   public readValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string) {
-    this.sendCBMsg(77, {
+    this.sendCBMsg(cmdToNumber.READ_VALUE, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgDescriptorHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].descriptors[
         descriptorUuid
@@ -191,7 +200,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   public writeValue(deviceUuid: string, serviceUuid: string, characteristicUuid: string, descriptorUuid: string, data: Buffer) {
-    this.sendCBMsg(78, {
+    this.sendCBMsg(cmdToNumber.WRITE_VALUE, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgDescriptorHandle: this._peripherals[deviceUuid].services[serviceUuid].characteristics[characteristicUuid].descriptors[
         descriptorUuid
@@ -201,7 +210,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   }
 
   public readHandle(deviceUuid: string, handle: number) {
-    this.sendCBMsg(77, {
+    this.sendCBMsg(cmdToNumber.READ_HANDLE, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgDescriptorHandle: handle,
     });
@@ -209,14 +218,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
   public writeHandle(deviceUuid: string, handle: number, data: Buffer, withoutResponse: boolean = false) {
     // TODO: use without response
-    this.sendCBMsg(78, {
+    this.sendCBMsg(cmdToNumber.WRITE_HANDLE, {
       kCBMsgArgDeviceUUID: this._peripherals[deviceUuid].uuid,
       kCBMsgArgDescriptorHandle: handle,
       kCBMsgArgData: data,
     });
   }
 
-  private sendCBMsg(id: number, args: any) {
+  private sendCBMsg(id: string, args: any) {
     debug(`sendCBMsg: ${id}, ${JSON.stringify(args, undefined, 2)}`);
     this.sendXpcMessage({ kCBMsgId: id, kCBMsgArgs: args });
   }
@@ -232,14 +241,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
 
       const kCBMsgId = event.kCBMsgId;
       const kCBMsgArgs = event.kCBMsgArgs;
-      this.emit(`kCBMsgId${kCBMsgId}`, kCBMsgArgs);
+      this.emit(kCBMsgId, kCBMsgArgs);
     });
 
     this.on('xpcError', message => {
       console.error(`xpcError: ${message}`); // eslint-disable-line no-console
     });
 
-    this.on('kCBMsgId6', args => {
+    this.on(cmdToNumber.STATE_CHANGE_RESPONSE, args => {
       const state = ['unknown', 'resetting', 'unsupported', 'unauthorized', 'poweredOff', 'poweredOn'][args.kCBMsgArgState];
       debug(`state change ${state}`);
       this.emit('stateChange', state);
@@ -260,10 +269,8 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *     kCBMsgArgName = SensorTag;
      *     kCBMsgArgRssi = "-68";
      * }
-     *
-     * @discussion tested
      */
-    this.on('kCBMsgId37', args => {
+    this.on(cmdToNumber.START_SCANNING_RESPONSE, args => {
       if (
         Object.keys(args.kCBMsgArgAdvertisementData).length === 0 ||
         (args.kCBMsgArgAdvertisementData.kCBAdvDataIsConnectable !== undefined && Object.keys(args.kCBMsgArgAdvertisementData).length === 1)
@@ -321,7 +328,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       })(deviceUuid, advertisement, rssi);
     });
 
-    this.on('kCBMsgId38', args => {
+    this.on(cmdToNumber.CONNECT_RESPONSE, args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
 
       debug(`peripheral ${deviceUuid} connected`);
@@ -334,7 +341,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId40', args => {
+    this.on(cmdToNumber.DISCONNECT_RESPONSE, args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
 
       debug(`peripheral ${deviceUuid} disconnected`);
@@ -347,7 +354,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId55', args => {
+    this.on(cmdToNumber.UPDATE_RSSI_RESPONSE, args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const rssi = args.kCBMsgArgData;
 
@@ -363,7 +370,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId56', args => {
+    this.on(cmdToNumber.DISCOVER_SERVICES_RESPONSE, args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const serviceUuids: string[] = [];
 
@@ -377,7 +384,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
             endHandle: kCBMsgArgService.kCBMsgArgServiceEndHandle,
           };
 
-          if (typeof this._peripherals[deviceUuid].services[service.uuid] === 'undefined') {
+          if (!this._peripherals[deviceUuid].services[service.uuid]) {
             this._peripherals[deviceUuid].services[service.uuid] = this._peripherals[deviceUuid].services[service.startHandle] = service;
           }
 
@@ -394,7 +401,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @dicussion tested
      */
-    this.on('kCBMsgId63', args => {
+    this.on(cmdToNumber.DISCOVER_INCLUDED_SERVICES_RESPONSE, args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const serviceStartHandle = args.kCBMsgArgServiceStartHandle;
       const serviceUuid = this._peripherals[deviceUuid].services[serviceStartHandle].uuid;
@@ -410,9 +417,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
           endHandle: kCBMsgArgService.kCBMsgArgServiceEndHandle,
         };
 
-        this._peripherals[deviceUuid].services[serviceStartHandle].includedServices[includedService.uuid] = this._peripherals[
-          deviceUuid
-        ].services[serviceStartHandle].includedServices[includedService.startHandle] = includedService;
+        if (!this._peripherals[deviceUuid].services[serviceStartHandle].includedServices[includedService.uuid]) {
+          this._peripherals[deviceUuid].services[serviceStartHandle].includedServices[includedService.uuid] = this._peripherals[
+            deviceUuid
+          ].services[serviceStartHandle].includedServices[includedService.startHandle] = includedService;
+        }
 
         includedServiceUuids.push(includedService.uuid);
       }
@@ -425,7 +434,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId64', args => {
+    this.on(cmdToNumber.DISCOVER_CHARACTERISTICS_RESPONSE, args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const serviceStartHandle = args.kCBMsgArgServiceStartHandle;
       const serviceUuid = this._peripherals[deviceUuid].services[serviceStartHandle].uuid;
@@ -464,7 +473,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId71', args => {
+    this.on(cmdToNumber.READ_RESPONSE, args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const characteristicHandle = args.kCBMsgArgCharacteristicHandle;
       const isNotification = !!args.kCBMsgArgIsNotification;
@@ -488,7 +497,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
         }
       } else {
         // eslint-disable-next-line no-console
-        console.warn(`noble (mac yosemite): received read event from unknown peripheral: ${deviceUuid} !`);
+        console.warn(`noble (mac-xpc): received read event from unknown peripheral: ${deviceUuid} !`);
       }
     });
 
@@ -497,7 +506,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId72', args => {
+    this.on(cmdToNumber.WRITE_RESPONSE, args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const characteristicHandle = args.kCBMsgArgCharacteristicHandle;
 
@@ -518,38 +527,11 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     });
 
     /**
-     * Response to broadcast
-     *
-     * @discussion The ids were incemented but there seems to be no CoreBluetooth function to call/verify this.
-     */
-    this.on('kCBMsgId73', args => {
-      const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
-      const characteristicHandle = args.kCBMsgArgCharacteristicHandle;
-      const state = !!args.kCBMsgArgState;
-
-      for (const i in this._peripherals[deviceUuid].services) {
-        if (
-          this._peripherals[deviceUuid].services[i].characteristics &&
-          this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle]
-        ) {
-          this.emit(
-            'broadcast',
-            deviceUuid,
-            this._peripherals[deviceUuid].services[i].uuid,
-            this._peripherals[deviceUuid].services[i].characteristics[characteristicHandle].uuid,
-            state
-          );
-          break;
-        }
-      }
-    });
-
-    /**
      * Response notification
      *
      * @discussion tested
      */
-    this.on('kCBMsgId74', args => {
+    this.on(cmdToNumber.NOTIFY_RESPONSE, args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const characteristicHandle = args.kCBMsgArgCharacteristicHandle;
       const state = !!args.kCBMsgArgState;
@@ -576,7 +558,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId76', args => {
+    this.on(cmdToNumber.DISCOVER_DESCRIPTORS_RESPONSE, args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const characteristicHandle = args.kCBMsgArgCharacteristicHandle;
       const descriptors: string[] = []; // args.kCBMsgArgDescriptors;
@@ -618,7 +600,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId79', args => {
+    this.on(cmdToNumber.READ_VALUE_RESPONSE, args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const descriptorHandle = args.kCBMsgArgDescriptorHandle;
       const data = args.kCBMsgArgData;
@@ -650,7 +632,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
      *
      * @discussion tested
      */
-    this.on('kCBMsgId80', args => {
+    this.on(cmdToNumber.WRITE_VALUE_RESPONSE, args => {
       const deviceUuid = args.kCBMsgArgDeviceUUID.toString('hex');
       const descriptorHandle = args.kCBMsgArgDescriptorHandle;
 
