@@ -152,15 +152,18 @@ export class Peripheral extends events.EventEmitter {
     return promise;
   }
 
-  public discoverSomeServicesAndCharacteristics(serviceUuids: string[], characteristicUuids: string[]): Promise<ServicesAndCharacteristics>;
   public discoverSomeServicesAndCharacteristics(
-    serviceUuids: string[],
-    characteristicUuids: string[],
+    serviceUuids?: string[],
+    characteristicUuids?: string[]
+  ): Promise<ServicesAndCharacteristics>;
+  public discoverSomeServicesAndCharacteristics(
+    serviceUuids?: string[],
+    characteristicUuids?: string[],
     callback?: (error: Error | null, services?: Service[], characteristics?: Characteristic[]) => void
   ): void;
   public discoverSomeServicesAndCharacteristics(
-    serviceUuids: string[],
-    characteristicUuids: string[],
+    serviceUuids: string[] = [],
+    characteristicUuids: string[] = [],
     callback?: (error: Error | null, services?: Service[], characteristics?: Characteristic[]) => void
   ): void | Promise<ServicesAndCharacteristics> {
     const promise = new Promise<ServicesAndCharacteristics>((resolve, reject) => {
