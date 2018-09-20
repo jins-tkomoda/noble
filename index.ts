@@ -3,4 +3,8 @@ import bindings from './lib/resolve-bindings';
 
 const noble = new Noble(bindings());
 
-export = noble;
+export * from './lib/characteristic';
+export * from './lib/descriptor';
+export * from './lib/peripheral';
+export * from './lib/service';
+export default noble;

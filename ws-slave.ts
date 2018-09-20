@@ -1,7 +1,7 @@
 import * as debugModule from 'debug';
 import * as WebSocket from 'ws';
 
-import * as noble from './index';
+import noble from './index';
 import { Characteristic } from './lib/characteristic';
 import { Descriptor } from './lib/descriptor';
 import { Peripheral } from './lib/peripheral';

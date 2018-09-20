@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import * as noble from './index';
+import { default as noble } from './index';
 import { Peripheral } from './lib/peripheral';
 import { Characteristic } from './lib/characteristic';
 console.log('noble');
