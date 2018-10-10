@@ -40,6 +40,7 @@
   },
   "optionalDependencies": {
     "bplist-parser": "0.1.1",
+    "noble-winrt": "Timeular/noble-winrt",
     "xpc-connection": "~0.1.4"
   },
   "devDependencies": {
