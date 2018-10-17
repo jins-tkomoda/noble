@@ -34,11 +34,11 @@
     "win32"
   ],
   "dependencies": {
-    "bluetooth-hci-socket": "git://github.com/jrobeson/node-bluetooth-hci-socket.git#refactor",
     "debug": "^3.2.6",
     "isomorphic-ws": "^4.0.1"
   },
   "optionalDependencies": {
+    "bluetooth-hci-socket": "git://github.com/jrobeson/node-bluetooth-hci-socket.git#refactor",
     "bplist-parser": "0.1.1",
     "noble-mac": "Timeular/noble-mac",
     "noble-winrt": "Timeular/noble-winrt",
