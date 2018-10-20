@@ -2,7 +2,10 @@ import * as events from 'events';
 
 import * as debugModule from 'debug';
 
+import { resolveBindings } from './resolve-bindings';
+import { resolveBindings as resolveWebBindings } from './resolve-bindings-web';
 import { NobleBindingsInterface } from './bindings';
+
 import { Characteristic } from './characteristic';
 import { Descriptor } from './descriptor';
 import { Peripheral, Advertisement } from './peripheral';
@@ -24,13 +27,21 @@ export class Noble extends events.EventEmitter {
   private _discoveredPeripheralUUids: string[];
   private _allowDuplicates: boolean;
 
-  constructor(bindings: NobleBindingsInterface) {
+  constructor(bindings: NobleBindingsInterface | null = null) {
     super();
+
+    // tslint:disable-next-line prefer-conditional-expression
+    if (bindings) {
+      this._bindings = bindings;
+    } else {
+      this._bindings = process.title !== 'browser' ? resolveBindings() : resolveWebBindings();
+    }
+
+
     this.initialized = false;
 
     this.address = 'unknown';
     this._state = 'unknown';
-    this._bindings = bindings;
     this._peripherals = {};
     this._services = {};
     this._characteristics = {};

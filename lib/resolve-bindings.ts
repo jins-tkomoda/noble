@@ -1,6 +1,6 @@
 import * as os from 'os';
 
-export default function resolveBindings() {
+export function resolveBindings() {
   const platform = os.platform();
 
   if (process.env.NOBLE_WEBSOCKET) {

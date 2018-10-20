@@ -1,7 +1,6 @@
 import { Noble } from './lib/noble';
-import bindings from './lib/resolve-bindings';
 
-const noble = new Noble(bindings());
+const noble = new Noble();
 
 export * from './lib/characteristic';
 export * from './lib/descriptor';
