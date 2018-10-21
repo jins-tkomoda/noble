@@ -1,13 +1,16 @@
 import * as debugModule from 'debug';
 import * as WebSocket from 'ws';
 
-import noble from './index';
+import { Noble } from './index';
+
 import { Characteristic } from './lib/characteristic';
 import { Descriptor } from './lib/descriptor';
 import { Peripheral } from './lib/peripheral';
 import { Service } from './lib/service';
 
 const debug = debugModule('slave');
+
+const noble = new Noble();
 
 const serverMode = !process.argv[2];
 const port = 0xb1e;

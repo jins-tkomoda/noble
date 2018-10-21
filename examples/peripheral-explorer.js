@@ -1,8 +1,10 @@
 /* eslint-disable no-console */
 const async = require('async');
-const noble = require('../dist/index');
+const { Noble } = require('../dist/index');
 
 const peripheralIdOrAddress = process.argv[2].toLowerCase();
+
+const noble = new Noble();
 
 noble.on('stateChange', state => {
   if (state === 'poweredOn') {

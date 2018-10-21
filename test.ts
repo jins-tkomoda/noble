@@ -1,8 +1,10 @@
 /* eslint-disable no-console */
-import { default as noble } from './index';
+import { Noble } from './index';
 import { Peripheral } from './lib/peripheral';
 import { Characteristic } from './lib/characteristic';
 console.log('noble');
+
+const noble = new Noble();
 
 noble.on('stateChange', state => {
   console.log(`on -> stateChange: ${state}`);

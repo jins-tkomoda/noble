@@ -106,7 +106,8 @@ npm install noble
 ## Usage
 
 ```javascript
-const noble = require('noble');
+const { Noble } = require('noble');
+const noble = new Noble();
 ```
 
 ### Actions
@@ -494,7 +495,8 @@ sudo NOBLE_MULTI_ROLE=1 node <your file>.js
 By default, noble will select bindings to communicate with Bluetooth devices depending on your platform. If you prefer to specify what bindings noble should use:
 
 ```javascript
-const noble = require('noble/with-bindings')(require('./my-custom-bindings'));
+const { Noble } = require('noble');
+const noble = new Noble(require('./my-custom-bindings'));
 ```
 
 ## Backers

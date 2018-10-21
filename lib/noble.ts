@@ -37,7 +37,6 @@ export class Noble extends events.EventEmitter {
       this._bindings = process.title !== 'browser' ? resolveBindings() : resolveWebBindings();
     }
 
-
     this.initialized = false;
 
     this.address = 'unknown';

@@ -1,11 +1,13 @@
 /* eslint-disable no-console */
-const noble = require('../../dist/index');
+const { Noble } = require('../../dist/index');
 const pizza = require('./pizza');
 
 const pizzaServiceUuid = '13333333333333333333333333333337';
 const pizzaCrustCharacteristicUuid = '13333333333333333333333333330001';
 const pizzaToppingsCharacteristicUuid = '13333333333333333333333333330002';
 const pizzaBakeCharacteristicUuid = '13333333333333333333333333330003';
+
+const noble = new Noble();
 
 noble.on('stateChange', state => {
   if (state === 'poweredOn') {

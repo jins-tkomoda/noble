@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
-const noble = require('../dist/index');
+const { Noble } = require('../dist/index');
+
+const noble = new Noble();
 
 noble.on('stateChange', state => {
   if (state === 'poweredOn') {
