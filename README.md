@@ -106,7 +106,7 @@ npm install noble
 ## Usage
 
 ```javascript
-var noble = require('noble');
+const noble = require('noble');
 ```
 
 ### Actions
@@ -120,8 +120,8 @@ noble.startScanning(); // any service UUID, no duplicates
 noble.startScanning([], true); // any service UUID, allow duplicates
 
 
-var serviceUUIDs = ["<service UUID 1>", ...]; // default: [] => all
-var allowDuplicates = <false|true>; // default: false
+const serviceUUIDs = ["<service UUID 1>", ...]; // default: [] => all
+const allowDuplicates = <false|true>; // default: false
 
 noble.startScanning(serviceUUIDs, allowDuplicates[, callback(error)]); // particular UUID's
 ```
@@ -159,7 +159,7 @@ peripheral.updateRssi([callback(error, rssi)]);
 ```javascript
 peripheral.discoverServices(); // any service UUID
 
-var serviceUUIDs = ["<service UUID 1>", ...];
+const serviceUUIDs = ["<service UUID 1>", ...];
 peripheral.discoverServices(serviceUUIDs[, callback(error, services)]); // particular UUID's
 ```
 
@@ -172,8 +172,8 @@ peripheral.discoverAllServicesAndCharacteristics([callback(error, services, char
 ##### Discover some services and characteristics
 
 ```javascript
-var serviceUUIDs = ["<service UUID 1>", ...];
-var characteristicUUIDs = ["<characteristic UUID 1>", ...];
+const serviceUUIDs = ["<service UUID 1>", ...];
+const characteristicUUIDs = ["<characteristic UUID 1>", ...];
 peripheral.discoverSomeServicesAndCharacteristics(serviceUUIDs, characteristicUUIDs, [callback(error, services, characteristics));
 ```
 #### Service
@@ -183,7 +183,7 @@ peripheral.discoverSomeServicesAndCharacteristics(serviceUUIDs, characteristicUU
 ```javascript
 service.discoverIncludedServices(); // any service UUID
 
-var serviceUUIDs = ["<service UUID 1>", ...];
+const serviceUUIDs = ["<service UUID 1>", ...];
 service.discoverIncludedServices(serviceUUIDs[, callback(error, includedServiceUuids)]); // particular UUID's
 ```
 
@@ -192,7 +192,7 @@ service.discoverIncludedServices(serviceUUIDs[, callback(error, includedServiceU
 ```javascript
 service.discoverCharacteristics() // any characteristic UUID
 
-var characteristicUUIDs = ["<characteristic UUID 1>", ...];
+const characteristicUUIDs = ["<characteristic UUID 1>", ...];
 service.discoverCharacteristics(characteristicUUIDs[, callback(error, characteristics)]); // particular UUID's
 ```
 
@@ -494,7 +494,7 @@ sudo NOBLE_MULTI_ROLE=1 node <your file>.js
 By default, noble will select bindings to communicate with Bluetooth devices depending on your platform. If you prefer to specify what bindings noble should use:
 
 ```javascript
-var noble = require('noble/with-bindings')(require('./my-custom-bindings'));
+const noble = require('noble/with-bindings')(require('./my-custom-bindings'));
 ```
 
 ## Backers
