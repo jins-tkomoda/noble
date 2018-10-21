@@ -31,30 +31,30 @@ const ATT_OP_HANDLE_CNF = 0x1e;
 const ATT_OP_WRITE_CMD = 0x52;
 
 /*
-var ATT_ECODE_SUCCESS               = 0x00;
-var ATT_ECODE_INVALID_HANDLE        = 0x01;
-var ATT_ECODE_READ_NOT_PERM         = 0x02;
-var ATT_ECODE_WRITE_NOT_PERM        = 0x03;
-var ATT_ECODE_INVALID_PDU           = 0x04;
+const ATT_ECODE_SUCCESS               = 0x00;
+const ATT_ECODE_INVALID_HANDLE        = 0x01;
+const ATT_ECODE_READ_NOT_PERM         = 0x02;
+const ATT_ECODE_WRITE_NOT_PERM        = 0x03;
+const ATT_ECODE_INVALID_PDU           = 0x04;
 */
 const ATT_ECODE_AUTHENTICATION = 0x05;
 const ATT_ECODE_REQ_NOT_SUPP = 0x06;
 /*
-var ATT_ECODE_INVALID_OFFSET        = 0x07;
+const ATT_ECODE_INVALID_OFFSET        = 0x07;
 */
 const ATT_ECODE_AUTHORIZATION = 0x08;
 /*
-var ATT_ECODE_PREP_QUEUE_FULL       = 0x09;
-var ATT_ECODE_ATTR_NOT_FOUND        = 0x0a;
-var ATT_ECODE_ATTR_NOT_LONG         = 0x0b;
-var ATT_ECODE_INSUFF_ENCR_KEY_SIZE  = 0x0c;
-var ATT_ECODE_INVAL_ATTR_VALUE_LEN  = 0x0d;
-var ATT_ECODE_UNLIKELY              = 0x0e;
+const ATT_ECODE_PREP_QUEUE_FULL       = 0x09;
+const ATT_ECODE_ATTR_NOT_FOUND        = 0x0a;
+const ATT_ECODE_ATTR_NOT_LONG         = 0x0b;
+const ATT_ECODE_INSUFF_ENCR_KEY_SIZE  = 0x0c;
+const ATT_ECODE_INVAL_ATTR_VALUE_LEN  = 0x0d;
+const ATT_ECODE_UNLIKELY              = 0x0e;
 */
 const ATT_ECODE_INSUFF_ENC = 0x0f;
 /*
-var ATT_ECODE_UNSUPP_GRP_TYPE       = 0x10;
-var ATT_ECODE_INSUFF_RESOURCES      = 0x11;
+const ATT_ECODE_UNSUPP_GRP_TYPE       = 0x10;
+const ATT_ECODE_INSUFF_RESOURCES      = 0x11;
 */
 const GATT_PRIM_SVC_UUID = 0x2800;
 const GATT_INCLUDE_UUID = 0x2802;
