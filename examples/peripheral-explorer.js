@@ -125,9 +125,9 @@ function explore(peripheral) {
                     if (characteristic.properties.includes('read')) {
                       characteristic.read((error, data) => {
                         if (data) {
-                          const string = data.toString('ascii');
+                          const stringData = data.toString('ascii');
 
-                          characteristicInfo += `\n    value       ${data.toString('hex')} | '${string}'`;
+                          characteristicInfo += `\n    value       ${data.toString('hex')} | '${stringData}'`;
                         }
                         callback();
                       });
