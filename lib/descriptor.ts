@@ -68,7 +68,7 @@ export class Descriptor extends events.EventEmitter {
     });
 
     if (typeof callback === 'function') {
-      promise.then(callback.bind(null, null), callback);
+      promise.then(callback.bind(null, undefined), callback);
     }
 
     return promise;

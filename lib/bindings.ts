@@ -1,5 +1,5 @@
 import { Characteristic } from './characteristic';
-import { Peripheral } from './peripheral';
+import { Advertisement, Peripheral } from './peripheral';
 
 export interface NobleBindingsConstructor {
   new (options?: object): NobleBindingsInterface;
@@ -25,9 +25,12 @@ export interface NobleBindingsInterface {
   notify(peripheralUuid: string, serviceUuid: string, characteristicUuid: string, notify: boolean): void;
 
   on(event: 'stateChange', listener: (state: string) => void): this;
-  on(event: 'scanStart', listener: () => void): this;
+  on(event: 'scanStart', listener: (filterDuplicates: boolean) => void): this;
   on(event: 'scanStop', listener: () => void): this;
-  on(event: 'discover', listener: (peripheral: Peripheral) => void): this;
+  on(
+    event: 'discover',
+    listener: (uuid: string, address: string, addressType: string, connectable: boolean, advertisement: Advertisement, rssi: number) => void
+  ): this;
   on(event: 'addressChange', listener: (address: string) => void): this;
   on(event: 'connect', listener: (peripheralUuid: string, error?: Error) => void): this;
   on(event: 'disconnect', listener: (peripheralUuid: string) => void): this;
