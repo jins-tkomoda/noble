@@ -42,12 +42,12 @@ class Pizza extends events.EventEmitter {
         temperature < 350
           ? PizzaBakeResult.HALF_BAKED
           : temperature < 450
-            ? PizzaBakeResult.BAKED
-            : temperature < 500
-              ? PizzaBakeResult.CRISPY
-              : temperature < 600
-                ? PizzaBakeResult.BURNT
-                : PizzaBakeResult.ON_FIRE;
+          ? PizzaBakeResult.BAKED
+          : temperature < 500
+          ? PizzaBakeResult.CRISPY
+          : temperature < 600
+          ? PizzaBakeResult.BURNT
+          : PizzaBakeResult.ON_FIRE;
       this.emit('ready', result);
     }, time);
   }

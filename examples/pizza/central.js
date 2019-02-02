@@ -117,14 +117,14 @@ function bakePizza() {
                 result === pizza.PizzaBakeResult.HALF_BAKED
                   ? 'half baked.'
                   : result === pizza.PizzaBakeResult.BAKED
-                    ? 'baked.'
-                    : result === pizza.PizzaBakeResult.CRISPY
-                      ? 'crispy.'
-                      : result === pizza.PizzaBakeResult.BURNT
-                        ? 'burnt.'
-                        : result === pizza.PizzaBakeResult.ON_FIRE
-                          ? 'on fire!'
-                          : 'unknown?'
+                  ? 'baked.'
+                  : result === pizza.PizzaBakeResult.CRISPY
+                  ? 'crispy.'
+                  : result === pizza.PizzaBakeResult.BURNT
+                  ? 'burnt.'
+                  : result === pizza.PizzaBakeResult.ON_FIRE
+                  ? 'on fire!'
+                  : 'unknown?'
               );
             } else {
               console.log('result length incorrect');
