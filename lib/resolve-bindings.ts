@@ -8,7 +8,8 @@ export function resolveBindings() {
   } else if (process.env.NOBLE_DISTRIBUTED) {
     return new (require('./distributed/bindings')).NobleBindings();
   } else if (platform === 'darwin') {
-    return new (require('./mac-xpc/bindings')).NobleBindings();
+    // tslint:disable-next-line no-submodule-imports
+    return require('noble-mac/lib/bindings');
   } else if (platform === 'linux' || platform === 'freebsd' || platform === 'win32') {
     const options = {
       deviceId: process.env.NOBLE_HCI_DEVICE_ID ? parseInt(process.env.NOBLE_HCI_DEVICE_ID, 10) : 0,
