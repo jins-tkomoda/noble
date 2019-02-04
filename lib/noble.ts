@@ -129,7 +129,7 @@ export class Noble extends events.EventEmitter {
       if (!this.initialized) {
         this._bindings.init();
         this.initialized = true;
-        this.once('stateChange', scan.bind(this));
+        this.once('stateChange', scan);
       } else {
         scan.call(this, this._state);
       }
