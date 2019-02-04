@@ -39,7 +39,7 @@
   },
   "optionalDependencies": {
     "bluetooth-hci-socket": "git://github.com/jrobeson/node-bluetooth-hci-socket.git#refactor",
-    "noble-mac": "Timeular/noble-mac",
+    "noble-mac": "jrobeson/noble-mac#restrict-install-to-darwin-oses",
     "noble-winrt": "Timeular/noble-winrt"
   },
   "devDependencies": {
@@ -59,7 +59,7 @@
     "sinon": "^6.3.5",
     "ts-node": "^8.0.2",
     "tslint": "^5.12.1",
-    "tslint-config-prettier": "^1.17.0",
+    "tslint-config-prettier": "^1.18.0",
     "tslint-config-standard": "^8.0.1",
     "typescript": "^3.3.1",
     "ws": "^6.1.3"
