@@ -39,8 +39,8 @@
   },
   "optionalDependencies": {
     "bluetooth-hci-socket": "git://github.com/jrobeson/node-bluetooth-hci-socket.git#refactor",
-    "noble-mac": "jrobeson/noble-mac#restrict-install-to-darwin-oses",
-    "noble-winrt": "Timeular/noble-winrt"
+    "noble-mac": "jrobeson/noble-mac#fork",
+    "noble-winrt": "jrobeson/noble-winrt#fork"
   },
   "devDependencies": {
     "@types/debug": "0.0.31",
