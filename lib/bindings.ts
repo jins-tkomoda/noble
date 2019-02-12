@@ -1,9 +1,8 @@
 import { Characteristic } from './characteristic';
 import { Advertisement, Peripheral } from './peripheral';
 
-export interface NobleBindingsConstructor {
-  new (options?: object): NobleBindingsInterface;
-}
+export type NobleBindingsConstructor = new (options?: object) => NobleBindingsInterface;
+
 export interface NobleBindingsInterface {
   init(): void;
   startScanning(serviceUuids: string[], allowDuplicates: boolean): void;
