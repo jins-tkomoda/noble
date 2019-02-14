@@ -1,10 +1,11 @@
 import * as events from 'events';
 
 import * as debugModule from 'debug';
-const debug = debugModule('att');
 
 import { GattCharacteristic, propertyBitstoPropertyNames } from '../shared';
 import { AclStream } from './acl-stream';
+
+const debug = debugModule('att');
 
 const ATT_OP_ERROR = 0x01;
 const ATT_OP_MTU_REQ = 0x02;
