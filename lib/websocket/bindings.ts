@@ -12,7 +12,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   private _startScanCommand: any;
   private _peripherals: { [uuid: string]: any };
 
-  constructor() {
+  public constructor() {
     super();
     const port = 0xb1e;
     this._ws = new WebSocket(`ws://localhost:${port}`);

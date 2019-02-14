@@ -35,7 +35,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   private _scanServiceUuids: string[] | undefined;
   private onSigIntBinded!: () => void;
 
-  constructor(options: Partial<NobleBindingsOptions> = {}) {
+  public constructor(options: Partial<NobleBindingsOptions> = {}) {
     super();
 
     const defaults = {

@@ -13,7 +13,7 @@ export class Service extends events.EventEmitter {
   private _noble: Noble;
   private _peripheralId: string;
 
-  constructor(noble: Noble, peripheralId: string, uuid: string) {
+  public constructor(noble: Noble, peripheralId: string, uuid: string) {
     super();
     this._noble = noble;
     this._peripheralId = peripheralId;

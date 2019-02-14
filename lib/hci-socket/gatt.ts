@@ -104,7 +104,7 @@ export class Gatt extends events.EventEmitter {
   private onAclStreamEncryptFailBinded: () => void;
   private onAclStreamEndBinded: () => void;
 
-  constructor(address: string, aclStream: AclStream, gattCache: SimpleGattCache, isMultiRole: boolean = false) {
+  public constructor(address: string, aclStream: AclStream, gattCache: SimpleGattCache, isMultiRole: boolean = false) {
     super();
     this._address = address;
     this._aclStream = aclStream;

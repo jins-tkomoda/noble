@@ -19,7 +19,7 @@ export class Signaling extends events.EventEmitter {
   private onAclStreamDataBinded: (cid: number, data: Buffer) => void;
   private onAclStreamEndBinded: () => void;
 
-  constructor(handle: number, aclStream: AclStream, useHciUserChannel = false) {
+  public constructor(handle: number, aclStream: AclStream, useHciUserChannel = false) {
     super();
     this._handle = handle;
     this._aclStream = aclStream;

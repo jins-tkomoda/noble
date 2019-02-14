@@ -33,7 +33,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   private _startScanCommand: null;
   private _peripherals: any;
 
-  constructor(ble?: Bluetooth) {
+  public constructor(ble?: Bluetooth) {
     super();
     this._ble = ble || navigator.bluetooth;
     this._startScanCommand = null;

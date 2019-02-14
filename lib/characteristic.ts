@@ -14,7 +14,7 @@ export class Characteristic extends events.EventEmitter {
   private _peripheralId: string;
   private _serviceUuid: string;
 
-  constructor(noble: Noble, peripheralId: string, serviceUuid: string, uuid: string, properties: string[]) {
+  public constructor(noble: Noble, peripheralId: string, serviceUuid: string, uuid: string, properties: string[]) {
     super();
     this._noble = noble;
     this._peripheralId = peripheralId;

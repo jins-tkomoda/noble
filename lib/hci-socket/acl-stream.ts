@@ -11,7 +11,14 @@ export class AclStream extends events.EventEmitter {
   private onSmpFailBinded: () => void;
   private onSmpEndBinded: () => void;
 
-  constructor(hci: Hci, handle: number, localAddressType: string, localAddress: string, remoteAddressType: string, remoteAddress: string) {
+  public constructor(
+    hci: Hci,
+    handle: number,
+    localAddressType: string,
+    localAddress: string,
+    remoteAddressType: string,
+    remoteAddress: string
+  ) {
     super();
     this._hci = hci;
     this._handle = handle;

@@ -9,7 +9,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
   private _startScanCommand: any;
   private _peripherals: any;
 
-  constructor() {
+  public constructor() {
     super();
     this._wss = new ws.Server({
       port: 0xb1e,

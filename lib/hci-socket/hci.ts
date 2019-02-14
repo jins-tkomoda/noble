@@ -103,7 +103,7 @@ export class Hci extends events.EventEmitter {
   private _aclOutQueue: AclOutQueueEntry[];
   private _handleBuffers!: { [handle: number]: BufferHandle };
 
-  constructor(deviceId = 0, useUserChannel = false) {
+  public constructor(deviceId = 0, useUserChannel = false) {
     super();
     this._socket = new BluetoothHciSocket();
     this._isDevUp = null;

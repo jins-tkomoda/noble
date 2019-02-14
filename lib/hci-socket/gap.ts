@@ -26,7 +26,7 @@ export class Gap extends events.EventEmitter {
   private _scanFilterDuplicates: boolean | null;
   private _discoveries: { [address: string]: GapDiscoveredDevices };
 
-  constructor(hci: Hci, hciReportAllEvents: boolean = false) {
+  public constructor(hci: Hci, hciReportAllEvents: boolean = false) {
     super();
     this._hci = hci;
     this._hciReportAllEvents = hciReportAllEvents;

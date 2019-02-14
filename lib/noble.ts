@@ -27,7 +27,7 @@ export class Noble extends events.EventEmitter {
   private _discoveredPeripheralUUids: string[];
   private _allowDuplicates: boolean;
 
-  constructor(bindings: NobleBindingsInterface | null = null) {
+  public constructor(bindings: NobleBindingsInterface | null = null) {
     super();
 
     // tslint:disable-next-line prefer-conditional-expression

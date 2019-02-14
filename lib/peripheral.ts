@@ -35,7 +35,7 @@ export class Peripheral extends events.EventEmitter {
   public state: 'error' | 'connecting' | 'connected' | 'disconnecting' | 'disconnected';
   private _noble: Noble;
 
-  constructor(
+  public constructor(
     noble: Noble,
     id: string,
     address: string,
