@@ -30,7 +30,6 @@ export class Noble extends events.EventEmitter {
   public constructor(bindings: NobleBindingsInterface | null = null) {
     super();
 
-    // tslint:disable-next-line prefer-conditional-expression
     if (bindings) {
       this._bindings = bindings;
     } else {

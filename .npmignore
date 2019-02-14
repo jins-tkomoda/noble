@@ -1,5 +1,5 @@
 /lib
 /test
-/tslint.json
+/.eslint*
 /*.ts
 

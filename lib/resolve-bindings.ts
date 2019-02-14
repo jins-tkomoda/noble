@@ -8,7 +8,6 @@ export function resolveBindings() {
   } else if (process.env.NOBLE_DISTRIBUTED) {
     return new (require('./distributed/bindings')).NobleBindings();
   } else if (platform === 'darwin') {
-    // tslint:disable-next-line no-submodule-imports
     return require('noble-mac/lib/bindings');
   } else if (platform === 'linux' || platform === 'freebsd' || platform === 'win32') {
     const options = {
