@@ -407,7 +407,6 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
       const peripheralUuid = this._connectionQueue.shift();
       if (!peripheralUuid) {
         throw new Error(`Peripheral UUID not found in connection queue`);
-        return;
       }
 
       address = this._addresses[peripheralUuid];
