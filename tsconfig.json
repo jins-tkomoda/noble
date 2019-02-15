@@ -16,6 +16,6 @@
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true
   },
-  "include": ["lib/**/*", "test/**/*", "./*.ts"],
+  "include": ["lib/**/*", "test/**/*", "types/**/*", "./*.ts"],
   "exclude": ["node_modules", "dist"]
 }
