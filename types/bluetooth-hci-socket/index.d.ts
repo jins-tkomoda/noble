@@ -19,6 +19,7 @@ declare class BluetoothHciSocket extends event.EventEmitter {
   reset(): void;
 }
 
+// eslint-disable-next-line no-redeclare
 declare namespace BluetoothHciSocket {
   interface HciSocketDeviceInfo {
     devId?: string;
