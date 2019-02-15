@@ -1,5 +1,5 @@
 import { Characteristic } from './characteristic';
-import { Advertisement, Peripheral } from './peripheral';
+import { Advertisement } from './peripheral';
 
 export type NobleBindingsConstructor = new (options?: object) => NobleBindingsInterface;
 

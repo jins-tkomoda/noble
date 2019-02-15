@@ -1,8 +1,7 @@
 import 'should';
 import * as sinon from 'sinon';
 
-import { Advertisement, Peripheral } from '../lib/peripheral';
-import { Characteristic } from '../lib/characteristic';
+import { Peripheral } from '../lib/peripheral';
 import { Service } from '../lib/service';
 
 describe('Peripheral', () => {
