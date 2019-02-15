@@ -90,7 +90,7 @@ describe('Characteristic', () => {
     });
 
     it('should only accept data as a buffer', () => {
-      mockData = {} as Buffer;
+      mockData = {} as Buffer; // eslint-disable-line @typescript-eslint/no-object-literal-type-assertion
 
       (() => {
         characteristic.write(mockData);
