@@ -25,10 +25,6 @@ describe('Characteristic', () => {
     characteristic = new Characteristic(mockNoble, mockPeripheralId, mockServiceUuid, mockUuid, mockProperties);
   });
 
-  afterEach(() => {
-    characteristic = (null as any) as Characteristic;
-  });
-
   it('should have a uuid', () => {
     characteristic.uuid.should.equal(mockUuid);
   });

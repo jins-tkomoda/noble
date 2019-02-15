@@ -20,10 +20,6 @@ describe('service', () => {
     service = new Service(mockNoble, mockPeripheralId, mockUuid);
   });
 
-  afterEach(() => {
-    service = (null as any) as Service;
-  });
-
   it('should have a uuid', () => {
     service.uuid.should.equal(mockUuid);
   });

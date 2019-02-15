@@ -21,10 +21,6 @@ describe('Descriptor', () => {
     descriptor = new Descriptor(mockNoble, mockPeripheralId, mockServiceUuid, mockCharacteristicUuid, mockUuid);
   });
 
-  afterEach(() => {
-    descriptor = (null as any) as Descriptor;
-  });
-
   it('should have a uuid', () => {
     descriptor.uuid.should.equal(mockUuid);
   });

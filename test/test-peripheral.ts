@@ -37,10 +37,6 @@ describe('Peripheral', () => {
     peripheral = new Peripheral(mockNoble, mockId, mockAddress, mockAddressType, mockConnectable, mockAdvertisement, mockRssi);
   });
 
-  afterEach(() => {
-    peripheral = (null as any) as Peripheral;
-  });
-
   it('should have a id', () => {
     peripheral.id.should.equal(mockId);
   });
