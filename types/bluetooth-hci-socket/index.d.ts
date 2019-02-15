@@ -14,8 +14,8 @@ declare class BluetoothHciSocket extends event.EventEmitter {
   start(): void;
   stop(): void;
   write(data: Buffer): void;
-  onHciEventEndpointData(data: Buffer): void
-  onAclDataInEndpointData(data: Buffer): void
+  onHciEventEndpointData(data: Buffer): void;
+  onAclDataInEndpointData(data: Buffer): void;
   reset(): void;
 }
 
