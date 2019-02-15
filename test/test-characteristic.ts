@@ -5,7 +5,7 @@ import { Characteristic } from '../lib/characteristic';
 import { Descriptor } from '../lib/descriptor';
 
 describe('Characteristic', () => {
-  let mockNoble: any;
+  let mockNoble: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   const mockPeripheralId = 'mock-peripheral-id';
   const mockServiceUuid = 'mock-service-uuid';
   const mockUuid = 'mock-uuid';

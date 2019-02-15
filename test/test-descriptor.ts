@@ -4,7 +4,7 @@ import * as sinon from 'sinon';
 import { Descriptor } from '../lib/descriptor';
 
 describe('Descriptor', () => {
-  let mockNoble: any;
+  let mockNoble: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   const mockPeripheralId = 'mock-peripheral-id';
   const mockServiceUuid = 'mock-service-uuid';
   const mockCharacteristicUuid = 'mock-characteristic-uuid';

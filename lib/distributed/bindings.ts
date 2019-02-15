@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as events from 'events';
 
 import * as ws from 'ws';

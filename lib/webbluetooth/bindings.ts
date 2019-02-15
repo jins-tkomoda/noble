@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars,@typescript-eslint/no-unused-vars,@typescript-eslint/no-explicit-any, @typescript-eslint/no-object-literal-type-assertion */
 import * as events from 'events';
 
 import * as debugModule from 'debug';
