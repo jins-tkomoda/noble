@@ -1,5 +1,4 @@
 import * as events from 'events';
-import * as os from 'os';
 
 import * as debugModule from 'debug';
 
@@ -7,7 +6,6 @@ import { Advertisement } from '../peripheral';
 import { Hci } from './hci';
 
 const debug = debugModule('gap');
-const isChip = os.platform() === 'linux' && os.release().includes('-ntc');
 
 interface GapDiscoveredDevices {
   address: string;
@@ -52,11 +50,6 @@ export class Gap extends events.EventEmitter {
     // p106 - p107
     this._hci.setScanEnabled(false, true);
     this._hci.setScanParameters();
-
-    if (isChip) {
-      // work around for Next Thing Co. C.H.I.P, always allow duplicates, to get scan response
-      this._scanFilterDuplicates = false;
-    }
 
     this._hci.setScanEnabled(true, this._scanFilterDuplicates);
   }
