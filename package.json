@@ -71,8 +71,9 @@
     "format:check": "prettier --list-different 'examples/**/*'  'lib/**/*' 'test/**/*' './*.{json,ts}'",
     "format:write": "prettier --write 'examples/**/*'  'lib/**/*' 'test/**/*' './*.{json,ts}'",
     "lint": "eslint --ext .js,.ts .",
-    "build": "npm run lint && tsc --project .",
+    "build": "npm run lint && tsc",
     "pretest": "npm run lint",
+    "prepare": "tsc ",
     "test": "mocha -r ts-node/register -R spec test/*.ts"
   },
   "browser": {
