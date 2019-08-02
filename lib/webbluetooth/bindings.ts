@@ -66,12 +66,14 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     const dashedUuids = uuids.map(addDashes);
 
     const filterList = dashedUuids.map(makeList);
-    /*if(options.name){
+    /*
+    if(options.name){
       filterList.push({name: options.name});
     }
     if(options.namePrefix){
       filterList.push({namePrefix: options.namePrefix});
-    }*/
+    }
+    */
 
     const options: RequestDeviceOptions = {
       filters: filterList,
