@@ -23,11 +23,13 @@
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }],
+    "@typescript-eslint/no-useless-constructor": "error",
     "no-dupe-class-members": "off",
     "no-unused-vars": ["error", { "args": "none" }],
     "no-buffer-constructor": "error",
     "no-const-assign": "error",
     "no-unneeded-ternary": "error",
+    "no-useless-constructor": "off",
     "no-var": "error",
     "prefer-const": "error",
     "prefer-spread": "error",
@@ -35,7 +37,9 @@
     "prefer-object-spread": "error",
     "eqeqeq": "error",
     "no-bitwise": "off",
-    "linebreak-style": ["error", "unix"]
+    "linebreak-style": ["error", "unix"],
+    "lines-between-class-members": "off",
+    "handle-callback-err": "off"
   },
   "overrides": [
     {
