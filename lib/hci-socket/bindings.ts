@@ -361,7 +361,7 @@ export class NobleBindings extends events.EventEmitter implements NobleBindingsI
     if (status === 0) {
       uuid = this.addressToUuid(address);
 
-      if (!this.gattCache.hasOwnProperty(uuid)) {
+      if (!(uuid in this.gattCache)) {
         this.gattCache[uuid] = { services: {}, characteristics: {}, descriptors: {} };
       }
       const aclStream = new AclStream(this._hci, handle, this._hci.addressType, this._hci.address, addressType, address);
