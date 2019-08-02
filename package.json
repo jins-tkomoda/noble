@@ -39,8 +39,8 @@
   },
   "optionalDependencies": {
     "bluetooth-hci-socket": "git://github.com/jrobeson/node-bluetooth-hci-socket.git#refactor",
-    "noble-mac": "jrobeson/noble-mac#fork",
-    "noble-winrt": "jrobeson/noble-winrt#fork"
+    "noble-mac": "git://github.com/jrobeson/noble-mac.git#fork",
+    "noble-winrt": "git://github.com/jrobeson/noble-winrt.git#fork"
   },
   "devDependencies": {
     "@types/debug": "^4.1.4",
