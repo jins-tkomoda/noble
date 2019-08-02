@@ -73,7 +73,6 @@
     "lint": "eslint --ext .js,.ts .",
     "build": "npm run lint && tsc --project .",
     "pretest": "npm run lint",
-    "prepare": "tsc --project .",
     "test": "mocha -r ts-node/register -R spec test/*.ts"
   },
   "browser": {
