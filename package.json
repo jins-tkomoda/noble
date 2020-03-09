@@ -34,7 +34,7 @@
     "win32"
   ],
   "dependencies": {
-    "bluetooth-hci-socket": "git://github.com/jrobeson/node-bluetooth-hci-socket.git#refactor",
+    "bluetooth-hci-socket": "@abandonware/bluetooth-hci-socket",
     "debug": "^3.1.0"
   },
   "optionalDependencies": {
