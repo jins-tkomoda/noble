@@ -34,7 +34,7 @@
     "win32"
   ],
   "dependencies": {
-    "bluetooth-hci-socket": "@abandonware/bluetooth-hci-socket",
+    "bluetooth-hci-socket": "abandonware/node-bluetooth-hci-socket",
     "debug": "^3.1.0"
   },
   "optionalDependencies": {
